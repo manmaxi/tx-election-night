@@ -1,16 +1,16 @@
-<title>Texas Election Night 2026</title>
+<title>Texas Decides 2026</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Live, unofficial Texas results for U.S. Senate and Governor, county by county.">
-<meta property="og:title" content="Texas Election Night 2026">
-<meta property="og:description" content="Live county-by-county results for U.S. Senate and Governor.">
+<meta name="description" content="Texas Decides: live, unofficial results for U.S. Senate and Governor from all 254 Texas counties, plus early-vote turnout.">
+<meta property="og:title" content="Texas Decides 2026 · Live results from all 254 counties">
+<meta property="og:description" content="Watch Texas decide the U.S. Senate and Governor races, county by county. Official state data, updated live.">
 <meta property="og:url" content="https://elections.singlestopmarketing.com/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://elections.singlestopmarketing.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Texas Election Night 2026">
-<meta name="twitter:description" content="Live county-by-county results for U.S. Senate and Governor.">
+<meta name="twitter:title" content="Texas Decides 2026 · Live results from all 254 counties">
+<meta name="twitter:description" content="Watch Texas decide the U.S. Senate and Governor races, county by county. Official state data, updated live.">
 <meta name="twitter:image" content="https://elections.singlestopmarketing.com/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,45 +48,54 @@ button, input { font: inherit; color: inherit; }
 @media (max-width: 880px) { .lonestar { top: 0; left: auto; right: -38vw; width: 110vw; } }
 @media (min-width: 881px) { .mapcard .legend { position: absolute; left: 0; bottom: 0; } .mapcard { padding-bottom: 0; } .mapempty { position: absolute; top: 56px; left: 0; right: 0; } }
 
-/* Header */
-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; }
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand svg { width: 38px; height: 38px; flex: none; }
-.brand h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 6vw, 44px); line-height: 0.95; margin: 0; letter-spacing: 0.01em; text-transform: uppercase; text-wrap: balance; }
-.brand p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-.status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); background: var(--bg); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; }
+/* Header: wordmark + tagline + live status */
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; }
+.brand > svg { width: 40px; height: 40px; flex: none; }
+.brand > svg polygon { fill: var(--ink); }
+.brand h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 7.5vw, 52px); line-height: .9; margin: 0; letter-spacing: .01em; text-transform: uppercase; }
+.brand h1 em { font-style: normal; position: relative; white-space: nowrap; }
+.brand h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 6px; border-radius: 3px; background: var(--gold); transform-origin: left; animation: draw .9s .25s cubic-bezier(.6,0,.2,1) both; z-index: -1; }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.brand .tagline { margin: 6px 0 0; color: var(--muted); font-size: 13.5px; }
+.status { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
 .status.live .dot { background: #1F9D55; box-shadow: 0 0 0 0 rgba(31,157,85,.5); animation: pulse 2s infinite; }
 .status.stale .dot { background: #D08A00; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 7px rgba(31,157,85,0); } 100% { box-shadow: 0 0 0 0 rgba(31,157,85,0); } }
-@media (prefers-reduced-motion: reduce) { .status.live .dot { animation: none; } }
+.share-top { flex: none; align-self: flex-start; }
+@media (max-width: 520px) {
+  .brand { align-items: flex-start; gap: 10px; } .brand > svg { width: 28px; height: 28px; margin-top: 3px; }
+  .share-top { width: 44px; height: 44px; padding: 0; justify-content: center; } .share-top svg { width: 19px; height: 19px; } .share-top .txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+
+/* Rotating news ticker (data/notices.json + live counts) */
+.ticker { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 58px;
+  padding: 10px 10px 12px 14px; border-radius: var(--r); background: var(--ink); color: #fff; overflow: hidden; touch-action: pan-y; }
+@keyframes pulseGold { 70% { box-shadow: 0 0 0 7px rgba(245,197,66,0); } 100% { box-shadow: 0 0 0 0 rgba(245,197,66,0); } }
+.tk-view { min-width: 0; overflow: hidden; }
+.tk-item { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; row-gap: 2px; }
+.tk-item.in { animation: tkIn .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes tkIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.tk-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.tk-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 0 rgba(245,197,66,.6); animation: pulseGold 1.8s infinite; }
+.tk-text { font-weight: 700; font-size: 15px; line-height: 1.3; }
+.tk-text b { font-family: var(--display); font-size: 19px; letter-spacing: .01em; color: var(--gold); }
+.tk-link { color: #fff; font-size: 13px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255,255,255,.4); white-space: nowrap; }
+.tk-ctrl { display: flex; align-items: center; gap: 2px; }
+.tk-ctrl button { width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(255,255,255,.08); color: #fff; cursor: pointer; font-size: 16px; line-height: 1; }
+.tk-ctrl button:hover { background: rgba(255,255,255,.18); }
+.tk-ctrl span { font-size: 11px; color: rgba(255,255,255,.6); min-width: 30px; text-align: center; font-variant-numeric: tabular-nums; }
+.tk-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,.1); }
+.tk-bar b { display: block; height: 100%; background: var(--gold); transform-origin: left; animation: tkprog 6s linear both; }
+@keyframes tkprog { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.ticker:hover .tk-bar b, .ticker:focus-within .tk-bar b, .ticker.paused .tk-bar b { animation-play-state: paused; }
+@media (max-width: 520px) { .tk-ctrl span { display: none; } .tk-item { flex-direction: column; } }
 
 .tabs { display: flex; gap: 4px; padding: 4px; background: var(--wash); border-radius: 999px; width: fit-content; max-width: 100%; overflow-x: auto; }
 .tabs button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; color: var(--muted); }
 .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
 .tabs button.demo { font-weight: 500; }
-/* Announcement banner (data/notices.json) */
-.notice { position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center;
-  background: var(--ink); color: #fff; border-radius: var(--r); padding: 16px 18px; }
-.notice .cal { width: 74px; border-radius: 10px; overflow: hidden; background: #fff; color: var(--ink); text-align: center; box-shadow: 0 6px 14px -8px rgba(0,0,0,.6); }
-.notice .cal .m { background: var(--gold); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .14em; padding: 4px 0 3px; }
-.notice .cal .d { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; padding: 6px 0 8px; }
-.notice .txt { position: relative; z-index: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.notice .k { font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
-.notice h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(22px, 4.4vw, 30px); line-height: 1.05; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance; }
-.notice p { margin: 0; font-size: 14px; color: rgba(255,255,255,.82); max-width: 70ch; }
-.notice a.cta { align-self: flex-start; margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--ink); font-weight: 700; font-size: 13px; padding: 7px 12px; border-radius: 999px; text-decoration: none; }
-.notice .nstar { position: absolute; right: -40px; bottom: -70px; width: 240px; height: 240px; opacity: .08; pointer-events: none; }
-.notice .nstar polygon { fill: #fff; }
-@media (min-width: 900px) {
-  .notice { grid-template-columns: auto minmax(0, 1fr) auto; padding: 10px 14px 10px 10px; gap: 14px; }
-  .notice .cal { width: 56px; } .notice .cal .m { font-size: 10.5px; padding: 3px 0 2px; } .notice .cal .d { font-size: 28px; padding: 3px 0 5px; }
-  .notice .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 2px; padding-right: 190px; }
-  .notice h2 { font-size: 24px; } .notice p { flex-basis: 100%; max-width: none; font-size: 13px; }
-  .notice a.cta { position: absolute; right: 0; top: 50%; transform: translateY(-50%); margin: 0; }
-  .notice .nstar { width: 160px; height: 160px; bottom: -60px; right: 140px; }
-}
-@media (max-width: 420px) { .notice { gap: 12px; padding: 14px; } .notice .cal { width: 62px; } .notice .cal .d { font-size: 34px; } }
 .note { background: var(--warn-bg); color: var(--warn-fg); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; }
 
 main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 24px; align-items: start; }
@@ -134,11 +143,54 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 
 /* Pre-results hero: countdown, early-vote total, day-by-day chart */
 .hero { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-.hero .stats { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; }
+.hero .stats { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .hero .stat { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .hero .clock { display: flex; gap: 6px; align-items: baseline; }
 .hero .clock { gap: 3px; }
-.hero .clock span { font-family: var(--display); font-weight: 700; font-size: 32px; line-height: 1; }
+.hero .clock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 2px 0; }
+.hero .clock .u { background: var(--ink); color: #fff; border-radius: 10px; padding: 9px 0 7px; display: flex; flex-direction: column; align-items: center; gap: 3px; overflow: hidden; }
+.hero .clock span { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 8vw, 40px); line-height: 1; display: inline-block; }
+.hero .clock .u small { margin: 0; color: rgba(255,255,255,.62); }
+:root.og .hero .clock { display: flex; }
+:root.og .hero .clock .u { flex-direction: row; align-items: baseline; gap: 6px; padding: 8px 14px; }
+.hero .clock span.tick { animation: tick .35s cubic-bezier(.2,.7,.2,1); }
+@keyframes tick { from { transform: translateY(-35%); opacity: .2; } to { transform: none; opacity: 1; } }
+
+.hero .stat .sub b { color: var(--ink); }
+.hero .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; position: relative; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; text-decoration: none; cursor: pointer; border: 1px solid var(--ink); }
+.btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.btn-ink { background: var(--ink); color: #fff; }
+.btn-ghost { background: var(--bg); color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--ink); }
+.remind-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 5; width: min(330px, calc(100vw - 32px)); background: var(--bg); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: 0 18px 40px -18px rgba(15,27,45,.45); padding: 8px; display: flex; flex-direction: column; animation: tkIn .2s ease both; }
+.remind-menu p { margin: 6px 8px 2px; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.remind-menu a { display: flex; justify-content: space-between; gap: 10px; padding: 9px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
+.remind-menu a span { color: var(--muted); font-weight: 500; font-size: 13px; }
+.remind-menu a:hover { background: var(--wash); }
+/* "My county" */
+.mine { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: var(--r); background: var(--wash); }
+.mine .pin { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; }
+.mine .pin svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 2.2; }
+.mine .t { min-width: 0; font-size: 13.5px; color: var(--muted); }
+.mine .t b { display: block; color: var(--ink); font-size: 15px; }
+.mine .t strong { color: var(--ink); }
+.mine .go { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.lnk { border: 0; background: transparent; color: var(--ink); font-weight: 700; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); cursor: pointer; padding: 6px; }
+button.mine { width: 100%; border: 1px dashed #C9D1DC; background: var(--bg); text-align: left; cursor: pointer; }
+button.mine:hover { border-color: var(--ink); }
+.mybtn { align-self: flex-start; }
+/* Entrance animations (first paint only) */
+.anim .cc { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+.anim .cc:nth-child(2) { animation-delay: .1s; }
+.anim .hero .stat { animation: rise .55s cubic-bezier(.2,.7,.2,1) both; }
+.anim .hero .stat + .stat { animation-delay: .08s; }
+.anim .trend rect { transform-box: fill-box; transform-origin: bottom; animation: grow .7s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+#map.anim .county { animation: fadeIn .9s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .hero .clock small { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-right: 6px; }
 .hero .big { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; }
 .hero .sub { font-size: 12.5px; color: var(--muted); }
@@ -147,8 +199,6 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 .hero .trend text { font-family: var(--body); font-size: 10.5px; fill: var(--muted); }
 .share { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px; }
 .share svg { width: 14px; height: 14px; fill: currentColor; }
-.hero .share { align-self: flex-start; }
-.hdr-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .others { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: var(--r); color: #fff; background: linear-gradient(115deg, var(--oth), var(--oth-hi)); }
 .others b { font-weight: 700; }
 .others .v { display: flex; align-items: baseline; gap: 10px; }
@@ -156,6 +206,23 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 .total { display: flex; justify-content: space-between; padding: 4px 4px 0; font-size: 13.5px; color: var(--muted); }
 .total strong { color: var(--ink); font-weight: 700; }
 
+/* Know before you vote: key-dates timeline */
+.know { padding: 20px; border-radius: var(--r); background: var(--wash); display: flex; flex-direction: column; gap: 16px; }
+.know .kk { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.know h2 { margin: 2px 0 0; font-family: var(--display); font-weight: 700; font-size: clamp(26px, 5vw, 34px); text-transform: uppercase; line-height: 1; }
+.tl { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.tl li { position: relative; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.tl .when { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tl .date { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1; text-transform: uppercase; }
+.tl .st { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--wash); color: var(--muted); white-space: nowrap; }
+.tl h3 { margin: 0; font-size: 15px; }
+.tl p { margin: 0; font-size: 13px; color: var(--muted); }
+.tl li.next { border-color: var(--ink); box-shadow: 0 10px 24px -16px rgba(15,27,45,.6); }
+.tl li.next .st { background: var(--gold); color: var(--ink); }
+.tl li.past { opacity: .6; }
+.tl li.past .st { background: transparent; }
+.know .acts { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 880px) { .tl { grid-template-columns: minmax(0, 1fr); gap: 0; } .tl li { border-radius: 0; border-top-width: 0; } .tl li:first-child { border-radius: var(--r) var(--r) 0 0; border-top-width: 1px; } .tl li:last-child { border-radius: 0 0 var(--r) var(--r); } .tl li.next { z-index: 1; border-top-width: 1px; margin-top: -1px; } }
 .prose { font-size: 14px; color: var(--ink); margin: 0; padding: 0 4px; }
 .prose strong { font-weight: 700; }
 .early { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -252,7 +319,11 @@ tbody tr:hover td { background: var(--wash); }
 .builtby .arr { font-weight: 700; transition: transform .2s; }
 .builtby:hover .bb-n { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
 .builtby:hover .arr { transform: translateX(3px); }
-@media (prefers-reduced-motion: reduce) { .builtby .arr, .chev { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .builtby .arr, .chev { transition: none; }
+  *, *::before, *::after { animation: none !important; }
+  .tk-bar { display: none; }
+}
 :root.og .bbwrap { display: none !important; }
 
 /* Social card layout (1200x630), rendered by the scraper for X link previews: ?card=senate */
@@ -264,11 +335,10 @@ tbody tr:hover td { background: var(--wash); }
 :root.og .legend { position: absolute; left: 0; bottom: 4px; flex-direction: column; align-items: flex-start; }
 :root.og .city text { font-size: 24px; stroke-width: 5px; }
 :root.og .lonestar { top: 30px; right: -60px; width: 760px; }
-:root.og.has-notice #progress { display: none !important; }
-:root.og .notice { padding: 12px 16px; }
-:root.og .notice p, :root.og .notice a.cta { display: none; }
-:root.og .notice h2 { font-size: 26px; }
-:root.og .hero .trend, :root.og .hero .share, :root.og .hdr-right .share { display: none !important; }
+:root.og .hero .trend, :root.og .hero .acts, :root.og .share-top, :root.og #ticker, :root.og #mine, :root.og .know, :root.og .status { display: none !important; }
+:root.og *, :root.og *::before, :root.og *::after { animation: none !important; transition: none !important; }
+:root.og .brand h1 { font-size: 56px; }
+:root.og .brand .tagline { font-size: 17px; }
 :root.og .hero { padding: 12px 16px; }
 :root.og .mapcard .legend { display: none !important; }
 :root.og .cc { min-height: 104px; }
@@ -277,27 +347,30 @@ tbody tr:hover td { background: var(--wash); }
 
 <div class="bgclip" aria-hidden="true"><svg class="lonestar" viewBox="0 0 100 100"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg></div>
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3" fill="#0F1B2D"/></svg>
+  <header class="top">
+    <a class="brand" href="#" aria-label="Texas Decides, top of page">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>
       <div>
-        <h1>Texas Election Night</h1>
-        <p>General election · Tuesday, Nov. 3, 2026 · All 254 counties</p>
+        <h1>Texas <em>Decides</em></h1>
+        <p class="tagline">Live results from all 254 counties · Senate &amp; Governor</p>
+        <p class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></p>
       </div>
-    </div>
-    <div class="hdr-right">
-      <div class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></div>
-      <a class="share" id="shareTop" href="#" target="_blank" rel="noopener">Share on X</a>
-    </div>
+    </a>
+    <a class="btn btn-ghost share-top" id="shareTop" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="txt">Share</span></a>
   </header>
 
-  <section class="notice" id="notice" hidden aria-live="polite"></section>
+  <section class="ticker" id="ticker" hidden aria-roledescription="carousel" aria-label="Election updates">
+    <div class="tk-view" id="tkView" aria-live="off"></div>
+    <div class="tk-ctrl"><button type="button" id="tkPrev" aria-label="Previous update">‹</button><span id="tkCount"></span><button type="button" id="tkNext" aria-label="Next update">›</button></div>
+    <span class="tk-bar" aria-hidden="true"><b id="tkBar"></b></span>
+  </section>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Race"></nav>
   <div class="note" id="note" hidden></div>
 
   <main>
     <section class="panel">
       <div class="card hero" id="hero" hidden></div>
+      <div id="mine"></div>
       <div class="card progress" id="progress"></div>
       <div class="cands" id="cands"></div>
       <div id="others"></div>
@@ -339,6 +412,12 @@ tbody tr:hover td { background: var(--wash); }
       </div>
     </section>
   </main>
+
+  <section class="know" id="know" aria-labelledby="knowTitle">
+    <div><p class="kk">Know before you vote</p><h2 id="knowTitle">Key dates</h2></div>
+    <ol class="tl" id="timeline"></ol>
+    <div class="acts" id="knowActs"></div>
+  </section>
 
   <footer class="site-foot">
     <div class="fsrc">
@@ -535,15 +614,36 @@ tbody tr:hover td { background: var(--wash); }
   const closeAt = () => new Date(state.results?.election?.pollsCloseCT || '2026-11-03T19:00:00-06:00').getTime();
   const short = v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'K' : String(v);
   const md = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  function shareURL() {
-    const live = state.results.races.some(x => !x.demo && hasResults(x)), T = state.turnout?.statewide;
-    const text = live
-      ? 'Live Texas election results, county by county: U.S. Senate and Governor, straight from official state data.'
-      : T && T.total
-        ? `${fmt(T.total)} Texans have already voted early. Follow the Texas Senate and Governor races live, county by county, on election night:`
-        : 'Follow the Texas Senate and Governor races live, county by county, on election night:';
-    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + '#' + race().id)}`;
+  const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('og');
+  const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  const CAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  const SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
+  // "My county" is remembered on this device only.
+  const MYKEY = 'txd.county';
+  const myCounty = () => { try { const f = localStorage.getItem(MYKEY); return f && state.byFips?.[f] ? f : null; } catch (_) { return null; } };
+  const setMyCounty = f => { try { f ? localStorage.setItem(MYKEY, f) : localStorage.removeItem(MYKEY); } catch (_) {} tk.key = ''; render(); };
+  // Numbers count up the first time they appear and whenever they change.
+  const shown = {};
+  function countUp(el, key, to) {
+    if (!el) return;
+    const from = shown[key] ?? 0; shown[key] = to;
+    if (reduceMotion() || from === to) { el.textContent = fmt(to); return; }
+    const t0 = performance.now(), dur = from ? 700 : 1200;
+    const step = now => { const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(Math.round(from + (to - from) * e)); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
   }
+  function shareURL() {
+    const live = state.results.races.some(x => !x.demo && hasResults(x)), T = state.turnout?.statewide, f = myCounty();
+    const mt = f && state.turnout?.counties?.[f], cn = f && state.byFips[f].name;
+    const text = live
+      ? `Texas is deciding right now. Live U.S. Senate and Governor results from all 254 counties${cn ? `, including ${cn} County` : ''}:`
+      : T && T.total
+        ? `${fmt(T.total)} Texans have already voted early${mt && mt.total ? `, including ${fmt(mt.total)} in ${cn} County` : ''}. Watch Texas decide the Senate and Governor races live on Nov. 3:`
+        : 'Watch Texas decide the Senate and Governor races live, county by county, on Nov. 3:';
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE)}`;
+  }
+  const GCAL_NIGHT = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Texas Decides: election night results') + '&dates=20261104T010000Z/20261104T050000Z&details=' + encodeURIComponent('Polls close at 7 p.m. CT. Follow live county-by-county results: ' + SITE);
+  const GCAL_EARLY = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Early voting opens in Texas') + '&dates=20261019/20261020&details=' + encodeURIComponent('Vote at any early voting location in your county through Oct. 30. Live turnout: ' + SITE);
   function trendSVG() {
     const t = state.turnout || {}, daily = t.daily || [];
     const dates = (t.dates && t.dates.length) ? t.dates : daily.map(d => d.date);
@@ -566,26 +666,68 @@ tbody tr:hover td { background: var(--wash); }
         <text x="0" y="${H - 4}">${md(dates[0])}</text><text x="${W}" y="${H - 4}" text-anchor="end">${md(dates[n - 1])}</text>
       </svg></div>`;
   }
+  const clockParts = () => { const ms = Math.max(0, closeAt() - Date.now()); return { ms, d: Math.floor(ms / 864e5), h: Math.floor(ms % 864e5 / 36e5), m: Math.floor(ms % 36e5 / 6e4), s: Math.floor(ms % 6e4 / 1e3) }; };
+  function updateClock() {
+    const el = $('clock'); if (!el) return;
+    const p = clockParts();
+    if (p.ms === 0) { paintHero(state.pre); return; }
+    for (const k of ['d', 'h', 'm', 's']) {
+      const span = el.querySelector(`[data-k="${k}"]`); if (!span) continue;
+      const v = k === 'd' ? String(p.d) : String(p[k]).padStart(2, '0');
+      if (span.textContent !== v) { span.textContent = v; if (!reduceMotion()) { span.classList.remove('tick'); void span.offsetWidth; span.classList.add('tick'); } }
+    }
+  }
   function paintHero(pre) {
     const el = $('hero');
     el.hidden = !pre;
     if (!pre) return;
-    const ms = Math.max(0, closeAt() - Date.now());
-    const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+    const p = clockParts(), og = document.documentElement.classList.contains('og');
     const T = state.turnout?.statewide;
     const asOf = state.turnout?.asOf ? md(state.turnout.asOf) : '';
+    const unit = (k, w) => `<div class="u"><span data-k="${k}"></span><small>${w}</small></div>`;
     el.innerHTML = `<div class="stats">
-        <div class="stat"><p class="label">${ms > 0 ? 'Polls close in' : 'Polls are closed'}</p>
-          ${ms > 0 ? (document.documentElement.classList.contains('og')
-            ? `<div class="clock num"><span>${d + (h || m ? 1 : 0)}</span><small>${d === 0 && !h && !m ? 'day' : 'days'}</small></div>`
-            : `<div class="clock num"><span>${d}</span><small>${d === 1 ? 'day' : 'days'}</small><span>${h}</span><small>hrs</small><span>${m}</span><small>min</small></div>`) : '<span class="big">Counting</span>'}
-          <span class="sub">${ms > 0 ? '7 p.m. CT · Tuesday, Nov. 3' : 'Waiting for the first county to report'}</span></div>
-        <div class="stat"><p class="label">Early votes so far</p>
-          <span class="big num">${T && T.total ? fmt(T.total) : '—'}</span>
-          <span class="sub">${T && T.total ? `${pctLabel(T.total / T.registered * 100)} of ${fmt(T.registered)} registered${asOf ? ` · as of ${asOf}` : ''}` : 'Posts as counties report'}</span></div>
+        <div class="stat"><p class="label">${p.ms > 0 ? 'Polls close in' : 'Polls are closed'}</p>
+          ${p.ms > 0 ? (og
+            ? `<div class="clock num"><div class="u"><span>${p.d + (p.h || p.m ? 1 : 0)}</span><small>days to go</small></div></div>`
+            : `<div class="clock num" id="clock" role="timer" aria-label="Time until polls close">${unit('d', 'days')}${unit('h', 'hrs')}${unit('m', 'min')}${unit('s', 'sec')}</div>`) : '<span class="big">Counting</span>'}
+          <span class="sub">${p.ms > 0 ? 'Results start at 7 p.m. CT · Tuesday, Nov. 3' : 'Waiting for the first county to report'}</span></div>
+        <div class="stat"><p class="label">Texans who already voted</p>
+          <span class="big num" id="earlyNum">${T && T.total ? '0' : '—'}</span>
+          <span class="sub">${T && T.total ? `<b>${pctLabel(T.total / T.registered * 100)}</b> of ${fmt(T.registered)} registered${asOf ? ` · as of ${asOf}` : ''}` : 'Posts as counties report'}</span></div>
       </div>
       ${trendSVG()}
-      <a class="share" href="${shareURL()}" target="_blank" rel="noopener">Share on X</a>`;
+      <div class="acts">
+        <button type="button" class="btn btn-ink" id="remindBtn" aria-expanded="false" aria-haspopup="true">${CAL}Remind me</button>
+        <a class="btn btn-ghost" href="${shareURL()}" target="_blank" rel="noopener">${SHARE}Share</a>
+        <div class="remind-menu" id="remindMenu" hidden>
+          <p>Election night</p>
+          <a href="${GCAL_NIGHT}" target="_blank" rel="noopener">Google Calendar <span>Nov. 3, 7 p.m. CT</span></a>
+          <a href="election-night.ics">Apple or Outlook <span>.ics file</span></a>
+          ${Date.now() < Date.parse('2026-10-19T07:00:00-05:00') ? `<p>Early voting opens</p>
+          <a href="${GCAL_EARLY}" target="_blank" rel="noopener">Google Calendar <span>Mon., Oct. 19</span></a>
+          <a href="early-voting.ics">Apple or Outlook <span>.ics file</span></a>` : ''}
+        </div>
+      </div>`;
+    if (!og) updateClock();
+    if (T && T.total) countUp($('earlyNum'), 'early', T.total);
+    $('remindBtn').onclick = e => { e.stopPropagation(); const m = $('remindMenu'), open = m.hidden; m.hidden = !open; $('remindBtn').setAttribute('aria-expanded', String(open)); };
+  }
+  document.addEventListener('click', e => { const m = $('remindMenu'); if (m && !m.hidden && !m.contains(e.target)) { m.hidden = true; $('remindBtn')?.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { const m = $('remindMenu'); if (m && !m.hidden) { m.hidden = true; $('remindBtn')?.setAttribute('aria-expanded', 'false'); $('remindBtn')?.focus(); } } });
+  function paintMine() {
+    const el = $('mine'), f = myCounty(), r = race();
+    if (!f) {
+      el.innerHTML = `<button type="button" class="mine" id="mineFind"><span class="pin">${PIN}</span><span class="t"><b>Follow your county</b>See your county's turnout and results at the top of the page.</span><span class="lnk" aria-hidden="true">Find it →</span></button>`;
+      $('mineFind').onclick = () => { const q = $('search'); q.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' }); setTimeout(() => q.focus({ preventScroll: true }), 350); };
+      return;
+    }
+    const name = state.byFips[f].name, t = state.turnout?.counties?.[f], cty = r.counties?.[f];
+    const line = hasResults(r)
+      ? (cty && cty.total ? `<strong>${fmt(cty.total)}</strong> votes counted${cty.reporting && cty.reporting.total ? ` · ${Math.round(cty.reporting.done / cty.reporting.total * 100)}% of polling locations in` : ''}` : 'No votes reported yet')
+      : (t && t.total ? `<strong>${fmt(t.total)}</strong> early votes · <strong>${pctLabel(turnoutPct(t))}</strong> turnout` : 'No early votes posted yet');
+    el.innerHTML = `<div class="mine"><span class="pin">${PIN}</span><span class="t"><b>${esc(name)} County</b>${line}</span><span class="go"><button type="button" class="lnk" id="mineOpen">Details</button><button type="button" class="lnk" id="mineChange">Change</button></span></div>`;
+    $('mineOpen').onclick = () => select(f, true);
+    $('mineChange').onclick = () => { setMyCounty(null); $('mineFind')?.click(); };
   }
   function paintTabs() {
     const T = $('tabs');
@@ -637,7 +779,8 @@ tbody tr:hover td { background: var(--wash); }
     const close = new Date(state.results.election?.pollsCloseCT || '2026-11-03T19:00:00-06:00');
     $('expect').innerHTML = r.demo ? ''
       : `<strong>What to expect:</strong> Texas counties post early and mail votes first. In 2024 about 4 in 5 votes were cast before Election Day, so the first update after polls close is a large share of the final count. Polls close at 7 p.m. local time: 7 p.m. CT for most of Texas, 8 p.m. CT in El Paso and Hudspeth counties. Election Day ballots follow through the night.${!live && Date.now() >= close.getTime() ? ' Waiting for the first county to report.' : ''}`;
-    $('expect').hidden = !!r.demo;
+    $('expect').hidden = true;   // election-night expectations now live in the Key dates timeline
+    paintMine();
 
     $('early').hidden = true;   // early-vote totals now live in the hero card
 
@@ -663,8 +806,11 @@ tbody tr:hover td { background: var(--wash); }
       } else body = `<div style="color:var(--muted);font-size:14px">No votes reported yet.</div>`;
     }
     d.hidden = false;
-    d.innerHTML = `<div class="head"><h3>${esc(c.name)} County</h3><button type="button" class="x" id="closeDetail">Back to statewide</button></div>${body}`;
+    const isMine = myCounty() === f;
+    d.innerHTML = `<div class="head"><h3>${esc(c.name)} County</h3><button type="button" class="x" id="closeDetail">Back to statewide</button></div>${body}
+      <button type="button" class="btn ${isMine ? 'btn-ghost' : 'btn-ink'} mybtn" id="setMine">${PIN}${isMine ? 'Your county · Remove' : 'Make this my county'}</button>`;
     $('closeDetail').onclick = () => { state.sel = null; paintMap(); paintDetail(); };
+    $('setMine').onclick = () => { setMyCounty(isMine ? null : f); if (!isMine) $('mine').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' }); };
   }
   function paintChart() {
     const r = race(), h = (r.history || []).filter(p => p.pct), card = $('chartCard');
@@ -720,6 +866,7 @@ tbody tr:hover td { background: var(--wash); }
     const live = state.results.races.some(r => !r.demo && hasResults(r));
     const ageMin = u ? (Date.now() - u.getTime()) / 60000 : Infinity;
     st.className = 'status' + (live ? (ageMin > 15 ? ' stale' : ' live') : '');
+    st.hidden = !live;
     const t = u ? u.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT' : '';
     txt.textContent = live ? (ageMin > 15 ? `Last update ${t} · checking for new results` : `Live · updated ${t}`) : 'Unofficial results · polls close 7 p.m. local time Nov. 3';
     paintFooter(live);
@@ -798,18 +945,69 @@ tbody tr:hover td { background: var(--wash); }
   }
   $('btnMethod').onclick = () => togglePanel('methodology');
   $('btnCredits').onclick = () => togglePanel('credits');
-  function paintNotice() {
-    const el = $('notice'), now = Date.now();
-    const n = (state.notices || []).find(x => new Date(x.start).getTime() <= now && now < new Date(x.end).getTime());
-    document.documentElement.classList.toggle('has-notice', !!n);
-    if (!n) { el.hidden = true; return; }
-    el.hidden = false;
-    el.innerHTML = `<div class="cal" aria-hidden="true"><div class="m">${esc(n.month || '')}</div><div class="d">${esc(n.day || '')}</div></div>
-      <div class="txt"><span class="k">${esc(n.kicker || '')}</span><h2>${esc(n.title)}</h2>${n.body ? `<p>${esc(n.body)}</p>` : ''}
-      ${n.link?.url ? `<a class="cta" href="${esc(n.link.url)}" target="_blank" rel="noopener">${esc(n.link.label || 'Learn more')} →</a>` : ''}</div>
-      <svg class="nstar" viewBox="0 0 100 100" aria-hidden="true">${STAR}</svg>`;
+  const tk = { items: [], i: 0, key: '' };
+  function tickerItems() {
+    const now = Date.now(), out = [], N = state.notices || {};
+    const races = state.results.races.filter(r => !r.demo && hasResults(r));
+    const T = state.turnout?.statewide, f = myCounty();
+    if (races.length) {
+      const rep = races[0].statewide.reporting || {};
+      out.push({ tag: 'Live', html: `<b>${Math.round(reportingPct(rep))}%</b> of ${esc(rep.unit || 'counties')} reporting · ${fmt(races[0].statewide.total)} votes counted` });
+      for (const r of races) {
+        const [a, b] = ranked(r, r.statewide.votes).filter(c => c.id !== 'other');
+        if (a && b) out.push({ tag: r.title, html: `${esc(a.name)} leads by <b>${pct1(a.p - b.p)}</b> pts with ${Math.round(reportingPct(r.statewide.reporting))}% in` });
+      }
+    } else if (T && T.total) {
+      out.push({ tag: 'Live count', html: `<b>${fmt(T.total)}</b> Texans have already voted early` });
+      const top = Object.entries(state.turnout.counties || {}).sort((a, b) => b[1].total - a[1].total)[0];
+      if (top && state.byFips[top[0]]) out.push({ tag: 'Turnout', html: `${esc(state.byFips[top[0]].name)} County leads early voting with <b>${fmt(top[1].total)}</b> ballots` });
+    }
+    if (f) {
+      const t = state.turnout?.counties?.[f], name = esc(state.byFips[f].name);
+      if (!races.length && t && t.total) out.push({ tag: 'Your county', html: `${name} County: <b>${fmt(t.total)}</b> early votes, ${pctLabel(turnoutPct(t))} turnout` });
+    }
+    for (const n of N.ticker || []) if (Date.parse(n.start) <= now && now < Date.parse(n.end)) out.push({ tag: n.tag, html: esc(n.text), link: n.link });
+    return out;
   }
-  function render() { $('shareTop').href = shareURL(); paintNotice(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
+  function showTick(animate, manual) {
+    const it = tk.items[tk.i], v = $('tkView');
+    if (!it) { $('ticker').hidden = true; return; }
+    $('ticker').hidden = false;
+    v.setAttribute('aria-live', manual ? 'polite' : 'off');
+    v.innerHTML = `<div class="tk-item${animate ? ' in' : ''}"><span class="tk-tag">${esc(it.tag)}</span><span class="tk-text">${it.html}</span>${it.link?.url ? `<a class="tk-link" href="${esc(it.link.url)}" target="_blank" rel="noopener">${esc(it.link.label || 'More')} →</a>` : ''}</div>`;
+    $('tkCount').textContent = `${tk.i + 1}/${tk.items.length}`;
+    const b = $('tkBar'); b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+  }
+  function stepTick(d, manual) { if (!tk.items.length) return; tk.i = (tk.i + d + tk.items.length) % tk.items.length; showTick(true, manual); }
+  function paintTicker() {
+    const items = tickerItems(), key = JSON.stringify(items.map(x => x.html));
+    if (key === tk.key) return;
+    const keepTag = tk.items[tk.i]?.tag;
+    tk.items = items; tk.key = key;
+    const same = items.findIndex(x => x.tag === keepTag);
+    tk.i = same >= 0 ? same : 0;
+    showTick(false, false);
+  }
+  $('tkBar').addEventListener('animationend', () => { if (!document.hidden) stepTick(1, false); });
+  $('tkPrev').onclick = () => stepTick(-1, true);
+  $('tkNext').onclick = () => stepTick(1, true);
+  { let x0 = null; const t = $('ticker');
+    t.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; t.classList.add('paused'); }, { passive: true });
+    t.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - (x0 ?? 0); if (Math.abs(dx) > 40) stepTick(dx < 0 ? 1 : -1, true); x0 = null; setTimeout(() => t.classList.remove('paused'), 2500); }); }
+  function paintKnow() {
+    const N = state.notices || {}, dates = N.dates || [];
+    const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })); today.setHours(0, 0, 0, 0);
+    const nextI = dates.findIndex(d => new Date(d.date + 'T00:00:00') >= today);
+    $('timeline').innerHTML = dates.map((d, i) => {
+      const day = new Date(d.date + 'T00:00:00'), diff = Math.round((day - today) / 864e5);
+      const cls = nextI === -1 || i < nextI ? 'past' : i === nextI ? 'next' : '';
+      const st = cls === 'past' ? 'Done' : diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : `In ${diff} days`;
+      return `<li class="${cls}"><div class="when"><span class="date">${day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span><span class="st">${st}</span></div><h3>${esc(d.title)}</h3><p>${esc(d.body)}</p></li>`;
+    }).join('');
+    $('knowActs').innerHTML = `${N.findUrl ? `<a class="btn btn-ink" href="${esc(N.findUrl)}" target="_blank" rel="noopener">${PIN}Find where to vote</a>` : ''}
+      ${N.idUrl ? `<a class="btn btn-ghost" href="${esc(N.idUrl)}" target="_blank" rel="noopener">Accepted photo IDs</a>` : ''}`;
+  }
+  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintTicker(); paintKnow(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -821,11 +1019,12 @@ tbody tr:hover td { background: var(--wash); }
   async function refresh(first) {
     try {
       const [res, tur, not] = await Promise.all([getJSON('data/results.json'), getJSON('data/turnout.json').catch(() => null), getJSON('data/notices.json').catch(() => null)]);
-      state.results = res; state.turnout = tur; state.notices = not?.notices || []; setTurnoutBins();
+      state.results = res; state.turnout = tur; state.notices = not || {}; setTurnoutBins();
       if (first) {
         if (!state.results.races.some(r => r.id === state.raceId)) state.raceId = state.results.races[0].id;
         state.mode = hasResults(race()) || !Object.keys(tur?.counties || {}).length ? 'results' : 'turnout';
       }
+      if (first && !reduceMotion()) { document.querySelector('main').classList.add('anim'); $('map').classList.add('anim'); setTimeout(() => { document.querySelector('main').classList.remove('anim'); $('map').classList.remove('anim'); }, 1600); }
       render();
     } catch (e) { if (first) $('statusText').textContent = 'Could not load results. Retrying in a minute.'; }
   }
@@ -837,7 +1036,7 @@ tbody tr:hover td { background: var(--wash); }
     setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
     setInterval(paintStatus, 30000);
-    setInterval(() => { if (!document.hidden && state.pre) paintHero(true); }, 20000);
+    setInterval(() => { if (!document.hidden && state.pre) updateClock(); }, 1000);
   })();
 })();
 </script>

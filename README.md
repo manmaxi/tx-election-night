@@ -1,4 +1,4 @@
-# Texas Election Night 2026
+# Texas Decides 2026
 
 A live, county-by-county results page for the Texas U.S. Senate and Governor races. It is built to share on X and to read well on phones.
 

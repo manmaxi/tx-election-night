@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Texas Decides//Election 2026//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:texas-decides-election-night-2026@elections.singlestopmarketing.com
+DTSTAMP:20261017T150000Z
+DTSTART:20261104T010000Z
+DTEND:20261104T050000Z
+SUMMARY:Texas Decides: election night results
+DESCRIPTION:Polls close at 7 p.m. CT. Follow live county-by-county results for U.S. Senate and Governor: https://elections.singlestopmarketing.com/
+URL:https://elections.singlestopmarketing.com/
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Texas Decides: election night results
+END:VALARM
+END:VEVENT
+END:VCALENDAR

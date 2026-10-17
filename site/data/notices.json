@@ -1,38 +1,19 @@
 {
-  "_help": "Announcement banner. Each notice shows between its start and end time (Central Time offsets). Edit text here and push; no code changes needed. Keep wording factual and nonpartisan.",
-  "notices": [
-    {
-      "id": "early-voting-starts",
-      "start": "2026-10-01T00:00:00-05:00",
-      "end": "2026-10-19T00:00:00-05:00",
-      "month": "OCT",
-      "day": "19",
-      "kicker": "Early voting",
-      "title": "In-person early voting starts Monday, Oct. 19",
-      "body": "Vote at any early voting location in your county through Friday, Oct. 30. Mail ballot applications must be received by Oct. 23.",
-      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
-    },
-    {
-      "id": "early-voting-open",
-      "start": "2026-10-19T00:00:00-05:00",
-      "end": "2026-10-31T00:00:00-05:00",
-      "month": "OCT",
-      "day": "30",
-      "kicker": "Early voting is open",
-      "title": "Vote early through Friday, Oct. 30",
-      "body": "Any early voting location in your county works. Bring one of seven approved photo IDs. Mail ballot applications must be received by Oct. 23.",
-      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
-    },
-    {
-      "id": "election-day",
-      "start": "2026-10-31T00:00:00-05:00",
-      "end": "2026-11-03T20:00:00-06:00",
-      "month": "NOV",
-      "day": "3",
-      "kicker": "Election Day",
-      "title": "Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov. 3",
-      "body": "Vote at your assigned polling place or a countywide vote center, depending on your county. Bring one of seven approved photo IDs. In line by 7 p.m.? You can still vote.",
-      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
-    }
+  "_help": "Edit and push; no code changes needed. 'ticker' items rotate in the strip at the top of the page between their start and end times (Central Time offsets). 'dates' feed the Know before you vote timeline. Keep every line short, factual and nonpartisan. Live counts (early votes, top county, results) are added to the ticker automatically.",
+  "findUrl": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login",
+  "idUrl": "https://www.votetexas.gov/faq/early-voting.html",
+  "ticker": [
+    { "start": "2026-10-01T00:00:00-05:00", "end": "2026-10-19T00:00:00-05:00", "tag": "Early voting", "text": "In-person early voting opens Monday, Oct. 19", "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" } },
+    { "start": "2026-10-19T00:00:00-05:00", "end": "2026-10-31T00:00:00-05:00", "tag": "Early voting", "text": "Early voting is open through Friday, Oct. 30", "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" } },
+    { "start": "2026-10-01T00:00:00-05:00", "end": "2026-10-24T00:00:00-05:00", "tag": "Deadline", "text": "Mail ballot applications must be received by Friday, Oct. 23" },
+    { "start": "2026-10-01T00:00:00-05:00", "end": "2026-11-03T19:00:00-06:00", "tag": "Voter ID", "text": "Bring one of seven approved photo IDs to vote in person", "link": { "label": "See the list", "url": "https://www.votetexas.gov/faq/early-voting.html" } },
+    { "start": "2026-10-01T00:00:00-05:00", "end": "2026-11-03T19:00:00-06:00", "tag": "Election Day", "text": "Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov. 3" },
+    { "start": "2026-11-03T19:00:00-06:00", "end": "2026-11-04T06:00:00-06:00", "tag": "Counting", "text": "Polls are closed in most of Texas. Early votes post first." }
+  ],
+  "dates": [
+    { "date": "2026-10-19", "title": "Early voting opens", "body": "Vote at any early voting location in your county." },
+    { "date": "2026-10-23", "title": "Mail ballot applications due", "body": "Applications must be received, not postmarked, by this day." },
+    { "date": "2026-10-30", "title": "Last day of early voting", "body": "Early voting locations close for the election." },
+    { "date": "2026-11-03", "title": "Election Day", "body": "Polls open 7 a.m. to 7 p.m. In line by 7 p.m.? You can still vote. Early and mail votes post first after polls close." }
   ]
 }

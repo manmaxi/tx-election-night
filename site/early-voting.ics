@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Texas Decides//Election 2026//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:texas-decides-early-voting-2026@elections.singlestopmarketing.com
+DTSTAMP:20261017T150000Z
+DTSTART;VALUE=DATE:20261019
+DTEND;VALUE=DATE:20261020
+SUMMARY:Early voting opens in Texas
+DESCRIPTION:Vote at any early voting location in your county through Oct. 30. Find where to vote: https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login
+URL:https://elections.singlestopmarketing.com/
+BEGIN:VALARM
+TRIGGER:-PT15H
+ACTION:DISPLAY
+DESCRIPTION:Early voting opens in Texas
+END:VALARM
+END:VEVENT
+END:VCALENDAR
