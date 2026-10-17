@@ -217,6 +217,15 @@ tbody tr:hover td { background: var(--wash); }
 .lead i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 .more { align-self: flex-start; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
+.builtby { align-self: center; display: inline-flex; align-items: center; gap: 10px; margin-top: 4px; padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px;
+  color: var(--ink); text-decoration: none; font-size: 14px; background: var(--bg); transition: border-color .2s, box-shadow .2s; }
+.builtby:hover { border-color: var(--ink); box-shadow: 0 4px 14px -8px rgba(15,27,45,.5); }
+.builtby svg { width: 16px; height: 16px; fill: var(--ink); }
+.builtby strong { font-weight: 800; }
+.builtby .arr { transition: transform .2s; }
+.builtby:hover .arr { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .builtby, .builtby .arr { transition: none; } }
+:root.og .builtby { display: none !important; }
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
 footer a { color: inherit; }
 .credits { flex-basis: 100%; order: 3; font-size: 11.5px; }
@@ -309,10 +318,14 @@ footer a { color: inherit; }
 
   <footer>
     <span id="source">Source: Texas Secretary of State. All results are unofficial until canvassed.</span>
-    <span class="credits">Independent and nonpartisan. Not affiliated with any candidate, party, campaign, or the Texas Secretary of State. Built by <a href="https://singlestopmarketing.com" target="_blank" rel="noopener">SingleStopMarketing</a>.</span>
+    <span class="credits">Independent and nonpartisan. Not affiliated with any candidate, party, campaign, or the Texas Secretary of State.</span>
     <span id="credits" class="credits"></span>
     <span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="updated"></span><button type="button" class="copy" id="copy">Copy link</button></span>
   </footer>
+  <a class="builtby" href="https://singlestopmarketing.com/?utm_source=elections&amp;utm_medium=referral&amp;utm_campaign=tx-election-night" target="_blank" rel="noopener">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>
+    <span>Built by <strong>Single Stop Marketing</strong></span><span class="arr" aria-hidden="true">→</span>
+  </a>
 </div>
 
 <script>
