@@ -223,6 +223,54 @@ button.mine:hover { border-color: var(--ink); }
 .tl li.past .st { background: transparent; }
 .know .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 880px) { .tl { grid-template-columns: minmax(0, 1fr); gap: 0; } .tl li { border-radius: 0; border-top-width: 0; } .tl li:first-child { border-radius: var(--r) var(--r) 0 0; border-top-width: 1px; } .tl li:last-child { border-radius: 0 0 var(--r) var(--r); } .tl li.next { z-index: 1; border-top-width: 1px; margin-top: -1px; } }
+/* Prediction markets: traders' prices (Polymarket), shown apart from official results */
+.mkts { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.mk-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 20px; flex-wrap: wrap; }
+.mk-head .kk { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.mk-head .kk::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 0 rgba(245,197,66,.6); animation: pulseGold 1.8s infinite; }
+.mk-head h2 { margin: 4px 0 0; font-family: var(--display); font-weight: 700; font-size: clamp(26px, 5vw, 34px); text-transform: uppercase; line-height: 1; }
+.mk-head .what { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); max-width: 62ch; }
+.mk-head .what b { color: var(--ink); }
+.mk-acts { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.mk-acts small { font-size: 12px; color: var(--muted); }
+.mk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .mk-grid { grid-template-columns: minmax(0, 1fr); } .mk-acts { align-items: flex-start; } }
+.mk-race { border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.mk-race h3 { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: .01em; }
+.mk-race h3 small { font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.mk-split { display: flex; gap: 3px; height: 10px; border-radius: 5px; overflow: hidden; }
+.mk-split i { display: block; height: 100%; transition: flex-grow .8s cubic-bezier(.2,.7,.2,1); }
+.anim-mk .mk-split i { animation: mkgrow .9s cubic-bezier(.2,.7,.2,1) both; transform-origin: left; }
+.anim-mk .mk-split i + i { transform-origin: right; }
+@keyframes mkgrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.mk-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; column-gap: 10px; align-items: center; }
+.mk-sw { width: 10px; height: 34px; border-radius: 3px; }
+.mk-nm { min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.mk-nm b { font-size: 15.5px; }
+.mk-nm small { font-size: 12px; color: var(--muted); }
+.mk-pv { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; gap: 3px; }
+.mk-p { font-family: var(--display); font-weight: 700; font-size: 36px; letter-spacing: .01em; }
+.mk-p small { font-size: 22px; margin-left: 1px; }
+.mk-chg { font-size: 11.5px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.mk-chg small { font-weight: 600; font-size: 11px; }
+.mk-spark svg { width: 100%; height: auto; display: block; }
+.mk-spark text { font-family: var(--body); font-size: 10.5px; fill: var(--muted); }
+@media (max-width: 520px) { .mk-spark text { font-size: 15px; } }
+.anim-mk .mk-spark path.ln { stroke-dasharray: 1; stroke-dashoffset: 1; animation: mkdraw 1.4s .2s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes mkdraw { to { stroke-dashoffset: 0; } }
+.mk-foot { margin: 0; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.mk-foot a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--line); }
+.mk-live { margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--wash); font-size: 13.5px; }
+.mk-note { margin: 0; font-size: 12px; color: var(--muted); }
+.mk-details > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 700; font-size: 15px; }
+.mk-details > summary::-webkit-details-marker { display: none; }
+.mk-details > summary span { color: var(--muted); font-weight: 500; font-size: 13px; }
+.mk-details[open] > summary { margin-bottom: 14px; }
+.mk-details > summary .chev { flex: none; }
+.mk-details[open] > summary .chev { transform: translateY(1px) rotate(-135deg); }
+.mk-details .mk-body { display: flex; flex-direction: column; gap: 16px; }
+.tk-src { font-weight: 500; font-size: 13px; color: rgba(255,255,255,.7); }
+
 .prose { font-size: 14px; color: var(--ink); margin: 0; padding: 0 4px; }
 .prose strong { font-weight: 700; }
 .early { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -343,6 +391,21 @@ tbody tr:hover td { background: var(--wash); }
 :root.og .mapcard .legend { display: none !important; }
 :root.og .cc { min-height: 104px; }
 :root.og .cc .name { font-size: 18px; }
+:root.og .mkts { display: none !important; }
+/* Markets share card (1200x630): ?card=markets */
+:root.og.ogm .mkts { display: flex !important; padding: 18px 22px; gap: 14px; }
+:root.og.ogm main, :root.og.ogm .tabs, :root.og.ogm .mk-acts .btn, :root.og.ogm .mk-note { display: none !important; }
+:root.og.ogm .mk-head h2 { font-size: 40px; }
+:root.og.ogm .mk-head .what { font-size: 15px; }
+.og-short { display: none; }
+:root.og.ogm .og-short { display: block; } :root.og.ogm .og-long { display: none; }
+:root.og.ogm .mkts { margin-top: 2px; } :root.og.ogm .mk-grid { gap: 14px; } :root.og.ogm .mk-race { padding: 12px 16px 10px; }
+:root.og.ogm .mk-acts small { font-size: 14px; }
+:root.og.ogm .mk-p { font-size: 46px; }
+:root.og.ogm .mk-nm b { font-size: 18px; }
+:root.og.ogm .mk-race { gap: 9px; }
+:root.og.ogm .mk-race h3 { font-size: 26px; }
+:root.og.ogm .mk-foot a { text-decoration: none; }
 </style>
 
 <div class="bgclip" aria-hidden="true"><svg class="lonestar" viewBox="0 0 100 100"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg></div>
@@ -413,6 +476,8 @@ tbody tr:hover td { background: var(--wash); }
     </section>
   </main>
 
+  <section class="mkts" id="markets" hidden aria-label="Prediction markets"></section>
+
   <section class="know" id="know" aria-labelledby="knowTitle">
     <div><p class="kk">Know before you vote</p><h2 id="knowTitle">Key dates</h2></div>
     <ol class="tl" id="timeline"></ol>
@@ -425,7 +490,7 @@ tbody tr:hover td { background: var(--wash); }
       <p class="fline" id="source">Texas Secretary of State unofficial returns. Results are unofficial until canvassed. No winner projections.</p>
     </div>
     <p class="fstamp" id="updated" hidden></p>
-    <p class="fdis">Independent, nonpartisan election tracker. Not affiliated with the Texas Secretary of State or any political campaign.</p>
+    <p class="fdis">Independent, nonpartisan election tracker. Not affiliated with the Texas Secretary of State, any political campaign, or any prediction market.</p>
     <div class="flinks" role="group" aria-label="More information">
       <button type="button" id="btnMethod" aria-expanded="false" aria-controls="methodBody">Sources &amp; methodology<span class="chev" aria-hidden="true"></span></button>
       <button type="button" id="btnCredits" aria-expanded="false" aria-controls="credits">Photo credits<span class="chev" aria-hidden="true"></span></button>
@@ -465,7 +530,8 @@ tbody tr:hover td { background: var(--wash); }
   const state = { geo: null, results: null, turnout: null, raceId: null, mode: 'results', sel: null, showAll: false, query: '', vb: [0, 0, 1000, 940] };
   let openPanel = null;
   try { const h = location.hash.slice(1); if (h === 'methodology' || h === 'credits') openPanel = h; else if (h) state.raceId = h; } catch (e) {}
-  try { const card = new URLSearchParams(location.search).get('card'); if (card) { state.raceId = card; document.documentElement.classList.add('og'); } } catch (e) {}
+  try { const card = new URLSearchParams(location.search).get('card'); if (card) { state.raceId = card; document.documentElement.classList.add('og'); if (card === 'markets') document.documentElement.classList.add('ogm'); } } catch (e) {}
+  const onMarketsPage = /^\/markets\/?/.test(location.pathname);
 
   async function getJSON(path) {
     const r = await fetch(path + '?t=' + Date.now(), { cache: 'no-store' });
@@ -640,7 +706,94 @@ tbody tr:hover td { background: var(--wash); }
       : T && T.total
         ? `${fmt(T.total)} Texans have already voted early${mt && mt.total ? `, including ${fmt(mt.total)} in ${cn} County` : ''}. Watch Texas decide the Senate and Governor races live on Nov. 3:`
         : 'Watch Texas decide the Senate and Governor races live, county by county, on Nov. 3:';
-    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE)}`;
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + '?d=' + shareStamp(live))}`;
+  }
+  // X caches a link's card for days. A dated link makes it fetch the current card, so every day's post
+  // (every 10 minutes on election night) shows today's numbers instead of an old image.
+  function shareStamp(live) {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(x => [x.type, x.value]));
+    return p.month + p.day + (live ? p.hour + String(Math.floor(+p.minute / 10) * 10).padStart(2, '0') : '');
+  }
+
+  // ---------- prediction markets (Polymarket prices, never mixed into official results) ----------
+  const mk = { data: null, open: false, first: true };
+  const cents = p => { const c = p * 100, r = Math.round(c); return (Math.abs(c - r) < 0.05 ? String(r) : c.toFixed(1)); };
+  const money = v => '$' + (v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : v);
+  const mkRaces = () => (mk.data?.races || []).filter(r => r.enough);
+  async function loadMarkets() {
+    try { const r = await fetch('api/markets', { cache: 'no-store' }); if (!r.ok) throw 0; const d = await r.json(); if (d.races?.length) mk.data = d; } catch (_) {}
+    paintMarkets(); paintTicker();
+  }
+  function mkChange(c) {
+    if (c.change24h == null) return '';
+    const v = Math.round(c.change24h * 1000) / 10;
+    if (Math.abs(v) < 0.5) return `<span class="mk-chg">No change <small>24 hrs</small></span>`;
+    return `<span class="mk-chg">${v > 0 ? '▲' : '▼'} ${Math.abs(v) % 1 ? Math.abs(v).toFixed(1) : Math.abs(v)}¢ <small>24 hrs</small></span>`;
+  }
+  function mkSpark(r) {
+    const series = r.candidates.filter(c => c.history?.length > 1);
+    if (!series.length) return '';
+    const ts = series.flatMap(c => c.history.map(p => p[0])), t0 = Math.min(...ts), t1 = Math.max(...ts);
+    const narrow = matchMedia('(max-width: 520px)').matches && !document.documentElement.classList.contains('og');
+    const W = 400, H = document.documentElement.classList.contains('ogm') ? 66 : narrow ? 150 : 104, R = narrow ? 44 : 30, T = 8, B = narrow ? 24 : 18;
+    const sx = t => (t - t0) / Math.max(1, t1 - t0) * (W - R), sy = p => T + (1 - p) * (H - T - B);
+    const grid = [0.25, 0.5, 0.75].map(v => `<line x1="0" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)" stroke-width="1" ${v === 0.5 ? 'stroke-dasharray="3 3"' : ''}/><text x="${W}" y="${sy(v) + 3.5}" text-anchor="end">${H >= 90 || v === 0.5 ? v * 100 + '¢' : ''}</text>`).join('');
+    const lines = series.map(c => {
+      const col = cssVar(PARTY[c.party]?.v || '--oth'), d = c.history.map((p, i) => `${i ? 'L' : 'M'}${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`).join('');
+      const last = c.history[c.history.length - 1];
+      return `<path class="ln" d="${d}" pathLength="1" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${sx(last[0]).toFixed(1)}" cy="${sy(last[1]).toFixed(1)}" r="3.2" fill="${col}"/>`;
+    }).join('');
+    const day = s => new Date(s * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' });
+    return `<div class="mk-spark"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(r.title)} prices over the last 30 days">${grid}${lines}
+      <text x="0" y="${H - 4}">${day(t0)}</text><text x="${W - R}" y="${H - 4}" text-anchor="end">Today</text></svg></div>`;
+  }
+  function mkRace(r) {
+    const [a, b] = r.candidates, tot = (a.price || 0) + (b?.price || 0) || 1;
+    const rows = r.candidates.map(c => `<div class="mk-row"><span class="mk-sw" style="background:${cssVar(PARTY[c.party]?.v || '--oth')}"></span>
+        <span class="mk-nm"><b>${esc(c.name)}</b><small>${PARTY[c.party]?.label || ''}</small></span>
+        <span class="mk-pv"><span class="mk-p num">${cents(c.price)}<small>¢</small></span>${mkChange(c)}</span></div>`).join('');
+    return `<article class="mk-race">
+      <h3>${esc(r.title)}<small>${money(r.volume)} traded</small></h3>
+      <div class="mk-split" aria-hidden="true">${r.candidates.map(c => `<i style="flex-grow:${((c.price || 0) / tot * 100).toFixed(2)};background:${cssVar(PARTY[c.party]?.v || '--oth')}"></i>`).join('')}</div>
+      ${rows}
+      ${mkSpark(r)}
+      <p class="mk-foot"><span>Last 30 days</span><a href="${esc(r.url)}" target="_blank" rel="noopener nofollow">Source: Polymarket ↗</a></p>
+    </article>`;
+  }
+  function shareMarketsURL() {
+    const text = 'What prediction markets are pricing in Texas (Polymarket):\n'
+      + mkRaces().map(r => `${r.title}: ${r.candidates.map(c => `${lastName(c.name)} ${cents(c.price)}¢`).join(', ')}`).join('\n')
+      + '\nPrices, not votes. Official results live Nov. 3:';
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + 'markets/?d=' + shareStamp(false))}`;
+  }
+  function paintMarkets() {
+    const el = $('markets'), rs = mkRaces();
+    if (!rs.length) { el.hidden = true; return; }
+    const after = Date.now() >= closeAt(), og = document.documentElement.classList.contains('og');
+    const live = state.results.races.filter(r => !r.demo && hasResults(r));
+    const asOf = mk.data.fetched ? ctTime(new Date(mk.data.fetched)) : '';
+    let liveLine = '';
+    if (live.length) {
+      const base = (state.geo?.counties || []).reduce((s, c) => s + (c.b || 0), 0), counted = live[0].statewide.total;
+      liveLine = `<p class="mk-live">Official count so far: <b>${fmt(counted)} votes</b>${base ? `, about <b>${Math.round(counted / base * 100)}%</b> of 2024's statewide turnout` : ''}. Prices can move long before the count is done, and markets don't call races.</p>`;
+    }
+    const body = `<div class="mk-head">
+        <div><p class="kk">Prediction markets</p><h2>What traders are pricing</h2>
+          <p class="what og-short">Price of a contract that pays <b>$1</b> if that candidate wins. Prices, not votes and not a forecast.</p><p class="what og-long">The price of a contract that pays <b>$1</b> if that candidate wins, on Polymarket. 50¢ means traders see a coin flip. These are prices, not votes, not a poll and not our forecast.</p></div>
+        <div class="mk-acts"><a class="btn btn-ghost" href="${shareMarketsURL()}" target="_blank" rel="noopener">${SHARE}Share the odds</a><small>Updated ${asOf}</small></div>
+      </div>
+      ${liveLine}
+      <div class="mk-grid">${rs.map(mkRace).join('')}</div>
+      <p class="mk-note">We aren't affiliated with any prediction market and earn nothing from them. <button type="button" class="lnk" id="mkWhy" style="padding:0;font-size:12px">Why only Polymarket?</button></p>`;
+    el.hidden = false;
+    el.classList.toggle('anim-mk', mk.first && !reduceMotion());
+    if (after && !og) {
+      el.innerHTML = `<details class="mk-details" id="mkDetails"${mk.open ? ' open' : ''}><summary>Prediction markets: what traders are pricing <span>Not results</span><span class="chev" aria-hidden="true"></span></summary><div class="mk-body">${body}</div></details>`;
+      $('mkDetails').addEventListener('toggle', e => { mk.open = e.target.open; });
+    } else el.innerHTML = body;
+    $('mkWhy')?.addEventListener('click', () => { togglePanel('methodology', true); $('mkMethod')?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' }); });
+    if (og) { const tl = document.querySelector('.tagline'); if (tl) tl.textContent = `Prediction market prices · Senate & Governor · ${new Date(mk.data.fetched).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' })}`; }
+    if (mk.first) { mk.first = false; setTimeout(() => el.classList.remove('anim-mk'), 2000); }
   }
   const GCAL_NIGHT = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Texas Decides: election night results') + '&dates=20261104T010000Z/20261104T050000Z&details=' + encodeURIComponent('Polls close at 7 p.m. CT. Follow live county-by-county results: ' + SITE);
   const GCAL_EARLY = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('Early voting opens in Texas') + '&dates=20261019/20261020&details=' + encodeURIComponent('Vote at any early voting location in your county through Oct. 30. Live turnout: ' + SITE);
@@ -923,6 +1076,9 @@ tbody tr:hover td { background: var(--wash); }
           <li>If a check would make a statewide total drop by more than 3%, it is held back rather than published.</li>
           <li>A county's count never moves backward because of one bad read.</li>
         </ul></div>
+      <div id="mkMethod"><h3>Prediction markets</h3>
+        <p>The prediction markets section shows prices from <a href="https://docs.polymarket.com" target="_blank" rel="noopener nofollow">Polymarket's public market data</a>, refreshed about once a minute. A price is what traders pay for a contract that pays $1 if that candidate wins. It is not a vote count, a poll or our forecast, and it never feeds into the results above. We show a race only after more than $100,000 has been traded, and we never average platforms together.</p>
+        <p style="margin-top:8px">Why only Polymarket: Kalshi's terms don't allow its prices to be shown on other sites without its permission, and Robinhood's election contracts mostly come from Kalshi. We aren't affiliated with any prediction market, don't take referral fees and don't encourage anyone to trade. Market prices leave the top of the page when polls close at 7 p.m. CT on Nov. 3.</p></div>
       <div><h3>Other data</h3>
         <p>County boundaries: U.S. Census Bureau, via <a href="https://github.com/topojson/us-atlas" target="_blank" rel="noopener">us-atlas</a>. Before results arrive, counties are ranked by 2024 turnout from <a href="https://github.com/tonmcg/US_County_Level_Election_Results_08-24" target="_blank" rel="noopener">county-level 2024 results</a>.</p></div>`;
   }
@@ -962,6 +1118,9 @@ tbody tr:hover td { background: var(--wash); }
       const top = Object.entries(state.turnout.counties || {}).sort((a, b) => b[1].total - a[1].total)[0];
       if (top && state.byFips[top[0]]) out.push({ tag: 'Turnout', html: `${esc(state.byFips[top[0]].name)} County leads early voting with <b>${fmt(top[1].total)}</b> ballots` });
     }
+    // Market prices ride the ticker only before polls close; after that the top of the page is official results only.
+    if (!races.length && now < closeAt()) for (const r of mkRaces())
+      out.push({ tag: `${r.title} market`, html: r.candidates.map(c => `${esc(lastName(c.name))} <b>${cents(c.price)}¢</b>`).join(' · ') + ' <span class="tk-src">on Polymarket</span>', link: { label: 'See the trend', url: '#markets' } });
     if (f) {
       const t = state.turnout?.counties?.[f], name = esc(state.byFips[f].name);
       if (!races.length && t && t.total) out.push({ tag: 'Your county', html: `${name} County: <b>${fmt(t.total)}</b> early votes, ${pctLabel(turnoutPct(t))} turnout` });
@@ -974,7 +1133,7 @@ tbody tr:hover td { background: var(--wash); }
     if (!it) { $('ticker').hidden = true; return; }
     $('ticker').hidden = false;
     v.setAttribute('aria-live', manual ? 'polite' : 'off');
-    v.innerHTML = `<div class="tk-item${animate ? ' in' : ''}"><span class="tk-tag">${esc(it.tag)}</span><span class="tk-text">${it.html}</span>${it.link?.url ? `<a class="tk-link" href="${esc(it.link.url)}" target="_blank" rel="noopener">${esc(it.link.label || 'More')} →</a>` : ''}</div>`;
+    v.innerHTML = `<div class="tk-item${animate ? ' in' : ''}"><span class="tk-tag">${esc(it.tag)}</span><span class="tk-text">${it.html}</span>${it.link?.url ? `<a class="tk-link" href="${esc(it.link.url)}"${it.link.url[0] === '#' ? '' : ' target="_blank" rel="noopener"'}>${esc(it.link.label || 'More')} →</a>` : ''}</div>`;
     $('tkCount').textContent = `${tk.i + 1}/${tk.items.length}`;
     const b = $('tkBar'); b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
   }
@@ -1007,7 +1166,7 @@ tbody tr:hover td { background: var(--wash); }
     $('knowActs').innerHTML = `${N.findUrl ? `<a class="btn btn-ink" href="${esc(N.findUrl)}" target="_blank" rel="noopener">${PIN}Find where to vote</a>` : ''}
       ${N.idUrl ? `<a class="btn btn-ghost" href="${esc(N.idUrl)}" target="_blank" rel="noopener">Accepted photo IDs</a>` : ''}`;
   }
-  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintTicker(); paintKnow(); }
+  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintMarkets(); paintTicker(); paintKnow(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -1032,6 +1191,10 @@ tbody tr:hover td { background: var(--wash); }
     try { state.geo = await getJSON('data/tx-geo.json'); buildMap(); }
     catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
     await refresh(true);
+    await loadMarkets();
+    if ((onMarketsPage || location.hash === '#markets') && !document.documentElement.classList.contains('og') && !$('markets').hidden) $('markets').scrollIntoView({ block: 'start' });
+    $('tkView').addEventListener('click', e => { const a = e.target.closest('a.tk-link'); if (a && a.getAttribute('href') === '#markets') { e.preventDefault(); $('markets').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); } });
+    setInterval(() => { if (!document.hidden) loadMarkets(); }, REFRESH_MS);
     if (openPanel) { togglePanel(openPanel, true); $(openPanel === 'methodology' ? 'methodBody' : 'credits').scrollIntoView({ block: 'center' }); }
     setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });

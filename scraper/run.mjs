@@ -124,23 +124,46 @@ async function scrapeTurnout() {
 }
 
 // ---------- social card ----------
-async function renderOg() {
+async function renderOg(card = args.card || RACES[0].id, file = 'og.png', markets = null) {
   const { execFileSync } = await import('node:child_process');
   execFileSync('node', [new URL('../scripts/build-site.mjs', import.meta.url).pathname]);
   const { chromium } = await import('playwright');
   const http = await import('node:http');
   const root = new URL('../dist/', import.meta.url).pathname;
   const server = http.createServer((req, res) => {
+    if (req.url.startsWith('/api/markets')) {   // stands in for the site's Pages Function
+      res.writeHead(markets ? 200 : 503, { 'content-type': 'application/json' }); res.end(JSON.stringify(markets || { races: [] })); return;
+    }
     const p = path.join(root, decodeURIComponent(req.url.split('?')[0]).replace(/\/$/, '/index.html'));
     fs.readFile(p, (err, buf) => { if (err) { res.writeHead(404); res.end(); return; } res.writeHead(200, { 'content-type': p.endsWith('.html') ? 'text/html' : p.endsWith('.json') ? 'application/json' : 'application/octet-stream' }); res.end(buf); });
   }).listen(0);
   const b = await chromium.launch();
   const page = await b.newPage({ viewport: { width: 1200, height: 630 } });
-  await page.goto(`http://localhost:${server.address().port}/index.html?card=${args.card || RACES[0].id}`, { waitUntil: 'networkidle' });
+  await page.goto(`http://localhost:${server.address().port}/index.html?card=${card}`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(800);
-  await page.screenshot({ path: new URL('../site/og.png', import.meta.url).pathname, clip: { x: 0, y: 0, width: 1200, height: 630 } });
+  await page.screenshot({ path: new URL(`../site/${file}`, import.meta.url).pathname, clip: { x: 0, y: 0, width: 1200, height: 630 } });
   await b.close(); server.close();
-  log('rendered site/og.png');
+  log(`rendered site/${file}`);
+}
+
+// Markets share card: re-rendered once a day, or sooner (at most every 3 hours) when a price moves 2¢ or more.
+// Each render is a commit and a site rebuild, so this stays well inside the host's monthly build limit.
+// It pauses from 6 p.m. CT on election night through Nov. 6, when builds are saved for results.
+async function maybeRenderMarketsCard() {
+  const now = Date.now();
+  if (now >= Date.parse('2026-11-03T18:00:00-06:00') && now < Date.parse('2026-11-07T00:00:00-06:00')) return;
+  const { fetchMarkets } = await import('../lib/markets.mjs');
+  let m;
+  try { m = await fetchMarkets(fetch, now); } catch (e) { log('markets failed:', e.message); return; }
+  const prices = Object.fromEntries(m.races.flatMap(r => r.candidates.map(c => [c.id, c.price])));
+  if (!Object.keys(prices).length) return;
+  const day = new Date(now).toLocaleDateString('en-US', { timeZone: 'America/Chicago' });
+  const last = readJSON('markets-card.json', null);
+  const moved = last ? Math.max(...Object.entries(prices).map(([k, p]) => Math.abs(p - (last.prices?.[k] ?? -1)))) : 1;
+  const due = !last || !fs.existsSync(new URL('../site/og-markets.png', import.meta.url)) || last.day !== day || (moved >= 0.02 && now - Date.parse(last.rendered) >= 3 * 3600e3);
+  if (!due) return;
+  await renderOg('markets', 'og-markets.png', m);
+  fs.writeFileSync(new URL('markets-card.json', DATA), JSON.stringify({ rendered: new Date(now).toISOString(), day, prices }));
 }
 
 async function once() {
@@ -149,6 +172,7 @@ async function once() {
   try { await scrapeTurnout(); } catch (e) { log('turnout failed:', e.message); }
   if (args.og && (changed || !fs.existsSync(new URL('../site/og.png', import.meta.url)))) await renderOg();
   changed = false;
+  if (args.og && !args.from) try { await maybeRenderMarketsCard(); } catch (e) { log('markets card failed:', e.message); }
 }
 
 // --every=auto: every 30 minutes normally, every 2 minutes from 6:45 p.m. CT on election night until 6 a.m.,

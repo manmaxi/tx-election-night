@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "results-bot"
           git config user.email "results-bot@users.noreply.github.com"
-          PUSH='git add site/data site/og.png && (git diff --cached --quiet || (git commit -m "Update results $(date -u +%H:%M)" && git pull --rebase && git push))'
+          PUSH='git add site/data site/*.png && (git diff --cached --quiet || (git commit -m "Update results $(date -u +%H:%M)" && git pull --rebase && git push))'
           node scraper/run.mjs --og --loop=${{ steps.plan.outputs.loop }} --every=auto --onpass="$PUSH"
           eval "$PUSH"
       - name: Start the next run
