@@ -45,7 +45,7 @@ jobs:
           node scraper/run.mjs --og --loop=${{ steps.plan.outputs.loop }} --every=auto --onpass="$PUSH"
           eval "$PUSH"
       - name: Start the next run
-        if: ${{ always() && steps.plan.outputs.loop != '0' }}
+        if: ${{ !cancelled() && steps.plan.outputs.loop != '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
