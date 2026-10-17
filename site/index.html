@@ -43,9 +43,10 @@ button, input { font: inherit; color: inherit; }
 
 /* The lone star behind the page */
 .bgclip { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-.lonestar { position: absolute; top: 40px; right: max(-160px, calc(50% - 760px)); width: min(820px, 120vw); aspect-ratio: 1; }
+.lonestar { position: absolute; top: 480px; left: max(-260px, calc(50% - 900px)); width: min(760px, 120vw); aspect-ratio: 1; }
 .lonestar polygon { fill: var(--star); }
-@media (max-width: 880px) { .lonestar { top: 0; right: -38vw; width: 110vw; } }
+@media (max-width: 880px) { .lonestar { top: 0; left: auto; right: -38vw; width: 110vw; } }
+@media (min-width: 881px) { .mapcard .legend { position: absolute; left: 0; bottom: 0; } .mapcard { padding-bottom: 0; } .mapempty { position: absolute; top: 56px; left: 0; right: 0; } }
 
 /* Header */
 header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; }
@@ -77,6 +78,14 @@ header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content:
 .notice a.cta { align-self: flex-start; margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--ink); font-weight: 700; font-size: 13px; padding: 7px 12px; border-radius: 999px; text-decoration: none; }
 .notice .nstar { position: absolute; right: -40px; bottom: -70px; width: 240px; height: 240px; opacity: .08; pointer-events: none; }
 .notice .nstar polygon { fill: #fff; }
+@media (min-width: 900px) {
+  .notice { grid-template-columns: auto minmax(0, 1fr) auto; padding: 10px 14px 10px 10px; gap: 14px; }
+  .notice .cal { width: 56px; } .notice .cal .m { font-size: 10.5px; padding: 3px 0 2px; } .notice .cal .d { font-size: 28px; padding: 3px 0 5px; }
+  .notice .txt { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 2px; padding-right: 190px; }
+  .notice h2 { font-size: 24px; } .notice p { flex-basis: 100%; max-width: none; font-size: 13px; }
+  .notice a.cta { position: absolute; right: 0; top: 50%; transform: translateY(-50%); margin: 0; }
+  .notice .nstar { width: 160px; height: 160px; bottom: -60px; right: 140px; }
+}
 @media (max-width: 420px) { .notice { gap: 12px; padding: 14px; } .notice .cal { width: 62px; } .notice .cal .d { font-size: 34px; } }
 .note { background: var(--warn-bg); color: var(--warn-fg); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; }
 
@@ -100,9 +109,13 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 .cc { position: relative; overflow: hidden; display: grid; grid-template-columns: 112px minmax(0, 1fr); min-height: 128px; border-radius: var(--r); color: #fff;
   background: linear-gradient(115deg, var(--pc) 0%, var(--pc) 45%, var(--pc-hi) 100%); box-shadow: 0 6px 18px -10px rgba(15, 27, 45, .55); }
 .cc .ph { position: relative; background: rgba(0,0,0,.18); display: grid; place-items: center; overflow: hidden; }
-.cc .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.cc .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: grayscale(1) contrast(1.12) brightness(1.04); }
+.cc .ph::after { content: ""; position: absolute; inset: 0; background: var(--pc); mix-blend-mode: color; opacity: .55; pointer-events: none; }
+.cc .ph::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, transparent 70%, rgba(0,0,0,.18)); pointer-events: none; }
+.cc .when { margin-top: 6px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.cc .when b { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: .01em; }
 .cc .ini { font-family: var(--display); font-weight: 700; font-size: 44px; letter-spacing: 0.02em; opacity: .92; }
-.cc .rank { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.55); font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 3px 7px; border-radius: 6px; z-index: 1; }
+.cc .rank { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.55); font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 3px 7px; border-radius: 6px; z-index: 2; }
 .cc .body { position: relative; z-index: 1; padding: 14px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
 .cc .name { font-weight: 700; font-size: 19px; line-height: 1.15; }
 .cc .party { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; opacity: .9; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -119,6 +132,23 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 @media (max-width: 420px) { .cc { grid-template-columns: 88px minmax(0, 1fr); min-height: 116px; } .cc .pct { font-size: 40px; } .cc .ini { font-size: 36px; } }
 @media (prefers-reduced-motion: reduce) { .cc .bar i, .ptrack i { transition: none; } }
 
+/* Pre-results hero: countdown, early-vote total, day-by-day chart */
+.hero { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.hero .stats { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; }
+.hero .stat { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hero .clock { display: flex; gap: 6px; align-items: baseline; }
+.hero .clock { gap: 3px; }
+.hero .clock span { font-family: var(--display); font-weight: 700; font-size: 32px; line-height: 1; }
+.hero .clock small { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-right: 6px; }
+.hero .big { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; }
+.hero .sub { font-size: 12.5px; color: var(--muted); }
+.hero .trend svg { width: 100%; height: auto; display: block; }
+@media (max-width: 420px) { .hero .stats { grid-template-columns: 1fr; } }
+.hero .trend text { font-family: var(--body); font-size: 10.5px; fill: var(--muted); }
+.share { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; padding: 7px 14px; border-radius: 999px; }
+.share svg { width: 14px; height: 14px; fill: currentColor; }
+.hero .share { align-self: flex-start; }
+.hdr-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .others { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: var(--r); color: #fff; background: linear-gradient(115deg, var(--oth), var(--oth-hi)); }
 .others b { font-weight: 700; }
 .others .v { display: flex; align-items: baseline; gap: 10px; }
@@ -205,6 +235,11 @@ footer a { color: inherit; }
 :root.og .notice { padding: 12px 16px; }
 :root.og .notice p, :root.og .notice a.cta { display: none; }
 :root.og .notice h2 { font-size: 26px; }
+:root.og .hero .trend, :root.og .hero .share, :root.og .hdr-right .share { display: none !important; }
+:root.og .hero { padding: 12px 16px; }
+:root.og .mapcard .legend { display: none !important; }
+:root.og .cc { min-height: 104px; }
+:root.og .cc .name { font-size: 18px; }
 </style>
 
 <div class="bgclip" aria-hidden="true"><svg class="lonestar" viewBox="0 0 100 100"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg></div>
@@ -217,7 +252,10 @@ footer a { color: inherit; }
         <p>General election · Tuesday, Nov. 3, 2026 · All 254 counties</p>
       </div>
     </div>
-    <div class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></div>
+    <div class="hdr-right">
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></div>
+      <a class="share" id="shareTop" href="#" target="_blank" rel="noopener">Share on X</a>
+    </div>
   </header>
 
   <section class="notice" id="notice" hidden aria-live="polite"></section>
@@ -226,6 +264,7 @@ footer a { color: inherit; }
 
   <main>
     <section class="panel">
+      <div class="card hero" id="hero" hidden></div>
       <div class="card progress" id="progress"></div>
       <div class="cands" id="cands"></div>
       <div id="others"></div>
@@ -443,6 +482,62 @@ footer a { color: inherit; }
   }
 
   // ---------- scoreboard ----------
+  const SITE = 'https://elections.singlestopmarketing.com/';
+  const closeAt = () => new Date(state.results?.election?.pollsCloseCT || '2026-11-03T19:00:00-06:00').getTime();
+  const short = v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'K' : String(v);
+  const md = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  function shareURL() {
+    const live = state.results.races.some(x => !x.demo && hasResults(x)), T = state.turnout?.statewide;
+    const text = live
+      ? 'Live Texas election results, county by county: U.S. Senate and Governor, straight from official state data.'
+      : T && T.total
+        ? `${fmt(T.total)} Texans have already voted early. Follow the Texas Senate and Governor races live, county by county, on election night:`
+        : 'Follow the Texas Senate and Governor races live, county by county, on election night:';
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + '#' + race().id)}`;
+  }
+  function trendSVG() {
+    const t = state.turnout || {}, daily = t.daily || [];
+    const dates = (t.dates && t.dates.length) ? t.dates : daily.map(d => d.date);
+    if (!daily.length || !dates.length) return '';
+    const by = new Map(daily.map(d => [d.date, d.total])), max = Math.max(1, ...daily.map(d => d.total));
+    const W = 400, H = 84, B = 16, T = 16, n = dates.length, gap = 3, bw = (W - gap * (n - 1)) / n;
+    let lastI = -1;
+    const bars = dates.map((d, i) => {
+      const x = (i * (bw + gap)).toFixed(1), v = by.get(d);
+      if (v == null) return `<rect x="${x}" y="${H - B - 3}" width="${bw.toFixed(1)}" height="3" rx="1.5" fill="var(--line)"/>`;
+      lastI = i;
+      const h = Math.max(3, v / max * (H - B - T));
+      return `<rect x="${x}" y="${(H - B - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="var(--t4)"><title>${md(d)}: ${fmt(v)}</title></rect>`;
+    }).join('');
+    const lv = by.get(dates[lastI]), lx = lastI * (bw + gap) + bw / 2, lh = Math.max(3, lv / max * (H - B - T));
+    const anchor = lastI < 2 ? 'start' : lastI > n - 3 ? 'end' : 'middle';
+    return `<div class="trend"><p class="label">Early votes, running total by day</p>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Early votes by day">${bars}
+        <text x="${(anchor === 'start' ? lx - bw / 2 : anchor === 'end' ? lx + bw / 2 : lx).toFixed(1)}" y="${(H - B - lh - 5).toFixed(1)}" text-anchor="${anchor}" style="font-weight:700;fill:var(--ink)">${short(lv)}</text>
+        <text x="0" y="${H - 4}">${md(dates[0])}</text><text x="${W}" y="${H - 4}" text-anchor="end">${md(dates[n - 1])}</text>
+      </svg></div>`;
+  }
+  function paintHero(pre) {
+    const el = $('hero');
+    el.hidden = !pre;
+    if (!pre) return;
+    const ms = Math.max(0, closeAt() - Date.now());
+    const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+    const T = state.turnout?.statewide;
+    const asOf = state.turnout?.asOf ? md(state.turnout.asOf) : '';
+    el.innerHTML = `<div class="stats">
+        <div class="stat"><p class="label">${ms > 0 ? 'Polls close in' : 'Polls are closed'}</p>
+          ${ms > 0 ? (document.documentElement.classList.contains('og')
+            ? `<div class="clock num"><span>${d + (h || m ? 1 : 0)}</span><small>${d === 0 && !h && !m ? 'day' : 'days'}</small></div>`
+            : `<div class="clock num"><span>${d}</span><small>${d === 1 ? 'day' : 'days'}</small><span>${h}</span><small>hrs</small><span>${m}</span><small>min</small></div>`) : '<span class="big">Counting</span>'}
+          <span class="sub">${ms > 0 ? '7 p.m. CT · Tuesday, Nov. 3' : 'Waiting for the first county to report'}</span></div>
+        <div class="stat"><p class="label">Early votes so far</p>
+          <span class="big num">${T && T.total ? fmt(T.total) : '—'}</span>
+          <span class="sub">${T && T.total ? `${pctLabel(T.total / T.registered * 100)} of ${fmt(T.registered)} registered${asOf ? ` · as of ${asOf}` : ''}` : 'Posts as counties report'}</span></div>
+      </div>
+      ${trendSVG()}
+      <a class="share" href="${shareURL()}" target="_blank" rel="noopener">Share on X</a>`;
+  }
   function paintTabs() {
     const T = $('tabs');
     T.innerHTML = state.results.races.map(r => `<button type="button" role="tab" class="${r.demo ? 'demo' : ''}" data-id="${r.id}" aria-selected="${r.id === race().id}">${esc(r.title)}</button>`).join('');
@@ -456,6 +551,10 @@ footer a { color: inherit; }
   function paintBoard() {
     const r = race(), sw = r.statewide || {}, live = hasResults(r);
     const rep = sw.reporting || {}, rp = reportingPct(rep);
+    const pre = !live && !r.demo;
+    state.pre = pre;
+    $('progress').hidden = pre;
+    paintHero(pre);
 
     $('progress').innerHTML = `<div class="row"><p class="label">${live ? 'Latest results' : 'Waiting for results'}</p><span class="in num">${Math.round(rp)}%<small>in</small></span></div>
       <div class="ptrack"><i style="width:${rp}%"></i></div>
@@ -474,9 +573,10 @@ footer a { color: inherit; }
         <div class="body">
           <div class="name">${esc(c.name)}</div>
           <div class="party">${P.label} ${chip}</div>
-          <div class="nums"><span class="pct num">${live ? pct1(c.p) : '0'}<small>%</small></span>
+          ${pre ? `<div class="when">${Date.now() < closeAt() ? 'Results start <b>7 p.m. CT</b> Nov. 3' : 'Waiting for <b>first results</b>'}</div>`
+            : `<div class="nums"><span class="pct num">${pct1(c.p)}<small>%</small></span>
             <span class="votes num">${fmt(c.v)}<small>votes</small></span></div>
-          <div class="bar"><i style="width:${live ? c.p : 0}%"></i></div>
+          <div class="bar"><i style="width:${c.p}%"></i></div>`}
         </div>
         <svg class="cstar" viewBox="0 0 100 100" aria-hidden="true">${STAR}</svg>
       </article>`;
@@ -490,16 +590,7 @@ footer a { color: inherit; }
       : `<strong>What to expect:</strong> Texas counties post early and mail votes first. In 2024 about 4 in 5 votes were cast before Election Day, so the first update after polls close is a large share of the final count. Polls close at 7 p.m. local time: 7 p.m. CT for most of Texas, 8 p.m. CT in El Paso and Hudspeth counties. Election Day ballots follow through the night.${!live && Date.now() >= close.getTime() ? ' Waiting for the first county to report.' : ''}`;
     $('expect').hidden = !!r.demo;
 
-    const T = state.turnout?.statewide, early = $('early');
-    if (!r.demo && T && T.total) {
-      const asOf = state.turnout.asOf ? new Date(state.turnout.asOf + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
-      const ipW = T.total ? T.inPerson / T.total * 100 : 0;
-      early.hidden = false;
-      early.innerHTML = `<p class="label">Early voting so far${asOf ? ` · as of ${asOf}` : ''}</p>
-        <div><span class="big num">${fmt(T.total)}</span> <span class="txt">Texans have voted early, ${pctLabel(T.total / T.registered * 100)} of ${fmt(T.registered)} registered voters</span></div>
-        <div class="split" aria-hidden="true">${T.inPerson ? `<i style="flex:${ipW};background:var(--ink)"></i>` : ''}${T.mail ? `<i style="flex:${100 - ipW};background:var(--t3)"></i>` : ''}</div>
-        <div class="txt num">${T.inPerson ? `${fmt(T.inPerson)} in person · ` : ''}${fmt(T.mail)} by mail${T.inPerson ? '' : ' (in-person early voting has not posted yet)'}</div>`;
-    } else early.hidden = true;
+    $('early').hidden = true;   // early-vote totals now live in the hero card
 
     const note = $('note');
     if (r.demo && r.note) { note.hidden = false; note.textContent = r.note; } else note.hidden = true;
@@ -603,7 +694,7 @@ footer a { color: inherit; }
       ${n.link?.url ? `<a class="cta" href="${esc(n.link.url)}" target="_blank" rel="noopener">${esc(n.link.label || 'Learn more')} →</a>` : ''}</div>
       <svg class="nstar" viewBox="0 0 100 100" aria-hidden="true">${STAR}</svg>`;
   }
-  function render() { paintNotice(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
+  function render() { $('shareTop').href = shareURL(); paintNotice(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -635,6 +726,7 @@ footer a { color: inherit; }
     setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
     setInterval(paintStatus, 30000);
+    setInterval(() => { if (!document.hidden && state.pre) paintHero(true); }, 20000);
   })();
 })();
 </script>

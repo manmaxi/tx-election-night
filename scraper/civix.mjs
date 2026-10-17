@@ -109,3 +109,31 @@ export function parseTurnout(d) {
   }
   return { asOf: d.early_voting_date || null, counties };
 }
+
+// Day-by-day running totals for the early-voting chart. Past days are kept from `known`;
+// only new days and the latest two (which can still be revised) are fetched again.
+export async function fetchTurnoutDaily(client, electionId, known = [], now = new Date()) {
+  const list = unwrap(await client.get(`${API}/v1/getFile?type=EVR_ELECTION`));
+  const el = [...(list.elections || []), ...(list.elections_local || [])].find(e => String(e.id) === String(electionId));
+  if (!el) return { dates: [], daily: known };
+  const all = (el.early_voting_dates || []).map(x => x.date);
+  const todayCT = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+  const due = all.filter(d => new Date(d) <= todayCT);
+  const iso = d => { const [m, dd, y] = d.split('/'); return `${y}-${m}-${dd}`; };
+  const byDate = new Map(known.map(k => [k.date, k]));
+  const refetch = new Set(due.slice(-2));
+  let latest = null;
+  for (const d of due) {
+    if (byDate.has(iso(d)) && !refetch.has(d)) continue;
+    try {
+      const raw = unwrap(await client.get(`${API}/v1/getFile?type=EVR_EARLYVOTING&electionId=${electionId}&electionDate=${d}`));
+      if (!raw?.turnout_by_county?.length) continue;
+      const t = parseTurnout(raw);
+      const v = Object.values(t.counties);
+      const sum = k => v.reduce((a, c) => a + (c[k] || 0), 0);
+      byDate.set(iso(d), { date: iso(d), inPerson: sum('inPerson'), mail: sum('mail'), total: sum('total') });
+      latest = raw;
+    } catch { /* not posted yet */ }
+  }
+  return { dates: all.map(iso), daily: [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)), latest };
+}

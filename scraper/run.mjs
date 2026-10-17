@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ELECTION, RACES, COUNTY_SOURCES } from './config.mjs';
-import { openClient, findElectionId, fetchResults, parseResults, fetchTurnout, parseTurnout } from './civix.mjs';
+import { openClient, findElectionId, fetchResults, parseResults, fetchTurnout, fetchTurnoutDaily, parseTurnout } from './civix.mjs';
 
 const args = Object.fromEntries(process.argv.slice(2).map(a => { const [k, ...v] = a.replace(/^--/, '').split('='); return [k, v.length ? v.join('=') : true]; }));
 const DATA = args.out ? new URL('file://' + path.resolve(args.out) + '/') : new URL('../site/data/', import.meta.url);
@@ -101,15 +101,25 @@ async function scrapeResults(prev) {
 
 // ---------- turnout ----------
 async function scrapeTurnout() {
-  let raw;
-  if (args.from) { const f = path.join(args.from, 'evr.json'); raw = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; }
-  else { const c = await getClient(); raw = await fetchTurnout(c, await findElectionId(c, ELECTION)); }
+  let raw, dates = [], daily = [];
+  const prevT = readJSON('turnout.json', {});
+  if (args.from) {
+    const f = path.join(args.from, 'evr.json'); raw = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null;
+    const fd = path.join(args.from, 'daily.json'); if (fs.existsSync(fd)) ({ dates, daily } = JSON.parse(fs.readFileSync(fd, 'utf8')));
+  } else {
+    const c = await getClient(); const id = await findElectionId(c, ELECTION);
+    const d = await fetchTurnoutDaily(c, id, prevT.daily || []);
+    dates = d.dates; daily = d.daily;
+    raw = d.latest || await fetchTurnout(c, id);
+  }
   if (!raw) { log('turnout: nothing posted yet'); return; }
   const { asOf, counties } = parseTurnout(raw);
   const vals = Object.values(counties);
   const s = k => vals.reduce((a, c) => a + (c[k] || 0), 0);
+  if (!daily.length && asOf) daily = [{ date: asOf, inPerson: s('inPerson'), mail: s('mail'), total: s('total') }];
   writeJSON('turnout.json', { updated: new Date().toISOString(), asOf, label: 'Early voting turnout',
-    statewide: { inPerson: s('inPerson'), mail: s('mail'), total: s('total'), registered: s('registered') }, counties });
+    statewide: { inPerson: s('inPerson'), mail: s('mail'), total: s('total'), registered: s('registered') },
+    dates: dates.length ? dates : (prevT.dates || []), daily, counties });
   log(`turnout (as of ${asOf}): ${s('total').toLocaleString()} voted early of ${s('registered').toLocaleString()} registered, ${vals.length} counties`);
 }
 
