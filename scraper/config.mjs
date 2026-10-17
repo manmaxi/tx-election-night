@@ -2,7 +2,7 @@
 // Candidates are listed alphabetically by last name; the page re-sorts by votes once results arrive.
 // Names match the official ballot as staged in the state's results system. Any candidate not listed here
 // (third-party and write-in candidates) is counted in "All others", so every percentage is a share of all votes.
-// Photos: site/img/<id>.jpg, cropped from freely licensed Wikimedia Commons files; photoCredit is shown in the footer
+// Photos: site/img/<id>.jpg, cropped from freely licensed Wikimedia Commons files; photoCredit is shown in the footer's Photo credits panel
 // (the CC BY-SA licenses require it, and the crops are shared under the same license).
 
 export const ELECTION = {

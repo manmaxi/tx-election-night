@@ -45,5 +45,6 @@ npm run build                     # builds dist/ for hosting
 - **Labeled as unofficial.** Every view says the results are unofficial and names the source. The status dot turns amber if data is more than 15 minutes old.
 - **Preview-only replay tab.** The "2024 replay" tab uses real final 2024 presidential county results to preview the design. It is stripped from the public build and also drops out of the data once 2026 votes arrive.
 - **Neutral presentation.** Candidates are listed alphabetically until votes arrive. Party colors and map shades are matched in strength. Turnout uses a non-party green. Third-party and write-in votes count in "All others", so percentages match the state's.
-- **Photo licenses.** All four photos come from Wikimedia Commons (CC BY-SA or public domain). The footer credit line is required; don't remove it.
+- **Photo licenses.** All four photos come from Wikimedia Commons (CC BY-SA or public domain). The footer's "Photo credits" panel (also at `#credits`) carries the required attribution; don't remove it.
+- **Two timestamps.** The footer shows when the numbers last *changed*. "Sources & methodology" (also at `#methodology`) adds the last successful data check (read from GitHub's public run history) and the state's own publish time.
 - **Polite to the state's servers.** The scraper makes about 3 requests every 2 minutes (the state's own page refreshes every 5) and identifies itself. If the state site ever shows a CAPTCHA, the run fails rather than trying to get around it.

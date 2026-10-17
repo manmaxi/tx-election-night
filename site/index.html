@@ -217,23 +217,47 @@ tbody tr:hover td { background: var(--wash); }
 .lead i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 .more { align-self: flex-start; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
-.builtby { align-self: center; display: inline-flex; align-items: center; gap: 10px; margin-top: 4px; padding: 10px 18px; border: 1px solid var(--line); border-radius: 999px;
-  color: var(--ink); text-decoration: none; font-size: 14px; background: var(--bg); transition: border-color .2s, box-shadow .2s; }
-.builtby:hover { border-color: var(--ink); box-shadow: 0 4px 14px -8px rgba(15,27,45,.5); }
-.builtby svg { width: 16px; height: 16px; fill: var(--ink); }
-.builtby strong { font-weight: 800; }
-.builtby .arr { transition: transform .2s; }
+/* Footer */
+.site-foot { display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.site-foot p { margin: 0; }
+.flabel { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); margin-bottom: 4px !important; }
+.fline { max-width: 72ch; }
+.site-foot a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--line); }
+.site-foot a:hover { text-decoration-color: currentColor; }
+.fstamp { width: fit-content; max-width: 100%; background: var(--wash); color: var(--ink); border-radius: 14px; padding: 8px 14px; font-size: 14px; line-height: 1.35; }
+.fstamp .fd { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #1F9D55; margin-right: 8px; vertical-align: 1px; }
+.fstamp strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+.fdis { font-size: 12.5px; max-width: 72ch; }
+.flinks { display: flex; flex-wrap: wrap; gap: 8px; }
+.flinks button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
+.flinks button:hover { border-color: var(--ink); }
+.flinks button[aria-expanded="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .2s; }
+.flinks button[aria-expanded="true"] .chev { transform: translateY(1px) rotate(-135deg); }
+.fpanel { background: var(--wash); border-radius: var(--r); padding: 16px; color: var(--ink); font-size: 13.5px; line-height: 1.55; display: flex; flex-direction: column; gap: 14px; }
+.fpanel h3 { margin: 0 0 4px; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.fpanel p, .fpanel ul { margin: 0; max-width: 72ch; }
+.fpanel ul { padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.fpanel dl { margin: 0; display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr); gap: 6px 16px; }
+.fpanel dt { color: var(--muted); }
+.fpanel dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) { .fpanel dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } .fpanel dd { margin-bottom: 8px; } }
+.credit-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: center; }
+.credit-row img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; object-position: center top; }
+.bbwrap { display: flex; justify-content: center; padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--line); }
+.builtby { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 6px; color: var(--ink); text-decoration: none; }
+.builtby .bb-k { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.builtby .bb-n { display: inline-flex; align-items: center; gap: 7px; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: .02em; text-transform: uppercase; }
+.builtby svg { width: 15px; height: 15px; fill: var(--gold); stroke: var(--ink); stroke-width: 5; }
+.builtby .arr { font-weight: 700; transition: transform .2s; }
+.builtby:hover .bb-n { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
 .builtby:hover .arr { transform: translateX(3px); }
-@media (prefers-reduced-motion: reduce) { .builtby, .builtby .arr { transition: none; } }
-:root.og .builtby { display: none !important; }
-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
-footer a { color: inherit; }
-.credits { flex-basis: 100%; order: 3; font-size: 11.5px; }
-.copy { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 12.5px; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .builtby .arr, .chev { transition: none; } }
+:root.og .bbwrap { display: none !important; }
 
 /* Social card layout (1200x630), rendered by the scraper for X link previews: ?card=senate */
 :root.og body { padding-block: 22px; }
-:root.og .tabs, :root.og .list, :root.og footer, :root.og .maptop, :root.og #detail, :root.og #chartCard, :root.og .note,
+:root.og .tabs, :root.og .list, :root.og footer, :root.og .bbwrap, :root.og .maptop, :root.og #detail, :root.og #chartCard, :root.og .note,
 :root.og .mapempty, :root.og #expect, :root.og #early, :root.og .total { display: none !important; }
 :root.og main { grid-template-columns: 500px 1fr; }
 :root.og .mapbox { aspect-ratio: auto; height: 470px; }
@@ -316,16 +340,27 @@ footer a { color: inherit; }
     </section>
   </main>
 
-  <footer>
-    <span id="source">Source: Texas Secretary of State. All results are unofficial until canvassed.</span>
-    <span class="credits">Independent and nonpartisan. Not affiliated with any candidate, party, campaign, or the Texas Secretary of State.</span>
-    <span id="credits" class="credits"></span>
-    <span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="updated"></span><button type="button" class="copy" id="copy">Copy link</button></span>
+  <footer class="site-foot">
+    <div class="fsrc">
+      <p class="flabel">Official election sources</p>
+      <p class="fline" id="source">Texas Secretary of State unofficial returns. Results are unofficial until canvassed. No winner projections.</p>
+    </div>
+    <p class="fstamp" id="updated" hidden></p>
+    <p class="fdis">Independent, nonpartisan election tracker. Not affiliated with the Texas Secretary of State or any political campaign.</p>
+    <div class="flinks" role="group" aria-label="More information">
+      <button type="button" id="btnMethod" aria-expanded="false" aria-controls="methodBody">Sources &amp; methodology<span class="chev" aria-hidden="true"></span></button>
+      <button type="button" id="btnCredits" aria-expanded="false" aria-controls="credits">Photo credits<span class="chev" aria-hidden="true"></span></button>
+    </div>
+    <div class="fpanel" id="methodBody" hidden></div>
+    <div class="fpanel" id="credits" hidden></div>
   </footer>
-  <a class="builtby" href="https://singlestopmarketing.com/?utm_source=elections&amp;utm_medium=referral&amp;utm_campaign=tx-election-night" target="_blank" rel="noopener">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>
-    <span>Built by <strong>Single Stop Marketing</strong></span><span class="arr" aria-hidden="true">→</span>
-  </a>
+  <div class="bbwrap">
+    <a class="builtby" href="https://singlestopmarketing.com/?utm_source=elections&amp;utm_medium=referral&amp;utm_campaign=tx-election-night" target="_blank" rel="noopener">
+      <span class="bb-k">Built by</span>
+      <span class="bb-n"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>Single Stop Marketing</span>
+      <span class="arr" aria-hidden="true">→</span>
+    </a>
+  </div>
 </div>
 
 <script>
@@ -349,7 +384,8 @@ footer a { color: inherit; }
   const lastName = n => n === 'All others' || n === 'Write-ins' ? n : n.split(' ').slice(-1)[0];
 
   const state = { geo: null, results: null, turnout: null, raceId: null, mode: 'results', sel: null, showAll: false, query: '', vb: [0, 0, 1000, 940] };
-  try { const h = location.hash.slice(1); if (h) state.raceId = h; } catch (e) {}
+  let openPanel = null;
+  try { const h = location.hash.slice(1); if (h === 'methodology' || h === 'credits') openPanel = h; else if (h) state.raceId = h; } catch (e) {}
   try { const card = new URLSearchParams(location.search).get('card'); if (card) { state.raceId = card; document.documentElement.classList.add('og'); } } catch (e) {}
 
   async function getJSON(path) {
@@ -686,16 +722,82 @@ footer a { color: inherit; }
     st.className = 'status' + (live ? (ageMin > 15 ? ' stale' : ' live') : '');
     const t = u ? u.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT' : '';
     txt.textContent = live ? (ageMin > 15 ? `Last update ${t} · checking for new results` : `Live · updated ${t}`) : 'Unofficial results · polls close 7 p.m. local time Nov. 3';
-    $('updated').textContent = u ? `Numbers last changed ${u.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })} CT` : '';
-    const seen = new Set(), credits = [];
-    for (const r of state.results.races) for (const c of r.candidates) if (c.photo && c.photoCredit && !seen.has(c.id)) {
-      seen.add(c.id); const k = c.photoCredit;
-      credits.push(`<a href="${esc(k.source)}" target="_blank" rel="noopener">${esc(c.name)}</a> by ${esc(k.by)}${k.licenseUrl ? `, <a href="${esc(k.licenseUrl)}" target="_blank" rel="noopener">${esc(k.license)}</a>` : `, ${esc(k.license)}`}`);
-    }
-    $('credits').innerHTML = credits.length ? `Photos via Wikimedia Commons, cropped: ${credits.join('; ')}.` : '';
-    const src = state.results.election;
-    if (src?.sourceUrl) $('source').innerHTML = `Source: <a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">${esc(src.sourceName)}</a>. Results are unofficial until canvassed. This page does not project winners.`;
+    paintFooter(live);
   }
+  const ctTime = d => d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT';
+  const lastChanged = live => {
+    const r = state.results.updated && new Date(state.results.updated), t = state.turnout?.updated && new Date(state.turnout.updated);
+    return live ? r : (t || r);
+  };
+  function paintFooter(live) {
+    const src = state.results.election || {};
+    if (src.sourceUrl) $('source').innerHTML = `<a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">Texas Secretary of State</a> unofficial returns. Results are unofficial until canvassed. No winner projections.`;
+    const d = lastChanged(live), st = $('updated');
+    st.hidden = !d;
+    if (d) st.innerHTML = `<span class="fd" aria-hidden="true"></span>${live ? 'Results last updated' : 'Early votes last updated'}: <strong style="white-space:nowrap">${ctTime(d)}</strong>`;
+    if (!$('methodBody').hidden) paintMethod();
+    if (!$('credits').hidden) paintCredits();
+  }
+  let lastCheck = null;
+  async function loadLastCheck() {
+    try {
+      const r = await fetch('https://api.github.com/repos/manmaxi/tx-election-night/actions/workflows/scrape.yml/runs?status=success&per_page=1');
+      const run = (await r.json()).workflow_runs?.[0];
+      lastCheck = run ? new Date(run.updated_at) : 'none';
+    } catch (_) { lastCheck = 'error'; }
+    if (!$('methodBody').hidden) paintMethod();
+  }
+  function paintMethod() {
+    const src = state.results.election || {};
+    const r = state.results.updated && new Date(state.results.updated), t = state.turnout?.updated && new Date(state.turnout.updated);
+    const check = lastCheck == null ? 'Checking…' : lastCheck instanceof Date ? ctTime(lastCheck) : 'Not available right now';
+    $('methodBody').innerHTML = `
+      <div><h3>Where the numbers come from</h3>
+        <p>Vote counts come from the <a href="${esc(src.sourceUrl || 'https://goelect.txelections.civixapps.com/ivis-enr-ui/races')}" target="_blank" rel="noopener">Texas Secretary of State election night results</a>, which collects unofficial returns from all 254 counties. Early-vote turnout comes from the Secretary of State's <a href="https://goelect.txelections.civixapps.com/ivis-evr-ui/evr" target="_blank" rel="noopener">early voting rosters</a>. Results are unofficial until counties canvass them.</p></div>
+      <div><h3>Data freshness</h3>
+        <dl>
+          <dt>Last successful data check</dt><dd>${check}</dd>
+          <dt>Results last changed</dt><dd>${r && state.results.races.some(x => !x.demo && hasResults(x)) ? ctTime(r) : 'No results reported yet'}</dd>
+          <dt>Early-vote numbers last changed</dt><dd>${t ? ctTime(t) : '—'}</dd>
+          ${(() => { const v = state.results.stateUpdated, d = v && new Date(v.replace(/^(\w{3}) (\d+), (\d{4}) /, '$1 $2 $3 ') + ' UTC');
+            return v ? `<dt>Last update published by the state</dt><dd>${d && !isNaN(d) ? ctTime(d) : esc(v)}</dd>` : ''; })()}
+        </dl>
+        <p style="margin-top:8px">We check the state's data every 30 minutes during early voting and every 2 minutes on election night, starting at 6:50 p.m. CT on Nov. 3. A check that finds no new numbers changes nothing on the page. This page reloads the latest data every 60 seconds.</p></div>
+      <div><h3>How we count</h3>
+        <ul>
+          <li>Percentages are shares of all votes cast in the race. Third-party and write-in votes are counted in "All others."</li>
+          <li>Candidates are listed alphabetically until votes arrive, then by votes.</li>
+          <li>Map colors show the leading candidate's margin in each county. Turnout is early votes divided by registered voters, using the state's figures.</li>
+          <li>Polls close at 7 p.m. local time: 7 p.m. CT for most of Texas, 8 p.m. CT in El Paso and Hudspeth counties.</li>
+        </ul></div>
+      <div><h3>Safeguards</h3>
+        <ul>
+          <li>We never project or call winners.</li>
+          <li>If a check would make a statewide total drop by more than 3%, it is held back rather than published.</li>
+          <li>A county's count never moves backward because of one bad read.</li>
+        </ul></div>
+      <div><h3>Other data</h3>
+        <p>County boundaries: U.S. Census Bureau, via <a href="https://github.com/topojson/us-atlas" target="_blank" rel="noopener">us-atlas</a>. Before results arrive, counties are ranked by 2024 turnout from <a href="https://github.com/tonmcg/US_County_Level_Election_Results_08-24" target="_blank" rel="noopener">county-level 2024 results</a>.</p></div>`;
+  }
+  function paintCredits() {
+    const seen = new Set(), rows = [];
+    for (const r of state.results.races) if (!r.demo) for (const c of r.candidates) if (c.photo && c.photoCredit && !seen.has(c.id)) {
+      seen.add(c.id); const k = c.photoCredit;
+      rows.push(`<div class="credit-row"><img src="${esc(c.photo)}" alt="" loading="lazy"><p><strong>${esc(c.name)}</strong>: <a href="${esc(k.source)}" target="_blank" rel="noopener">photo</a> by ${esc(k.by)}, ${k.licenseUrl ? `<a href="${esc(k.licenseUrl)}" target="_blank" rel="noopener">${esc(k.license)}</a>` : esc(k.license)}.</p></div>`);
+    }
+    $('credits').innerHTML = rows.length ? `${rows.join('')}
+      <p>All photos are from Wikimedia Commons. We cropped them and applied a black-and-white, party-color tint. Adapted images under a CC BY-SA license are shared under the same license.</p>` : '<p>No photos in use.</p>';
+  }
+  function togglePanel(which, open) {
+    const map = { methodology: ['btnMethod', 'methodBody'], credits: ['btnCredits', 'credits'] };
+    for (const [k, [b, p]] of Object.entries(map)) {
+      const on = k === which && (open ?? $(b).getAttribute('aria-expanded') !== 'true');
+      $(b).setAttribute('aria-expanded', String(on)); $(p).hidden = !on;
+      if (on) { k === 'methodology' ? (paintMethod(), lastCheck == null && loadLastCheck()) : paintCredits(); }
+    }
+  }
+  $('btnMethod').onclick = () => togglePanel('methodology');
+  $('btnCredits').onclick = () => togglePanel('credits');
   function paintNotice() {
     const el = $('notice'), now = Date.now();
     const n = (state.notices || []).find(x => new Date(x.start).getTime() <= now && now < new Date(x.end).getTime());
@@ -714,11 +816,6 @@ footer a { color: inherit; }
   $('search').addEventListener('input', e => { state.query = e.target.value; paintList(); });
   $('search').addEventListener('keydown', e => { if (e.key !== 'Enter') return; const first = $('tbody').querySelector('tr[data-f]'); if (first) select(first.dataset.f, true); });
   $('more').onclick = () => { state.showAll = !state.showAll; paintList(); };
-  $('copy').onclick = async () => {
-    const url = location.href.split('#')[0] + '#' + race().id, b = $('copy');
-    try { await navigator.clipboard.writeText(url); b.textContent = 'Link copied'; } catch (_) { b.textContent = url; }
-    setTimeout(() => { b.textContent = 'Copy link'; }, 2500);
-  };
 
   // ---------- load + refresh ----------
   async function refresh(first) {
@@ -736,6 +833,7 @@ footer a { color: inherit; }
     try { state.geo = await getJSON('data/tx-geo.json'); buildMap(); }
     catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
     await refresh(true);
+    if (openPanel) { togglePanel(openPanel, true); $(openPanel === 'methodology' ? 'methodBody' : 'credits').scrollIntoView({ block: 'center' }); }
     setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
     setInterval(paintStatus, 30000);
