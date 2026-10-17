@@ -953,7 +953,7 @@ tbody tr:hover td { background: var(--wash); }
     svg.addEventListener('pointerleave', end); svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
   }
   function shareFaceoffURL(m) {
-    const S = fo.S, first = S && S[0];
+    const S = fo.S, first = S && (fo.range === '1y' ? S.find(p => p.t >= S[0].t + 7 * 86400) || S[0] : S[0]);   // skip the opening week's noise
     const since = first ? ` (${fo.range === '1y' ? 'since ' + foDay(first.t, true) : fo.range === '30d' ? 'past 30 days' : 'past week'}: ${m.candidates.map((c, k) => { const d = Math.round((c.price - first.p[k]) * 1000) / 10; return `${lastName(c.name)} ${Math.abs(d) < 0.5 ? 'flat' : (d > 0 ? '+' : '−') + Math.abs(d) + '¢'}`; }).join(', ')})` : '';
     const text = `Texas ${m.title} on Polymarket right now: ${m.candidates.map(c => `${lastName(c.name)} ${cents(c.price)}¢`).join(', ')}${since}. Prices, not votes. Watch it move, then official results Nov. 3:`;
     return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + 'markets/?d=' + shareStamp(false) + '#' + m.id)}`;
