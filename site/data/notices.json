@@ -1,0 +1,38 @@
+{
+  "_help": "Announcement banner. Each notice shows between its start and end time (Central Time offsets). Edit text here and push; no code changes needed. Keep wording factual and nonpartisan.",
+  "notices": [
+    {
+      "id": "early-voting-starts",
+      "start": "2026-10-01T00:00:00-05:00",
+      "end": "2026-10-19T00:00:00-05:00",
+      "month": "OCT",
+      "day": "19",
+      "kicker": "Early voting",
+      "title": "In-person early voting starts Monday, Oct. 19",
+      "body": "Vote at any early voting location in your county through Friday, Oct. 30. Mail ballot applications must be received by Oct. 23.",
+      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
+    },
+    {
+      "id": "early-voting-open",
+      "start": "2026-10-19T00:00:00-05:00",
+      "end": "2026-10-31T00:00:00-05:00",
+      "month": "OCT",
+      "day": "30",
+      "kicker": "Early voting is open",
+      "title": "Vote early through Friday, Oct. 30",
+      "body": "Any early voting location in your county works. Bring one of seven approved photo IDs. Mail ballot applications must be received by Oct. 23.",
+      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
+    },
+    {
+      "id": "election-day",
+      "start": "2026-10-31T00:00:00-05:00",
+      "end": "2026-11-03T20:00:00-06:00",
+      "month": "NOV",
+      "day": "3",
+      "kicker": "Election Day",
+      "title": "Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov. 3",
+      "body": "Vote at your assigned polling place or a countywide vote center, depending on your county. Bring one of seven approved photo IDs. In line by 7 p.m.? You can still vote.",
+      "link": { "label": "Find where to vote", "url": "https://goelect.txelections.civixapps.com/ivis-mvp-ui/#/login" }
+    }
+  ]
+}

@@ -25,7 +25,7 @@
   --d1: #C6D6F0; --d2: #8DAEE0; --d3: #4C7CC6; --d4: #1E4C99;
   --r1: #F2CBC5; --r2: #E5958A; --r3: #CC5647; --r4: #9E2A1F;
   --t1: #DDF0E8; --t2: #A9DBC6; --t3: #6CBC9D; --t4: #379473; --t5: #1A6A4F;
-  --warn-bg: #FFF4D6; --warn-fg: #6B4B00;
+  --warn-bg: #FFF4D6; --warn-fg: #6B4B00; --gold: #F5C542;
   --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --r: 12px;
@@ -64,6 +64,20 @@ header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content:
 .tabs button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; color: var(--muted); }
 .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
 .tabs button.demo { font-weight: 500; }
+/* Announcement banner (data/notices.json) */
+.notice { position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center;
+  background: var(--ink); color: #fff; border-radius: var(--r); padding: 16px 18px; }
+.notice .cal { width: 74px; border-radius: 10px; overflow: hidden; background: #fff; color: var(--ink); text-align: center; box-shadow: 0 6px 14px -8px rgba(0,0,0,.6); }
+.notice .cal .m { background: var(--gold); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .14em; padding: 4px 0 3px; }
+.notice .cal .d { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; padding: 6px 0 8px; }
+.notice .txt { position: relative; z-index: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.notice .k { font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.notice h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(22px, 4.4vw, 30px); line-height: 1.05; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance; }
+.notice p { margin: 0; font-size: 14px; color: rgba(255,255,255,.82); max-width: 70ch; }
+.notice a.cta { align-self: flex-start; margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--ink); font-weight: 700; font-size: 13px; padding: 7px 12px; border-radius: 999px; text-decoration: none; }
+.notice .nstar { position: absolute; right: -40px; bottom: -70px; width: 240px; height: 240px; opacity: .08; pointer-events: none; }
+.notice .nstar polygon { fill: #fff; }
+@media (max-width: 420px) { .notice { gap: 12px; padding: 14px; } .notice .cal { width: 62px; } .notice .cal .d { font-size: 34px; } }
 .note { background: var(--warn-bg); color: var(--warn-fg); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; }
 
 main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 24px; align-items: start; }
@@ -187,6 +201,10 @@ footer a { color: inherit; }
 :root.og .legend { position: absolute; left: 0; bottom: 4px; flex-direction: column; align-items: flex-start; }
 :root.og .city text { font-size: 24px; stroke-width: 5px; }
 :root.og .lonestar { top: 30px; right: -60px; width: 760px; }
+:root.og.has-notice #progress { display: none !important; }
+:root.og .notice { padding: 12px 16px; }
+:root.og .notice p, :root.og .notice a.cta { display: none; }
+:root.og .notice h2 { font-size: 26px; }
 </style>
 
 <div class="bgclip" aria-hidden="true"><svg class="lonestar" viewBox="0 0 100 100"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg></div>
@@ -202,6 +220,7 @@ footer a { color: inherit; }
     <div class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></div>
   </header>
 
+  <section class="notice" id="notice" hidden aria-live="polite"></section>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Race"></nav>
   <div class="note" id="note" hidden></div>
 
@@ -573,7 +592,18 @@ footer a { color: inherit; }
     const src = state.results.election;
     if (src?.sourceUrl) $('source').innerHTML = `Source: <a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">${esc(src.sourceName)}</a>. Results are unofficial until canvassed. This page does not project winners.`;
   }
-  function render() { paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
+  function paintNotice() {
+    const el = $('notice'), now = Date.now();
+    const n = (state.notices || []).find(x => new Date(x.start).getTime() <= now && now < new Date(x.end).getTime());
+    document.documentElement.classList.toggle('has-notice', !!n);
+    if (!n) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = `<div class="cal" aria-hidden="true"><div class="m">${esc(n.month || '')}</div><div class="d">${esc(n.day || '')}</div></div>
+      <div class="txt"><span class="k">${esc(n.kicker || '')}</span><h2>${esc(n.title)}</h2>${n.body ? `<p>${esc(n.body)}</p>` : ''}
+      ${n.link?.url ? `<a class="cta" href="${esc(n.link.url)}" target="_blank" rel="noopener">${esc(n.link.label || 'Learn more')} →</a>` : ''}</div>
+      <svg class="nstar" viewBox="0 0 100 100" aria-hidden="true">${STAR}</svg>`;
+  }
+  function render() { paintNotice(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -589,8 +619,8 @@ footer a { color: inherit; }
   // ---------- load + refresh ----------
   async function refresh(first) {
     try {
-      const [res, tur] = await Promise.all([getJSON('data/results.json'), getJSON('data/turnout.json').catch(() => null)]);
-      state.results = res; state.turnout = tur; setTurnoutBins();
+      const [res, tur, not] = await Promise.all([getJSON('data/results.json'), getJSON('data/turnout.json').catch(() => null), getJSON('data/notices.json').catch(() => null)]);
+      state.results = res; state.turnout = tur; state.notices = not?.notices || []; setTurnoutBins();
       if (first) {
         if (!state.results.races.some(r => r.id === state.raceId)) state.raceId = state.results.races[0].id;
         state.mode = hasResults(race()) || !Object.keys(tur?.counties || {}).length ? 'results' : 'turnout';

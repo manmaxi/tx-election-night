@@ -36,7 +36,7 @@ export const RACES = [
       { id: 'abbott', name: 'Greg Abbott', party: 'R', match: /\bABBOTT\b/i,
         photoCredit: { by: 'NASA / Robert Markowitz', license: 'public domain', source: 'https://commons.wikimedia.org/wiki/File:Greg_Abbott_2024_(cropped).jpg' } },
       { id: 'hinojosa', name: 'Gina Hinojosa', party: 'D', match: /\bHINOJOSA\b/i,
-        photoPos: '28% 0%', photoCredit: { by: 'LBJ Library', license: 'public domain', source: 'https://commons.wikimedia.org/wiki/File:Gina_Hinojosa_16_February_2017_(cropped).jpg' } },
+        photoCredit: { by: 'Pointsoforder', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/', source: 'https://commons.wikimedia.org/wiki/File:Reps._Gonzalez,_Hinojosa,_Howard.jpg' } },
       { id: 'other', name: 'All others', party: 'O' },
     ],
   },
