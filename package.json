@@ -1,0 +1,13 @@
+{
+  "name": "tx-election-night",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "node scraper/run.mjs",
+    "test": "node scraper/test/run-tests.mjs",
+    "build": "node scripts/build-site.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.56.0"
+  }
+}

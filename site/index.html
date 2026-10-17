@@ -1,0 +1,603 @@
+<title>Texas Election Night 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Live, unofficial Texas results for U.S. Senate and Governor, county by county.">
+<meta property="og:title" content="Texas Election Night 2026">
+<meta property="og:description" content="Live county-by-county results for U.S. Senate and Governor.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: scoreboard (progress, candidate cards, context) on the left, county map on the right over a faint
+   lone star; stacks to one column on phones. Deliberately single-theme: white page, party-color cards. */
+:root {
+  --bg: #FFFFFF; --wash: #F4F6F9; --ink: #0F1B2D; --muted: #5B6676; --line: #E3E7ED;
+  --empty: #E6EAF0; --stroke: #FFFFFF; --focus: #0B63C4; --star: #F0F3F7;
+  --dem: #1B4FA0; --dem-hi: #2D69C8; --rep: #B42318; --rep-hi: #D63A2B; --oth: #5A4E9A; --oth-hi: #7262B8;
+  --d1: #C6D6F0; --d2: #8DAEE0; --d3: #4C7CC6; --d4: #1E4C99;
+  --r1: #F2CBC5; --r2: #E5958A; --r3: #CC5647; --r4: #9E2A1F;
+  --t1: #DDF0E8; --t2: #A9DBC6; --t3: #6CBC9D; --t4: #379473; --t5: #1A6A4F;
+  --warn-bg: #FFF4D6; --warn-fg: #6B4B00;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r: 12px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); }
+body { color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; position: relative; overflow-x: hidden;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 32px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 1; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* The lone star behind the page */
+.bgclip { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.lonestar { position: absolute; top: 40px; right: max(-160px, calc(50% - 760px)); width: min(820px, 120vw); aspect-ratio: 1; }
+.lonestar polygon { fill: var(--star); }
+@media (max-width: 880px) { .lonestar { top: 0; right: -38vw; width: 110vw; } }
+
+/* Header */
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 38px; height: 38px; flex: none; }
+.brand h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 6vw, 44px); line-height: 0.95; margin: 0; letter-spacing: 0.01em; text-transform: uppercase; text-wrap: balance; }
+.brand p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); background: var(--bg); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.status.live .dot { background: #1F9D55; box-shadow: 0 0 0 0 rgba(31,157,85,.5); animation: pulse 2s infinite; }
+.status.stale .dot { background: #D08A00; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 7px rgba(31,157,85,0); } 100% { box-shadow: 0 0 0 0 rgba(31,157,85,0); } }
+@media (prefers-reduced-motion: reduce) { .status.live .dot { animation: none; } }
+
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--wash); border-radius: 999px; width: fit-content; max-width: 100%; overflow-x: auto; }
+.tabs button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.tabs button.demo { font-weight: 500; }
+.note { background: var(--warn-bg); color: var(--warn-fg); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; }
+
+main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 880px) { main { grid-template-columns: minmax(0, 1fr); } }
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r); }
+.label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+
+/* % in */
+.progress { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
+.progress .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.progress .in { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1; }
+.progress .in small { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 4px; }
+.progress .sub { font-size: 12.5px; color: var(--muted); }
+.ptrack { height: 8px; border-radius: 4px; background: var(--empty); overflow: hidden; }
+.ptrack i { display: block; height: 100%; background: var(--ink); border-radius: 4px; transition: width .6s ease; }
+
+/* Candidate cards */
+.cands { display: flex; flex-direction: column; gap: 10px; }
+.cc { position: relative; overflow: hidden; display: grid; grid-template-columns: 112px minmax(0, 1fr); min-height: 128px; border-radius: var(--r); color: #fff;
+  background: linear-gradient(115deg, var(--pc) 0%, var(--pc) 45%, var(--pc-hi) 100%); box-shadow: 0 6px 18px -10px rgba(15, 27, 45, .55); }
+.cc .ph { position: relative; background: rgba(0,0,0,.18); display: grid; place-items: center; overflow: hidden; }
+.cc .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.cc .ini { font-family: var(--display); font-weight: 700; font-size: 44px; letter-spacing: 0.02em; opacity: .92; }
+.cc .rank { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.55); font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 3px 7px; border-radius: 6px; z-index: 1; }
+.cc .body { position: relative; z-index: 1; padding: 14px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; }
+.cc .name { font-weight: 700; font-size: 19px; line-height: 1.15; }
+.cc .party { font-size: 12.5px; font-weight: 600; letter-spacing: .04em; opacity: .9; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cc .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: #fff; color: var(--pc); }
+.cc .nums { display: flex; align-items: baseline; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+.cc .pct { font-family: var(--display); font-weight: 700; font-size: 46px; line-height: .95; }
+.cc .pct small { font-size: 22px; margin-left: 1px; }
+.cc .votes { font-size: 15px; font-weight: 600; display: flex; flex-direction: column; line-height: 1.1; }
+.cc .votes small { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .8; margin-top: 2px; }
+.cc .bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.28); overflow: hidden; margin-top: 8px; max-width: 280px; }
+.cc .bar i { display: block; height: 100%; background: #fff; border-radius: 3px; transition: width .6s ease; }
+.cc .cstar { position: absolute; right: -26px; top: -18px; width: 150px; height: 150px; opacity: .10; pointer-events: none; }
+.cc .cstar polygon { fill: #fff; }
+@media (max-width: 420px) { .cc { grid-template-columns: 88px minmax(0, 1fr); min-height: 116px; } .cc .pct { font-size: 40px; } .cc .ini { font-size: 36px; } }
+@media (prefers-reduced-motion: reduce) { .cc .bar i, .ptrack i { transition: none; } }
+
+.others { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: var(--r); color: #fff; background: linear-gradient(115deg, var(--oth), var(--oth-hi)); }
+.others b { font-weight: 700; }
+.others .v { display: flex; align-items: baseline; gap: 10px; }
+.others .p { font-family: var(--display); font-weight: 700; font-size: 26px; }
+.total { display: flex; justify-content: space-between; padding: 4px 4px 0; font-size: 13.5px; color: var(--muted); }
+.total strong { color: var(--ink); font-weight: 700; }
+
+.prose { font-size: 14px; color: var(--ink); margin: 0; padding: 0 4px; }
+.prose strong { font-weight: 700; }
+.early { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.early .big { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; }
+.early .txt { font-size: 13.5px; color: var(--muted); }
+.early .split { display: flex; gap: 6px; height: 8px; }
+.early .split i { display: block; border-radius: 4px; }
+
+/* Map */
+.mapcard { position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.maptop { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--bg); padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 14px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 999px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.zoom { display: inline-flex; gap: 6px; }
+.zoom button { width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font-size: 18px; line-height: 1; font-weight: 600; }
+.mapbox { position: relative; width: 100%; aspect-ratio: 1000 / 940; max-width: 100%; overflow: hidden; }
+.mapbox svg { width: 100%; height: 100%; display: block; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.mapbox.zoomed svg { touch-action: none; cursor: grab; }
+.county { stroke: var(--stroke); stroke-width: .7; vector-effect: non-scaling-stroke; cursor: pointer; transition: fill .4s; }
+.county.sel { stroke: var(--ink); stroke-width: 2.2; }
+.outline { fill: none; stroke: var(--ink); stroke-width: 1; opacity: .35; vector-effect: non-scaling-stroke; pointer-events: none; }
+.city circle { fill: var(--ink); }
+.city text { font-family: var(--body); font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+.city.minor { display: none; }
+@media (min-width: 600px) { .city.minor { display: inline; } }
+@media (max-width: 599px) { .city text { font-size: 30px; stroke-width: 6px; } .city circle { r: 5px; } }
+.mapempty { text-align: center; font-size: 13px; color: var(--muted); margin: 0; }
+.tip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 6px 20px rgba(0,0,0,.12); min-width: 150px; z-index: 2; }
+.tip b { display: block; font-size: 13.5px; }
+.legend { display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); background: rgba(255,255,255,.85); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; width: fit-content; max-width: 100%; }
+.ramp { display: inline-flex; flex-direction: column; gap: 3px; }
+.ramp .sw { display: flex; }
+.ramp .sw span { width: 26px; height: 10px; }
+.ramp .lab { display: flex; justify-content: space-between; font-size: 10.5px; }
+.ramp .who { font-weight: 700; color: var(--ink); font-size: 12px; }
+
+/* County detail, chart, list */
+.detail { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.detail h3 { margin: 0; font-size: 20px; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.detail .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.detail .x { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 13px; text-decoration: underline; }
+.drow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; font-size: 14px; align-items: baseline; }
+.drow .p { font-weight: 700; min-width: 54px; text-align: right; }
+.drow .v { color: var(--muted); font-size: 13px; min-width: 72px; text-align: right; }
+.chart { padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 8px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.list { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.search { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--wash); font-size: 15px; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); }
+td { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th.r, td.r { text-align: right; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: var(--wash); }
+.lead { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.lead i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.more { align-self: flex-start; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 20px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+footer a { color: inherit; }
+.credits { flex-basis: 100%; order: 3; font-size: 11.5px; }
+.copy { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 12.5px; font-weight: 600; }
+
+/* Social card layout (1200x630), rendered by the scraper for X link previews: ?card=senate */
+:root.og body { padding-block: 22px; }
+:root.og .tabs, :root.og .list, :root.og footer, :root.og .maptop, :root.og #detail, :root.og #chartCard, :root.og .note,
+:root.og .mapempty, :root.og #expect, :root.og #early, :root.og .total { display: none !important; }
+:root.og main { grid-template-columns: 500px 1fr; }
+:root.og .mapbox { aspect-ratio: auto; height: 470px; }
+:root.og .legend { position: absolute; left: 0; bottom: 4px; flex-direction: column; align-items: flex-start; }
+:root.og .city text { font-size: 24px; stroke-width: 5px; }
+:root.og .lonestar { top: 30px; right: -60px; width: 760px; }
+</style>
+
+<div class="bgclip" aria-hidden="true"><svg class="lonestar" viewBox="0 0 100 100"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3" fill="#0F1B2D"/></svg>
+      <div>
+        <h1>Texas Election Night</h1>
+        <p>General election · Tuesday, Nov. 3, 2026 · All 254 counties</p>
+      </div>
+    </div>
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></div>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Race"></nav>
+  <div class="note" id="note" hidden></div>
+
+  <main>
+    <section class="panel">
+      <div class="card progress" id="progress"></div>
+      <div class="cands" id="cands"></div>
+      <div id="others"></div>
+      <div class="total" id="total"></div>
+      <p class="prose" id="expect"></p>
+      <div class="card early" id="early" hidden></div>
+      <div class="card chart" id="chartCard" hidden>
+        <p class="label">Margin through the night</p>
+        <div id="chart"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="mapcard">
+        <div class="maptop">
+          <div class="seg" id="mapMode" role="group" aria-label="Map shows">
+            <button type="button" data-mode="results" aria-pressed="true">Results</button>
+            <button type="button" data-mode="turnout" aria-pressed="false">Early vote turnout</button>
+          </div>
+          <div class="zoom">
+            <button type="button" id="zin" aria-label="Zoom in">+</button>
+            <button type="button" id="zout" aria-label="Zoom out">−</button>
+            <button type="button" id="zreset" aria-label="Reset map" style="font-size:13px">⤢</button>
+          </div>
+        </div>
+        <div class="mapbox" id="mapbox">
+          <svg id="map" viewBox="0 0 1000 940" role="img" aria-label="Map of Texas counties"></svg>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <p class="mapempty" id="mapEmpty" hidden></p>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="card detail" id="detail" hidden></div>
+      <div class="card list">
+        <p class="label" id="listLabel">Counties</p>
+        <input class="search" id="search" type="search" placeholder="Find a county, like Dallas or Webb" autocomplete="off" aria-label="Find a county">
+        <div class="tablewrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+        <button type="button" class="more" id="more">Show all 254 counties</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="source">Source: Texas Secretary of State. All results are unofficial until canvassed.</span>
+    <span class="credits">Independent and nonpartisan. Not affiliated with any candidate, party, campaign, or the Texas Secretary of State. Built by <a href="https://singlestopmarketing.com" target="_blank" rel="noopener">SingleStopMarketing</a>.</span>
+    <span id="credits" class="credits"></span>
+    <span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="updated"></span><button type="button" class="copy" id="copy">Copy link</button></span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const REFRESH_MS = 60000;
+  const STAR = '<polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/>';
+  const PARTY = { D: { label: 'Democrat', v: '--dem', hi: '--dem-hi', ramp: ['--d1','--d2','--d3','--d4'] },
+                  R: { label: 'Republican', v: '--rep', hi: '--rep-hi', ramp: ['--r1','--r2','--r3','--r4'] },
+                  L: { label: 'Libertarian', v: '--oth', hi: '--oth-hi' }, G: { label: 'Green', v: '--oth', hi: '--oth-hi' },
+                  I: { label: 'Independent', v: '--oth', hi: '--oth-hi' }, O: { label: 'Other', v: '--oth', hi: '--oth-hi' } };
+  const BINS = [10, 25, 50];
+  let TBINS = [10, 20, 30, 40];
+  const $ = id => document.getElementById(id);
+  const fmt = n => (n ?? 0).toLocaleString('en-US');
+  const pct1 = x => (Math.round(x * 10) / 10).toFixed(1);
+  const cssVar = v => `var(${v})`;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pctLabel = x => (x < 1 ? x.toFixed(x < 0.1 ? 2 : 1) : String(Math.round(x * 10) / 10)) + '%';
+  const ordinal = n => n + (['th','st','nd','rd'][(n % 100 - 20) % 10] || ['th','st','nd','rd'][n % 100] || 'th');
+  const initials = n => n.split(/\s+/).filter(w => /^[A-Z]/i.test(w)).map(w => w[0]).slice(0, 1).concat(n.split(/\s+/).slice(-1).map(w => w[0])).join('').toUpperCase();
+  const lastName = n => n === 'All others' || n === 'Write-ins' ? n : n.split(' ').slice(-1)[0];
+
+  const state = { geo: null, results: null, turnout: null, raceId: null, mode: 'results', sel: null, showAll: false, query: '', vb: [0, 0, 1000, 940] };
+  try { const h = location.hash.slice(1); if (h) state.raceId = h; } catch (e) {}
+  try { const card = new URLSearchParams(location.search).get('card'); if (card) { state.raceId = card; document.documentElement.classList.add('og'); } } catch (e) {}
+
+  async function getJSON(path) {
+    const r = await fetch(path + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error(path + ' ' + r.status);
+    return r.json();
+  }
+
+  // ---------- race helpers ----------
+  const race = () => state.results.races.find(r => r.id === state.raceId) || state.results.races[0];
+  const hasResults = r => (r.statewide?.total || 0) > 0;
+  function ranked(r, votes) {
+    const total = Object.values(votes || {}).reduce((a, b) => a + b, 0);
+    return r.candidates.map(c => ({ ...c, v: votes?.[c.id] || 0, p: total ? (votes[c.id] || 0) / total * 100 : 0 }))
+      .sort((a, b) => total ? b.v - a.v : 0);
+  }
+  function countyLead(r, cty) {
+    if (!cty || !cty.total) return null;
+    const [a, b] = ranked(r, cty.votes).filter(c => c.id !== 'other');
+    return a ? { leader: a, margin: a.p - (b ? b.p : 0) } : null;
+  }
+  function marginFill(r, cty) {
+    const l = countyLead(r, cty);
+    if (!l) return cssVar('--empty');
+    const ramp = (PARTY[l.leader.party] || PARTY.O).ramp;
+    if (!ramp) return cssVar('--oth');
+    return cssVar(ramp[l.margin < BINS[0] ? 0 : l.margin < BINS[1] ? 1 : l.margin < BINS[2] ? 2 : 3]);
+  }
+  const turnoutPct = t => t && t.registered ? t.total / t.registered * 100 : null;
+  function setTurnoutBins() {
+    const ps = Object.values(state.turnout?.counties || {}).map(turnoutPct).filter(p => p != null);
+    const max = Math.max(0, ...ps);
+    const step = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10].find(x => x * 5 >= max) || 10;
+    TBINS = [1, 2, 3, 4].map(i => +(step * i).toFixed(2));
+  }
+  function turnoutFill(t) {
+    const p = turnoutPct(t);
+    if (p == null) return cssVar('--empty');
+    const i = TBINS.findIndex(b => p < b);
+    return cssVar(['--t1','--t2','--t3','--t4','--t5'][i === -1 ? 4 : i]);
+  }
+  const reportingPct = rep => rep && rep.total ? rep.done / rep.total * 100 : 0;
+
+  // ---------- map ----------
+  function buildMap() {
+    const g = state.geo, svg = $('map');
+    let html = `<g id="counties">`;
+    for (const c of g.counties) html += `<path class="county" data-f="${c.fips}" d="${c.d}"><title>${esc(c.name)} County</title></path>`;
+    html += `</g><path class="outline" d="${g.outline}"/><g id="cities">`;
+    const major = new Set(['Houston', 'Dallas', 'San Antonio', 'Austin', 'El Paso']), left = new Set(['Fort Worth']);
+    for (const c of g.cities) html += `<g class="city${major.has(c.n) ? '' : ' minor'}"><circle cx="${c.x}" cy="${c.y}" r="3.2"/><text x="${left.has(c.n) ? c.x - 6 : c.x + 6}" y="${c.y - 5}" font-size="17" text-anchor="${left.has(c.n) ? 'end' : 'start'}">${esc(c.n)}</text></g>`;
+    svg.innerHTML = html + '</g>';
+    state.byFips = Object.fromEntries(g.counties.map(c => [c.fips, c]));
+    wireMap();
+  }
+  function paintMap() {
+    const r = race(), svg = $('map'), useTurnout = state.mode === 'turnout';
+    svg.querySelectorAll('.county').forEach(p => {
+      const f = p.dataset.f;
+      p.setAttribute('fill', useTurnout ? turnoutFill(state.turnout?.counties?.[f]) : marginFill(r, r.counties?.[f]));
+      p.classList.toggle('sel', f === state.sel);
+    });
+    const selPath = svg.querySelector('.county.sel');
+    if (selPath) selPath.parentNode.appendChild(selPath);
+    const empty = $('mapEmpty');
+    if (useTurnout && !Object.keys(state.turnout?.counties || {}).length) { empty.hidden = false; empty.textContent = 'Turnout appears here once the state posts early voting numbers.'; }
+    else if (!useTurnout && !hasResults(r)) { empty.hidden = false; empty.textContent = 'Counties fill in as they report after polls close.'; }
+    else empty.hidden = true;
+    paintLegend();
+  }
+  function paintLegend() {
+    const r = race(), L = $('legend');
+    if (state.mode === 'turnout') {
+      L.innerHTML = `<div class="ramp"><span class="who">Share of registered voters who have voted early</span><div class="sw">${['--t1','--t2','--t3','--t4','--t5'].map(v => `<span style="background:${cssVar(v)}"></span>`).join('')}</div><div class="lab"><span>0%</span><span>${pctLabel(TBINS[1])}</span><span>${pctLabel(TBINS[3])}+</span></div></div>`;
+      return;
+    }
+    const parties = [...new Set(r.candidates.map(c => c.party))].filter(p => PARTY[p]?.ramp);
+    L.innerHTML = parties.map(p => {
+      const c = r.candidates.find(c => c.party === p);
+      return `<div class="ramp"><span class="who">${esc(lastName(c.name))} leads by</span><div class="sw">${PARTY[p].ramp.map(v => `<span style="background:${cssVar(v)}"></span>`).join('')}</div><div class="lab"><span>&lt;10</span><span>25</span><span>50+ pts</span></div></div>`;
+    }).join('') + `<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:10px;background:${cssVar('--empty')};display:inline-block"></span>No votes yet</span>`;
+  }
+  function setVB(vb) {
+    const [x, y, w] = vb, W = 1000, H = 940;
+    const cw = Math.min(W, Math.max(W / 8, w)), ch = cw * H / W;
+    state.vb = [Math.min(Math.max(0, x), W - cw), Math.min(Math.max(0, y), H - ch), cw, ch];
+    $('map').setAttribute('viewBox', state.vb.join(' '));
+    $('mapbox').classList.toggle('zoomed', cw < W - 1);
+  }
+  function zoomBy(f) {
+    const [x, y, w, h] = state.vb, nw = w / f, nh = h / f;
+    setVB([x + w / 2 - nw / 2, y + h / 2 - nh / 2, nw, nh]);
+  }
+  function wireMap() {
+    const svg = $('map'), box = $('mapbox'), tip = $('tip');
+    let drag = null;
+    svg.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, vb: state.vb.slice(), moved: false, id: e.pointerId }; });
+    svg.addEventListener('pointermove', e => {
+      if (drag && drag.id === e.pointerId && box.classList.contains('zoomed')) {
+        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (Math.abs(dx) + Math.abs(dy) > 5) { drag.moved = true; try { svg.setPointerCapture(e.pointerId); } catch (_) {} }
+        if (drag.moved) { const s = drag.vb[2] / svg.clientWidth; setVB([drag.vb[0] - dx * s, drag.vb[1] - dy * s, drag.vb[2], drag.vb[3]]); tip.hidden = true; return; }
+      }
+      if (e.pointerType !== 'mouse') return;
+      const p = e.target.closest('.county');
+      if (!p) { tip.hidden = true; return; }
+      tip.innerHTML = tipHTML(p.dataset.f);
+      const b = box.getBoundingClientRect();
+      let left = e.clientX - b.left + 14, top = e.clientY - b.top + 14;
+      tip.hidden = false;
+      if (left + tip.offsetWidth > b.width) left = e.clientX - b.left - tip.offsetWidth - 10;
+      if (top + tip.offsetHeight > b.height) top = e.clientY - b.top - tip.offsetHeight - 10;
+      tip.style.left = left + 'px'; tip.style.top = top + 'px';
+    });
+    svg.addEventListener('pointerleave', () => { tip.hidden = true; });
+    svg.addEventListener('pointerup', e => {
+      const wasDrag = drag && drag.moved; drag = null;
+      if (wasDrag) return;
+      const p = e.target.closest('.county');
+      select(p ? p.dataset.f : null, false);
+    });
+    $('zin').onclick = () => zoomBy(1.6);
+    $('zout').onclick = () => zoomBy(1 / 1.6);
+    $('zreset').onclick = () => setVB([0, 0, 1000, 940]);
+  }
+  function tipHTML(f) {
+    const c = state.byFips[f], r = race();
+    if (state.mode === 'turnout') {
+      const t = state.turnout?.counties?.[f], p = turnoutPct(t);
+      return `<b>${esc(c.name)}</b>${t ? `${fmt(t.total)} voted early${p != null ? ` · ${pctLabel(p)} of ${fmt(t.registered)} registered` : ''}` : 'No turnout reported yet'}`;
+    }
+    const l = countyLead(r, r.counties?.[f]);
+    return `<b>${esc(c.name)}</b>${l ? `<span style="color:${cssVar(PARTY[l.leader.party]?.v || '--oth')};font-weight:700">${esc(lastName(l.leader.name))} +${pct1(l.margin)}</span> · ${fmt(r.counties[f].total)} votes` : 'No votes reported yet'}`;
+  }
+  function select(f, zoom) {
+    state.sel = state.sel === f && !zoom ? null : f;
+    paintMap(); paintDetail();
+    if (state.sel && zoom) {
+      const c = state.byFips[state.sel];
+      setVB([c.c[0] - 1000 / 6, c.c[1] - 940 / 6, 1000 / 3, 940 / 3]);
+      $('detail').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    }
+  }
+
+  // ---------- scoreboard ----------
+  function paintTabs() {
+    const T = $('tabs');
+    T.innerHTML = state.results.races.map(r => `<button type="button" role="tab" class="${r.demo ? 'demo' : ''}" data-id="${r.id}" aria-selected="${r.id === race().id}">${esc(r.title)}</button>`).join('');
+    T.querySelectorAll('button').forEach(b => b.onclick = () => {
+      state.raceId = b.dataset.id; state.sel = null;
+      try { history.replaceState(null, '', '#' + state.raceId); } catch (_) {}
+      state.mode = hasResults(race()) || !Object.keys(state.turnout?.counties || {}).length ? 'results' : 'turnout';
+      render();
+    });
+  }
+  function paintBoard() {
+    const r = race(), sw = r.statewide || {}, live = hasResults(r);
+    const rep = sw.reporting || {}, rp = reportingPct(rep);
+
+    $('progress').innerHTML = `<div class="row"><p class="label">${live ? 'Latest results' : 'Waiting for results'}</p><span class="in num">${Math.round(rp)}%<small>in</small></span></div>
+      <div class="ptrack"><i style="width:${rp}%"></i></div>
+      <div class="sub num">${fmt(rep.done)} of ${fmt(rep.total)} ${esc(rep.unit || 'counties')} reporting</div>`;
+
+    const all = ranked(r, sw.votes);
+    const people = all.filter(c => c.id !== 'other' && c.party !== 'O');
+    const other = all.find(c => c.id === 'other' || c.party === 'O');
+    $('cands').innerHTML = people.map((c, i) => {
+      const P = PARTY[c.party] || PARTY.O;
+      const leading = live && i === 0 && c.v > (people[1]?.v || 0);
+      const chip = leading ? `<span class="chip">${r.demo ? 'Won' : 'Leading'}</span>` : '';
+      const photo = c.photo ? `<img src="${esc(c.photo)}" alt="" style="object-position:${esc(c.photoPos || 'center top')}" onerror="this.remove()">` : '';
+      return `<article class="cc" style="--pc:${cssVar(P.v)};--pc-hi:${cssVar(P.hi)}">
+        <div class="ph"><span class="ini">${esc(initials(c.name))}</span>${photo}${live ? `<span class="rank">${ordinal(i + 1).toUpperCase()}</span>` : ''}</div>
+        <div class="body">
+          <div class="name">${esc(c.name)}</div>
+          <div class="party">${P.label} ${chip}</div>
+          <div class="nums"><span class="pct num">${live ? pct1(c.p) : '0'}<small>%</small></span>
+            <span class="votes num">${fmt(c.v)}<small>votes</small></span></div>
+          <div class="bar"><i style="width:${live ? c.p : 0}%"></i></div>
+        </div>
+        <svg class="cstar" viewBox="0 0 100 100" aria-hidden="true">${STAR}</svg>
+      </article>`;
+    }).join('');
+    $('others').innerHTML = live && other && other.v ? `<div class="others"><b>${r.demo ? 'All others' : 'All others'}</b><span class="v num"><span class="p">${pct1(other.p)}%</span>${fmt(other.v)}</span></div>` : '';
+    $('total').innerHTML = `<span>Total reported</span><strong class="num">${fmt(sw.total)}</strong>`;
+    $('total').hidden = !live;
+
+    const close = new Date(state.results.election?.pollsCloseCT || '2026-11-03T19:00:00-06:00');
+    $('expect').innerHTML = r.demo ? ''
+      : `<strong>What to expect:</strong> Texas counties post early and mail votes first. In 2024 about 4 in 5 votes were cast before Election Day, so the first update after polls close is a large share of the final count. Polls close at 7 p.m. local time: 7 p.m. CT for most of Texas, 8 p.m. CT in El Paso and Hudspeth counties. Election Day ballots follow through the night.${!live && Date.now() >= close.getTime() ? ' Waiting for the first county to report.' : ''}`;
+    $('expect').hidden = !!r.demo;
+
+    const T = state.turnout?.statewide, early = $('early');
+    if (!r.demo && T && T.total) {
+      const asOf = state.turnout.asOf ? new Date(state.turnout.asOf + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+      const ipW = T.total ? T.inPerson / T.total * 100 : 0;
+      early.hidden = false;
+      early.innerHTML = `<p class="label">Early voting so far${asOf ? ` · as of ${asOf}` : ''}</p>
+        <div><span class="big num">${fmt(T.total)}</span> <span class="txt">Texans have voted early, ${pctLabel(T.total / T.registered * 100)} of ${fmt(T.registered)} registered voters</span></div>
+        <div class="split" aria-hidden="true">${T.inPerson ? `<i style="flex:${ipW};background:var(--ink)"></i>` : ''}${T.mail ? `<i style="flex:${100 - ipW};background:var(--t3)"></i>` : ''}</div>
+        <div class="txt num">${T.inPerson ? `${fmt(T.inPerson)} in person · ` : ''}${fmt(T.mail)} by mail${T.inPerson ? '' : ' (in-person early voting has not posted yet)'}</div>`;
+    } else early.hidden = true;
+
+    const note = $('note');
+    if (r.demo && r.note) { note.hidden = false; note.textContent = r.note; } else note.hidden = true;
+  }
+  function paintDetail() {
+    const d = $('detail'), f = state.sel;
+    if (!f) { d.hidden = true; return; }
+    const c = state.byFips[f], r = race();
+    let body = '';
+    if (state.mode === 'turnout') {
+      const t = state.turnout?.counties?.[f];
+      body = t ? [['In person', t.inPerson], ['By mail', t.mail], ['Total voted', t.total], ['Registered voters', t.registered]]
+        .filter(([, v]) => v != null).map(([k, v]) => `<div class="drow"><span>${k}</span><span></span><span class="p num">${fmt(v)}</span></div>`).join('')
+        + (turnoutPct(t) != null ? `<div class="drow"><span>Turnout so far</span><span></span><span class="p num">${pctLabel(turnoutPct(t))}</span></div>` : '')
+        : `<div style="color:var(--muted);font-size:14px">No early voting numbers posted yet.</div>`;
+    } else {
+      const cty = r.counties?.[f];
+      if (cty && cty.total) {
+        body = ranked(r, cty.votes).filter(k => k.v || k.id !== 'other').map(k => `<div class="drow"><span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:2px;background:${cssVar(PARTY[k.party]?.v || '--oth')}"></i>${esc(k.id === 'other' ? 'All others' : k.name)}</span><span class="v num">${fmt(k.v)}</span><span class="p num">${pct1(k.p)}%</span></div>`).join('')
+          + `<div style="font-size:12.5px;color:var(--muted)">${fmt(cty.total)} votes${cty.reporting && cty.reporting.total > 1 ? ` · ${fmt(cty.reporting.done)} of ${fmt(cty.reporting.total)} polling locations reporting` : ''}</div>`;
+      } else body = `<div style="color:var(--muted);font-size:14px">No votes reported yet.</div>`;
+    }
+    d.hidden = false;
+    d.innerHTML = `<div class="head"><h3>${esc(c.name)} County</h3><button type="button" class="x" id="closeDetail">Back to statewide</button></div>${body}`;
+    $('closeDetail').onclick = () => { state.sel = null; paintMap(); paintDetail(); };
+  }
+  function paintChart() {
+    const r = race(), h = (r.history || []).filter(p => p.pct), card = $('chartCard');
+    const major = r.candidates.filter(c => c.party === 'R' || c.party === 'D');
+    if (h.length < 2 || major.length < 2) { card.hidden = true; return; }
+    card.hidden = false;
+    const [A, B] = major;   // fixed order so the line never flips meaning
+    const pts = h.map(p => ({ x: p.pctIn, y: (p.pct[A.id] || 0) - (p.pct[B.id] || 0) }));
+    const lim = Math.max(10, Math.ceil(Math.max(...pts.map(p => Math.abs(p.y))) / 5) * 5);
+    const W = 360, H = 180, L = 36, R = 10, T = 14, Bm = 22;
+    const sx = x => L + x / 100 * (W - L - R), sy = y => T + (lim - y) / (2 * lim) * (H - T - Bm);
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)}`).join('');
+    const last = pts[pts.length - 1], lead = last.y >= 0 ? A : B, col = cssVar(PARTY[lead.party]?.v || '--oth');
+    $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Margin as votes are counted">
+      ${[lim, 0, -lim].map(v => `<line x1="${L}" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)" stroke-width="${v === 0 ? 1.4 : 1}"/><text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end">${v === 0 ? 'Even' : '+' + Math.abs(v)}</text>`).join('')}
+      <text x="${L + 4}" y="${T + 11}" style="font-weight:700;fill:${cssVar(PARTY[A.party]?.v)}">${esc(lastName(A.name))} ahead</text>
+      <text x="${L + 4}" y="${H - Bm - 5}" style="font-weight:700;fill:${cssVar(PARTY[B.party]?.v)}">${esc(lastName(B.name))} ahead</text>
+      ${[0, 25, 50, 75, 100].map(v => `<text x="${sx(v)}" y="${H - 6}" text-anchor="middle">${v}%</text>`).join('')}
+      <path d="${line}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round"/>
+      <circle cx="${sx(last.x)}" cy="${sy(last.y)}" r="4" fill="${col}"/>
+    </svg><div style="font-size:12.5px;color:var(--muted)">${esc(lastName(lead.name))} +${pct1(Math.abs(last.y))} pts with ${Math.round(last.x)}% in</div>`;
+  }
+  function paintList() {
+    const r = race(), q = state.query.trim().toLowerCase(), turn = state.mode === 'turnout';
+    let rows = state.geo.counties.map(c => {
+      if (turn) { const t = state.turnout?.counties?.[c.fips]; return { c, size: t?.total || 0, t }; }
+      const cty = r.counties?.[c.fips]; return { c, size: cty?.total || 0, cty, l: countyLead(r, cty) };
+    });
+    const anyVotes = rows.some(x => x.size > 0);
+    if (q) rows = rows.filter(x => x.c.name.toLowerCase().includes(q));
+    rows.sort((a, b) => (anyVotes ? b.size - a.size : (b.c.b || 0) - (a.c.b || 0)) || a.c.name.localeCompare(b.c.name));
+    const total = rows.length;
+    if (!state.showAll && !q) rows = rows.slice(0, 10);
+    $('listLabel').textContent = q ? 'Matching counties' : turn ? (anyVotes ? 'Early voting by county' : 'Largest counties (by 2024 turnout)') : (anyVotes ? 'Largest counties by votes counted' : 'Largest counties (by 2024 turnout)');
+    $('thead').innerHTML = turn
+      ? `<tr><th>County</th><th class="r">Voted</th><th class="r">Turnout</th></tr>`
+      : `<tr><th>County</th><th>Leader</th><th class="r">Margin</th><th class="r">Votes</th></tr>`;
+    $('tbody').innerHTML = rows.map(x => turn
+      ? `<tr data-f="${x.c.fips}"><td>${esc(x.c.name)}</td><td class="r num">${x.t ? fmt(x.t.total) : '—'}</td><td class="r num">${turnoutPct(x.t) != null ? pctLabel(turnoutPct(x.t)) : '—'}</td></tr>`
+      : `<tr data-f="${x.c.fips}"><td>${esc(x.c.name)}</td><td>${x.l ? `<span class="lead"><i style="background:${cssVar(PARTY[x.l.leader.party]?.v || '--oth')}"></i>${esc(lastName(x.l.leader.name))}</span>` : '<span style="color:var(--muted)">Not in</span>'}</td><td class="r num">${x.l ? '+' + pct1(x.l.margin) : '—'}</td><td class="r num">${x.cty ? fmt(x.cty.total) : '—'}</td></tr>`).join('')
+      || `<tr><td colspan="4" style="color:var(--muted)">No county matches “${esc(state.query)}”.</td></tr>`;
+    $('tbody').querySelectorAll('tr[data-f]').forEach(tr => tr.onclick = () => select(tr.dataset.f, true));
+    const more = $('more');
+    more.hidden = !!q || total <= 10;
+    more.textContent = state.showAll ? 'Show top 10' : 'Show all 254 counties';
+  }
+  function paintMode() {
+    $('mapMode').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)));
+  }
+  function paintStatus() {
+    const u = state.results.updated ? new Date(state.results.updated) : null;
+    const st = $('status'), txt = $('statusText');
+    const live = state.results.races.some(r => !r.demo && hasResults(r));
+    const ageMin = u ? (Date.now() - u.getTime()) / 60000 : Infinity;
+    st.className = 'status' + (live ? (ageMin > 15 ? ' stale' : ' live') : '');
+    const t = u ? u.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT' : '';
+    txt.textContent = live ? (ageMin > 15 ? `Last update ${t} · checking for new results` : `Live · updated ${t}`) : 'Unofficial results · polls close 7 p.m. local time Nov. 3';
+    $('updated').textContent = u ? `Numbers last changed ${u.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })} CT` : '';
+    const seen = new Set(), credits = [];
+    for (const r of state.results.races) for (const c of r.candidates) if (c.photo && c.photoCredit && !seen.has(c.id)) {
+      seen.add(c.id); const k = c.photoCredit;
+      credits.push(`<a href="${esc(k.source)}" target="_blank" rel="noopener">${esc(c.name)}</a> by ${esc(k.by)}${k.licenseUrl ? `, <a href="${esc(k.licenseUrl)}" target="_blank" rel="noopener">${esc(k.license)}</a>` : `, ${esc(k.license)}`}`);
+    }
+    $('credits').innerHTML = credits.length ? `Photos via Wikimedia Commons, cropped: ${credits.join('; ')}.` : '';
+    const src = state.results.election;
+    if (src?.sourceUrl) $('source').innerHTML = `Source: <a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">${esc(src.sourceName)}</a>. Results are unofficial until canvassed. This page does not project winners.`;
+  }
+  function render() { paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); }
+
+  // ---------- controls ----------
+  $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
+  $('search').addEventListener('input', e => { state.query = e.target.value; paintList(); });
+  $('search').addEventListener('keydown', e => { if (e.key !== 'Enter') return; const first = $('tbody').querySelector('tr[data-f]'); if (first) select(first.dataset.f, true); });
+  $('more').onclick = () => { state.showAll = !state.showAll; paintList(); };
+  $('copy').onclick = async () => {
+    const url = location.href.split('#')[0] + '#' + race().id, b = $('copy');
+    try { await navigator.clipboard.writeText(url); b.textContent = 'Link copied'; } catch (_) { b.textContent = url; }
+    setTimeout(() => { b.textContent = 'Copy link'; }, 2500);
+  };
+
+  // ---------- load + refresh ----------
+  async function refresh(first) {
+    try {
+      const [res, tur] = await Promise.all([getJSON('data/results.json'), getJSON('data/turnout.json').catch(() => null)]);
+      state.results = res; state.turnout = tur; setTurnoutBins();
+      if (first) {
+        if (!state.results.races.some(r => r.id === state.raceId)) state.raceId = state.results.races[0].id;
+        state.mode = hasResults(race()) || !Object.keys(tur?.counties || {}).length ? 'results' : 'turnout';
+      }
+      render();
+    } catch (e) { if (first) $('statusText').textContent = 'Could not load results. Retrying in a minute.'; }
+  }
+  (async () => {
+    try { state.geo = await getJSON('data/tx-geo.json'); buildMap(); }
+    catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
+    await refresh(true);
+    setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
+    setInterval(paintStatus, 30000);
+  })();
+})();
+</script>

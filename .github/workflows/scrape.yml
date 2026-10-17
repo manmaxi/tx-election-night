@@ -1,0 +1,44 @@
+name: Update results
+
+on:
+  schedule:
+    # Early voting (Oct 19–30): refresh turnout every 30 minutes.
+    - cron: "*/30 * * * *"
+    # Election night: start at 6:50 p.m. CT on Nov 3 (00:50 UTC Nov 4) and run for ~6 hours.
+    - cron: "50 0 4 11 *"
+  workflow_dispatch:
+    inputs:
+      loop_minutes:
+        description: "Keep running for this many minutes (0 = one pass). Use 350 on election night."
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci || npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Choose run length
+        id: plan
+        run: |
+          if [ "${{ github.event.schedule }}" = "50 0 4 11 *" ]; then echo "loop=350" >> $GITHUB_OUTPUT;
+          else echo "loop=${{ github.event.inputs.loop_minutes || 0 }}" >> $GITHUB_OUTPUT; fi
+      - name: Scrape
+        run: |
+          git config user.name "results-bot"
+          git config user.email "results-bot@users.noreply.github.com"
+          PUSH='git add site/data site/og.png && (git diff --cached --quiet || (git commit -m "Update results $(date -u +%H:%M)" && git pull --rebase && git push))'
+          node scraper/run.mjs --og --loop=${{ steps.plan.outputs.loop }} --every=120 --onpass="$PUSH"
+          eval "$PUSH"
