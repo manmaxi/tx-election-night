@@ -1,19 +1,23 @@
 name: Update results
 
+# How this stays reliable: GitHub's scheduler often skips or delays runs on small repositories,
+# so each run keeps checking on its own for about 5.5 hours (every 30 minutes now, every
+# 2 minutes on election night), then starts its own replacement. The schedules below only
+# restart that chain if it ever breaks. The chain stops on its own after Nov. 7, 2026.
 on:
   schedule:
-    # Early voting (Oct 19–30): refresh turnout every 30 minutes.
-    - cron: "*/30 * * * *"
-    # Election night: start at 6:50 p.m. CT on Nov 3 (00:50 UTC Nov 4) and run for ~6 hours.
-    - cron: "50 0 4 11 *"
+    - cron: "17 */3 * * *"
+    # Extra restart points around election night (00:30 and 01:30 UTC Nov 4 = 7:30 and 8:30 p.m. CT Nov 3).
+    - cron: "30 0,1 4 11 *"
   workflow_dispatch:
     inputs:
       loop_minutes:
-        description: "Keep running for this many minutes (0 = one pass). Use 350 on election night."
-        default: "0"
+        description: "Keep checking for this many minutes (0 = one pass, no chaining)."
+        default: "330"
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: scrape
@@ -22,7 +26,7 @@ concurrency:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,13 +36,21 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Choose run length
         id: plan
-        run: |
-          if [ "${{ github.event.schedule }}" = "50 0 4 11 *" ]; then echo "loop=350" >> $GITHUB_OUTPUT;
-          else echo "loop=${{ github.event.inputs.loop_minutes || 0 }}" >> $GITHUB_OUTPUT; fi
+        run: echo "loop=${{ github.event.inputs.loop_minutes || '330' }}" >> $GITHUB_OUTPUT
       - name: Scrape
         run: |
           git config user.name "results-bot"
           git config user.email "results-bot@users.noreply.github.com"
           PUSH='git add site/data site/og.png && (git diff --cached --quiet || (git commit -m "Update results $(date -u +%H:%M)" && git pull --rebase && git push))'
-          node scraper/run.mjs --og --loop=${{ steps.plan.outputs.loop }} --every=120 --onpass="$PUSH"
+          node scraper/run.mjs --og --loop=${{ steps.plan.outputs.loop }} --every=auto --onpass="$PUSH"
           eval "$PUSH"
+      - name: Start the next run
+        if: ${{ always() && steps.plan.outputs.loop != '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$(date -u +%Y%m%d)" -le 20261107 ]; then
+            gh workflow run scrape.yml --ref main -f loop_minutes=330 && echo "Next run queued."
+          else
+            echo "Election window over; not chaining."
+          fi

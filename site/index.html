@@ -762,7 +762,7 @@ tbody tr:hover td { background: var(--wash); }
           ${(() => { const v = state.results.stateUpdated, d = v && new Date(v.replace(/^(\w{3}) (\d+), (\d{4}) /, '$1 $2 $3 ') + ' UTC');
             return v ? `<dt>Last update published by the state</dt><dd>${d && !isNaN(d) ? ctTime(d) : esc(v)}</dd>` : ''; })()}
         </dl>
-        <p style="margin-top:8px">We check the state's data every 30 minutes during early voting and every 2 minutes on election night, starting at 6:50 p.m. CT on Nov. 3. A check that finds no new numbers changes nothing on the page. This page reloads the latest data every 60 seconds.</p></div>
+        <p style="margin-top:8px">We check the state's data every 30 minutes during early voting, every 2 minutes on election night from 6:45 p.m. CT on Nov. 3, and every 10 minutes the next few days while late ballots are counted. A check that finds no new numbers changes nothing on the page. This page reloads the latest data every 60 seconds.</p></div>
       <div><h3>How we count</h3>
         <ul>
           <li>Percentages are shares of all votes cast in the race. Third-party and write-in votes are counted in "All others."</li>

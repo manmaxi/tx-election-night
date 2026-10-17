@@ -10,9 +10,10 @@ A live, county-by-county results page for the Texas U.S. Senate and Governor rac
 
   The state sends each file as base64 JSON. Counties are numbered 1–254 alphabetically, and FIPS = 48000 + 2n − 1. If the site's bot protection blocks plain requests, the scraper fetches the same files from inside a headless browser.
 - `.github/workflows/scrape.yml` runs the scraper on GitHub's servers:
-  - Every 30 minutes during early voting, for turnout.
-  - Every 2 minutes from 6:50 p.m. CT on Nov. 3, for about 6 hours.
+  - Each run keeps checking for about 5.5 hours, then starts its own replacement. GitHub's scheduler skips many runs on small repositories, so the schedules only restart the chain if it breaks.
+  - It checks every 30 minutes during early voting, every 2 minutes from 6:45 p.m. CT on Nov. 3 until 6 a.m., then every 10 minutes through Nov. 6. The chain stops after Nov. 7.
   - Each pass that finds new numbers commits them, and the host redeploys.
+  - To stop it, cancel the running "Update results" job in the Actions tab; to restart it, use Run workflow.
 
 ## Set up (about 20 minutes)
 
@@ -21,7 +22,7 @@ A live, county-by-county results page for the Texas U.S. Senate and Governor rac
    - Cloudflare Pages allows 500 builds a month on the free plan. That covers election night's roughly 180 deploys.
    - Vercel's free plan caps deploys at 100 a day, so it can run out on election night.
 3. **Allow the workflow to push.** In GitHub, go to Settings → Actions → General → Workflow permissions and choose "Read and write".
-4. **Run it once by hand.** Go to Actions → Update results → Run workflow.
+4. **Start it once by hand.** Go to Actions → Update results → Run workflow. That starts the self-renewing chain.
    - The Nov. 3 election is already staged in the state's system with all candidates at zero.
    - Early-voting turnout has been posting since Oct. 14, so the first run should fill the turnout map.
 5. **Optional: add the big counties' own results pages** in `scraper/config.mjs` (`COUNTY_SOURCES`). Harris, Dallas, Tarrant, Bexar, Travis, and Collin often post before the state feed. For each county, the scraper keeps whichever source has counted more ballots.

@@ -151,14 +151,21 @@ async function once() {
   changed = false;
 }
 
-const loopMin = +args.loop || 0, everySec = +args.every || 120, end = Date.now() + loopMin * 60000;
+// --every=auto: every 30 minutes normally, every 2 minutes from 6:45 p.m. CT on election night until 6 a.m.,
+// then every 10 minutes while late ballots are counted through Nov. 6.
+const autoEvery = (now = Date.now()) => {
+  const night = Date.parse('2026-11-03T18:45:00-06:00'), morning = Date.parse('2026-11-04T06:00:00-06:00'), late = Date.parse('2026-11-07T00:00:00-06:00');
+  return now >= night && now < morning ? 120 : now >= morning && now < late ? 600 : 1800;
+};
+const loopMin = +args.loop || 0, end = Date.now() + loopMin * 60000;
+const everySec = () => (args.every === 'auto' ? autoEvery() : +args.every || 120);
 try {
   while (true) {
     const t0 = Date.now();
     try { await once(); } catch (e) { log('pass failed:', e.message); }
     if (!loopMin) break;
     if (args.onpass) { const { execSync } = await import('node:child_process'); try { execSync(args.onpass, { stdio: 'inherit', shell: '/bin/bash' }); } catch (e) { log('publish step failed:', e.message); } }
-    const wait = Math.max(5000, everySec * 1000 - (Date.now() - t0));
+    const wait = Math.max(5000, everySec() * 1000 - (Date.now() - t0));
     if (Date.now() + wait > end) break;
     await new Promise(r => setTimeout(r, wait));
   }
