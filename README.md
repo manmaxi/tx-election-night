@@ -18,6 +18,7 @@ A live, county-by-county results page for the Texas U.S. Senate and Governor rac
 ## Prediction markets
 
 - `functions/api/markets.js` is a Cloudflare Pages Function. It serves Polymarket prices for both races, fetched at most once a minute and cached at the edge, so prices stay current with no rebuilds. The shared logic lives in `lib/markets.mjs`.
+- Until polls close, the top of the page is a **market face-off** for the selected race: both photos, a tug-of-war price bar, a chart you can drag to read any day (7D, 30D or 1Y), and a Replay that animates the race's history (it plays once when the page opens, never with reduced motion). It disappears at 7 p.m. CT on Nov. 3 and the results cards take its place. The main X card always shows the cards, never prices.
 - The page shows them in their own "What traders are pricing" section and, until polls close, as two ticker items. They never appear in the candidate cards, the map or the main X card. After 7 p.m. CT on Nov. 3 the section collapses and leaves the ticker.
 - `/markets/` is the same page with its own X card, `site/og-markets.png`. The scraper re-renders that card once a day, or at most every 3 hours when a price moves 2¢ or more. It skips Nov. 3, 6 p.m. CT, through Nov. 6 to save builds for results.
 - Card image URLs carry a content hash, and share links carry the date, so each day's post on X shows that day's card.

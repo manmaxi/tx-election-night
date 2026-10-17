@@ -271,6 +271,58 @@ button.mine:hover { border-color: var(--ink); }
 .mk-details .mk-body { display: flex; flex-direction: column; gap: 16px; }
 .tk-src { font-weight: 500; font-size: 13px; color: rgba(255,255,255,.7); }
 
+/* Market face-off: the top-of-page head-to-head until polls close (then the results cards take this spot) */
+.fo { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--bg); box-shadow: 0 12px 30px -18px rgba(15,27,45,.6); }
+.fo-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 14px; background: var(--ink); color: #fff; }
+.fo-head .k { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.fo-head .k::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulseGold 1.8s infinite; }
+.fo-head .s { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.62); white-space: nowrap; }
+.fo-duel { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: var(--ink); }
+.fo-side { position: relative; overflow: hidden; min-height: 232px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; padding: 12px 14px; color: #fff;
+  background: linear-gradient(180deg, var(--pc-hi) 0%, var(--pc) 100%); }
+.fo-side img { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 74%; object-fit: cover; object-position: center 18%; filter: grayscale(1) contrast(1.1) brightness(1.05);
+  -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 100%); mask-image: linear-gradient(180deg, #000 52%, transparent 100%); }
+.fo-side .tint { position: absolute; left: 0; right: 0; top: 0; height: 74%; background: var(--pc); mix-blend-mode: color; opacity: .55; pointer-events: none; }
+.fo-side .ini { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); font-family: var(--display); font-weight: 700; font-size: 64px; opacity: .3; }
+.fo-side > :is(.fo-nm, .fo-pty, .fo-pr, .fo-chg) { position: relative; z-index: 1; text-shadow: 0 1px 10px rgba(0,0,0,.25); }
+.fo-side.r { align-items: flex-end; text-align: right; }
+.fo-nm { font-weight: 700; font-size: 17px; line-height: 1.15; }
+.fo-pty { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+.fo-pr { font-family: var(--display); font-weight: 700; font-size: clamp(46px, 13vw, 60px); line-height: .92; margin-top: 4px; letter-spacing: .005em; }
+.fo-pr small { font-size: .5em; margin-left: 1px; }
+.fo-chg { font-size: 12px; font-weight: 700; opacity: .92; white-space: nowrap; }
+.fo-vs { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 2; width: 42px; height: 42px; border-radius: 50%; background: var(--bg); color: var(--ink);
+  display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .02em; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.fo-body { padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 12px; }
+.fo-tug { position: relative; padding-top: 4px; }
+.fo-tug .tr { display: flex; gap: 2px; height: 12px; border-radius: 6px; overflow: hidden; background: var(--empty); }
+.fo-tug .tr i { display: block; height: 100%; }
+.fo-tug .mid { position: absolute; left: 50%; top: 0; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink); opacity: .55; border-radius: 1px; }
+.fo-tug .kn { position: absolute; top: 50%; width: 20px; height: 20px; margin: -8px 0 0 -10px; border-radius: 50%; background: #fff; border: 3px solid var(--ink); box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.fo-tug .lab { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--muted); font-weight: 600; }
+.fo-chart { position: relative; }
+.fo-chart svg { width: 100%; height: auto; display: block; touch-action: pan-y; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.fo-chart text { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.fo-chart .ev text { font-size: 10.5px; font-weight: 700; fill: var(--ink); }
+.fo-read { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12.5px; color: var(--muted); min-height: 18px; }
+.fo-read b { color: var(--ink); }
+@media (max-width: 520px) { .fo-read { flex-direction: column; gap: 0; } .fo-read span + span { font-size: 11.5px; } .fo-head .s { font-size: 10px; letter-spacing: .04em; } }
+.fo-ctl { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.fo-rng { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; }
+.fo-rng button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.fo-rng button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.fo-ctl .go { display: inline-flex; gap: 6px; }
+.fo-ctl .btn { min-height: 36px; padding: 6px 14px; font-size: 13px; }
+.fo-ctl .btn svg { width: 14px; height: 14px; }
+.fo-note { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.fo-note b { color: var(--ink); }
+.anim .fo-side { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+.anim .fo-side.r { animation-delay: .1s; }
+.anim .fo-vs { animation: pop .5s .45s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes pop { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
+@media (max-width: 420px) { .fo-side { min-height: 214px; padding: 10px 12px; } .fo-nm { font-size: 15px; } }
+:root.og #faceoff { display: none !important; }
+
 .prose { font-size: 14px; color: var(--ink); margin: 0; padding: 0 4px; }
 .prose strong { font-weight: 700; }
 .early { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -432,6 +484,7 @@ tbody tr:hover td { background: var(--wash); }
 
   <main>
     <section class="panel">
+      <div id="faceoff" hidden></div>
       <div class="card hero" id="hero" hidden></div>
       <div id="mine"></div>
       <div class="card progress" id="progress"></div>
@@ -716,13 +769,15 @@ tbody tr:hover td { background: var(--wash); }
   }
 
   // ---------- prediction markets (Polymarket prices, never mixed into official results) ----------
-  const mk = { data: null, open: false, first: true };
+  const mk = { data: null, open: false, first: true, loaded: false };
   const cents = p => { const c = p * 100, r = Math.round(c); return (Math.abs(c - r) < 0.05 ? String(r) : c.toFixed(1)); };
   const money = v => '$' + (v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : v);
   const mkRaces = () => (mk.data?.races || []).filter(r => r.enough);
   async function loadMarkets() {
-    try { const r = await fetch('api/markets', { cache: 'no-store' }); if (!r.ok) throw 0; const d = await r.json(); if (d.races?.length) mk.data = d; } catch (_) {}
-    paintMarkets(); paintTicker();
+    try { const ac = new AbortController(); setTimeout(() => ac.abort(), 8000);
+      const r = await fetch('api/markets', { cache: 'no-store', signal: ac.signal }); if (!r.ok) throw 0; const d = await r.json(); if (d.races?.length) mk.data = d; } catch (_) {}
+    mk.loaded = true;
+    paintMarkets(); paintFaceoff(); paintTicker();
   }
   function mkChange(c) {
     if (c.change24h == null) return '';
@@ -760,6 +815,150 @@ tbody tr:hover td { background: var(--wash); }
       <p class="mk-foot"><span>Last 30 days</span><a href="${esc(r.url)}" target="_blank" rel="noopener nofollow">Source: Polymarket ↗</a></p>
     </article>`;
   }
+  // ---------- market face-off: head-to-head at the top of the page until polls close ----------
+  // Interactive: drag across the chart to read any day, Replay animates the race's history, 7D/30D/1Y ranges.
+  const fo = { range: '1y', playing: false, scrub: false, skey: '', dkey: '', raf: 0, autoplayed: false, idle: 0, S: null };
+  const FO_EVENTS = [{ t: Date.parse('2026-03-03T12:00:00-06:00') / 1000, label: 'Primary' }, { t: Date.parse('2026-05-26T12:00:00-05:00') / 1000, label: 'Runoff' }];
+  const FO = { W: 400, H: 150, R: 34, T: 16, B: 20 };
+  // Face-off crops are wider than the card crops; this photo's face sits low in the frame.
+  const FO_CROP = { hinojosa: 'object-position:50% 100%;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)' };
+  const foRace = () => { const r = race(); return r && !r.demo ? mkRaces().find(m => m.id === r.id) : null; };
+  const foActive = () => !document.documentElement.classList.contains('og') && Date.now() < closeAt() && !hasResults(race()) && !!foRace();
+  const cDelta = d => { const v = Math.round(Math.abs(d) * 1000) / 10; return `${d > 0 ? '▲' : '▼'} ${v % 1 ? v.toFixed(1) : v}¢`; };
+  const foDay = (t, yr) => new Date(t * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', ...(yr ? { year: 'numeric' } : {}), timeZone: 'America/Chicago' });
+  function foSeries(m) {
+    const k = fo.range === '1y' ? 'historyAll' : 'history', now = Date.now() / 1000;
+    const cut = fo.range === '7d' ? now - 7 * 86400 : 0;
+    const A = (m.candidates[0][k] || []).filter(p => p[0] >= cut), Bh = (m.candidates[1][k] || []).filter(p => p[0] >= cut);
+    if (A.length < 2) return null;
+    let j = 0;   // the two contracts' histories share a time grid; pair each point with the nearest one anyway
+    const pts = A.map(([t, p]) => { while (j < Bh.length - 1 && Math.abs(Bh[j + 1][0] - t) <= Math.abs(Bh[j][0] - t)) j++; return { t, p: [p, Bh.length ? Bh[j][1] : 1 - p] }; });
+    pts.push({ t: Math.max(now, pts[pts.length - 1].t + 1), p: m.candidates.map(c => c.price), live: true });
+    return pts;
+  }
+  function foPaths() {
+    const S = fo.S, { W, H, R, T, B } = FO, t0 = S[0].t, t1 = S[S.length - 1].t;
+    const sx = t => (t - t0) / Math.max(1, t1 - t0) * (W - R), sy = p => T + (1 - p) * (H - T - B);
+    return { sx, sy, t0, t1 };
+  }
+  function paintFaceoff() {
+    const el = $('faceoff');
+    // Until the first price request settles, hold the cards back so they don't flash and get swapped out.
+    if (!mk.loaded && !document.documentElement.classList.contains('og') && Date.now() < closeAt() && !hasResults(race()) && !race().demo) { $('cands').hidden = true; return; }
+    if (!foActive()) { if (!el.hidden) { cancelAnimationFrame(fo.raf); fo.playing = false; el.hidden = true; el.innerHTML = ''; fo.skey = ''; } $('cands').hidden = false; return; }
+    $('cands').hidden = true; el.hidden = false;
+    const m = foRace(), skey = m.id + '|' + fo.range, dkey = mk.data.fetched;
+    if (skey === fo.skey && (dkey === fo.dkey || fo.playing || fo.scrub)) return;   // never interrupt a replay or a drag for a quiet refresh
+    if (skey !== fo.skey) { cancelAnimationFrame(fo.raf); fo.playing = false; }
+    fo.skey = skey; fo.dkey = dkey;
+    fo.S = foSeries(m);
+    const r = race(), info = id => r.candidates.find(c => c.id === id) || {};
+    const side = (c, i) => { const P = PARTY[c.party] || PARTY.O, k = info(c.id);
+      return `<div class="fo-side${i ? ' r' : ''}" style="--pc:${cssVar(P.v)};--pc-hi:${cssVar(P.hi)}">
+        <span class="ini">${esc(initials(c.name))}</span>${k.photo ? `<img src="${esc(k.photo)}" alt="" style="${FO_CROP[c.id] || `object-position:${esc(k.photoPos || 'center 18%')}`}" onerror="this.remove()">` : ''}<span class="tint"${FO_CROP[c.id] ? ' style="-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)"' : ''}></span>
+        <span class="fo-nm">${esc(c.name)}</span><span class="fo-pty">${P.label}</span>
+        <span class="fo-pr num" data-p="${i}"></span><span class="fo-chg" data-c="${i}"></span></div>`; };
+    const { W, H, R, T, B } = FO;
+    let chart = '';
+    if (fo.S) {
+      const { sx, sy, t0, t1 } = foPaths();
+      const grid = [0.25, 0.5, 0.75].map(v => `<line x1="0" x2="${W - R}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)" ${v === 0.5 ? 'stroke-dasharray="3 3" stroke-width="1.4"' : ''}/><text x="${W}" y="${sy(v) + 4}" text-anchor="end">${v * 100}¢</text>`).join('');
+      const ev = fo.range === '1y' ? FO_EVENTS.filter(e => e.t > t0 && e.t < t1).map(e => `<g class="ev"><line x1="${sx(e.t).toFixed(1)}" x2="${sx(e.t).toFixed(1)}" y1="${T - 2}" y2="${H - B}" stroke="var(--muted)" stroke-dasharray="2 3"/><text x="${(sx(e.t) + 4).toFixed(1)}" y="${T + 2}">${e.label}</text></g>`).join('') : '';
+      const lines = m.candidates.map((c, k) => `<path d="${fo.S.map((p, i) => `${i ? 'L' : 'M'}${sx(p.t).toFixed(1)},${sy(p.p[k]).toFixed(1)}`).join('')}" fill="none" stroke="${cssVar(PARTY[c.party]?.v || '--oth')}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#foClip)"/>`).join('');
+      const dots = m.candidates.map((c, k) => `<circle data-d="${k}" r="4.5" fill="${cssVar(PARTY[c.party]?.v || '--oth')}" stroke="#fff" stroke-width="2"/>`).join('');
+      chart = `<svg id="foSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.title)} market prices over time. Drag to read any day.">
+        <defs><clipPath id="foClip"><rect id="foClipR" x="-4" y="0" width="${W + 8}" height="${H}"/></clipPath></defs>
+        ${grid}${ev}${lines}
+        <line id="foX" y1="${T - 4}" y2="${H - B}" stroke="var(--ink)" stroke-width="1" opacity="0"/>${dots}
+        <text x="0" y="${H - 4}">${foDay(t0, fo.range === '1y')}</text><text x="${W - R}" y="${H - 4}" text-anchor="end">Now</text>
+        <rect id="foHit" x="0" y="0" width="${W}" height="${H}" fill="transparent"/></svg>`;
+    }
+    // Largest 24-hour swing in the range, told from the side that rose.
+    let big = '';
+    if (fo.S && fo.S.length > 3) {
+      const lag = fo.range === '1y' ? 1 : 8; let best = null;
+      const settle = fo.S[0].t + 7 * 86400;   // skip a market's first week, when opening prices jump around
+      for (let i = lag; i < fo.S.length - 1; i++) { if (fo.range === '1y' && fo.S[i].t < settle) continue; const d = fo.S[i].p[0] - fo.S[i - lag].p[0]; if (!best || Math.abs(d) > Math.abs(best.d)) best = { d, t: fo.S[i].t }; }
+      if (best && Math.abs(best.d) >= 0.01) { const up = best.d > 0 ? m.candidates[0] : m.candidates[1]; big = ` Biggest 24-hour move in this view: <b>${esc(lastName(up.name))} ${cDelta(Math.abs(best.d))}</b> on ${foDay(best.t, fo.range === '1y' && new Date(best.t * 1000).getFullYear() !== new Date().getFullYear())}.`; }
+    }
+    el.innerHTML = `<section class="fo" aria-label="${esc(m.title)} prediction market">
+      <div class="fo-head"><span class="k">${esc(m.title)} market</span><span class="s">Prices, not votes</span></div>
+      <div class="fo-duel">${m.candidates.map(side).join('')}<span class="fo-vs" aria-hidden="true">VS</span></div>
+      <div class="fo-body">
+        <div class="fo-tug" aria-hidden="true"><div class="tr">${m.candidates.map((c, k) => `<i data-t="${k}" style="background:${cssVar(PARTY[c.party]?.v || '--oth')}"></i>`).join('')}</div><span class="mid"></span><span class="kn" id="foKnob"></span></div>
+        <div class="fo-read" id="foRead"></div>
+        <div class="fo-chart">${chart}</div>
+        <div class="fo-ctl">
+          <div class="fo-rng" role="group" aria-label="Time range">${[['7d', '7D'], ['30d', '30D'], ['1y', '1Y']].map(([k, l]) => `<button type="button" data-r="${k}" aria-pressed="${fo.range === k}">${l}</button>`).join('')}</div>
+          <div class="go"><button type="button" class="btn btn-ink" id="foPlay"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l11-7z" fill="currentColor" stroke="none"/></svg>Replay</button><a class="btn btn-ghost" id="foShare" href="#" target="_blank" rel="noopener">${SHARE}Share</a></div>
+        </div>
+        <p class="fo-note">What traders on <a href="${esc(m.url)}" target="_blank" rel="noopener nofollow" style="color:inherit">Polymarket</a> pay for a contract worth $1 if that candidate wins. Not votes, not a poll, not our forecast. <b>Official results take this spot at 7 p.m. CT on Nov. 3.</b>${fo.range === '1y' ? " These contracts pay by party, so before the primary and runoff they priced each party's eventual nominee." : ''}${big}</p>
+      </div></section>`;
+    $('foShare').href = shareFaceoffURL(m);
+    el.querySelectorAll('.fo-rng button').forEach(b => b.onclick = () => { fo.range = b.dataset.r; paintFaceoff(); });
+    $('foPlay').onclick = () => foReplay();
+    wireFoChart();
+    foShow(null);
+    if (!fo.autoplayed && !reduceMotion() && fo.S) {
+      fo.autoplayed = true;
+      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); setTimeout(() => foReplay(), 700); } }, { threshold: 0.4 });
+      io.observe(el);
+    }
+  }
+  // Puts point i (or the live price when i is null) on the duel, tug bar, reading line and chart cursor.
+  function foShow(i, replay) {
+    const m = foRace(); if (!m || !$('foRead')) return;
+    const S = fo.S, pt = i == null || !S ? { p: m.candidates.map(c => c.price), live: true, t: Date.now() / 1000 } : S[i];
+    const el = $('faceoff');
+    m.candidates.forEach((c, k) => {
+      el.querySelector(`[data-p="${k}"]`).innerHTML = `${cents(pt.p[k])}<small>¢</small>`;
+      const ch = el.querySelector(`[data-c="${k}"]`);
+      if (pt.live && !replay) ch.textContent = c.change24h == null ? '' : Math.abs(c.change24h) < 0.005 ? 'No change today' : `${cDelta(c.change24h)} today`;
+      else ch.textContent = foDay(pt.t, fo.range === '1y');
+    });
+    const a = pt.p[0] || 0, b = pt.p[1] || 0, tot = a + b || 1;
+    el.querySelectorAll('[data-t]').forEach((x, k) => x.style.flexGrow = (pt.p[k] / tot * 100).toFixed(2));
+    $('foKnob').style.left = (a / tot * 100).toFixed(2) + '%';
+    const names = m.candidates.map((c, k) => `${esc(lastName(c.name))} <b>${cents(pt.p[k])}¢</b>`).join(' · ');
+    $('foRead').innerHTML = pt.live && !replay
+      ? `<span>Now: ${names}</span><span>Drag the chart to rewind</span>`
+      : `<span>${replay ? 'Replaying' : 'On'} ${foDay(pt.t, true)}: ${names}</span>`;
+    const svg = $('foSvg'); if (!svg || !S) return;
+    const { sx, sy } = foPaths(), idx = i == null ? S.length - 1 : i, X = sx(S[idx].t);
+    const showX = i != null && !replay;
+    $('foX').setAttribute('x1', X); $('foX').setAttribute('x2', X); $('foX').setAttribute('opacity', showX ? .5 : 0);
+    svg.querySelectorAll('[data-d]').forEach((d, k) => { d.setAttribute('cx', X.toFixed(1)); d.setAttribute('cy', sy(S[idx].p[k]).toFixed(1)); });
+    $('foClipR').setAttribute('width', replay ? (X + 4).toFixed(1) : FO.W + 8);
+  }
+  function foReplay() {
+    const S = fo.S; if (!S || fo.playing) return;
+    if (reduceMotion()) { foShow(null); return; }
+    fo.playing = true; $('foPlay').disabled = true;
+    const dur = fo.range === '1y' ? 6000 : 4200, t0 = performance.now();
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      foShow(Math.round(e * (S.length - 1)), true);
+      if (p < 1 && fo.playing) fo.raf = requestAnimationFrame(step);
+      else { fo.playing = false; if ($('foPlay')) $('foPlay').disabled = false; foShow(null); }
+    };
+    fo.raf = requestAnimationFrame(step);
+  }
+  function wireFoChart() {
+    const svg = $('foSvg'); if (!svg) return;
+    const at = e => { const b = svg.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * FO.W, { sx } = foPaths();
+      let best = 0; fo.S.forEach((p, i) => { if (Math.abs(sx(p.t) - x) < Math.abs(sx(fo.S[best].t) - x)) best = i; }); return best; };
+    const move = e => { if (fo.playing) { fo.playing = false; cancelAnimationFrame(fo.raf); $('foPlay').disabled = false; } fo.scrub = true; clearTimeout(fo.idle); foShow(at(e)); };
+    const end = () => { clearTimeout(fo.idle); fo.idle = setTimeout(() => { fo.scrub = false; foShow(null); }, 1600); };
+    svg.addEventListener('pointerdown', move); svg.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' || e.buttons || fo.scrub) move(e); });
+    svg.addEventListener('pointerleave', end); svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+  }
+  function shareFaceoffURL(m) {
+    const S = fo.S, first = S && S[0];
+    const since = first ? ` (${fo.range === '1y' ? 'since ' + foDay(first.t, true) : fo.range === '30d' ? 'past 30 days' : 'past week'}: ${m.candidates.map((c, k) => { const d = Math.round((c.price - first.p[k]) * 1000) / 10; return `${lastName(c.name)} ${Math.abs(d) < 0.5 ? 'flat' : (d > 0 ? '+' : '−') + Math.abs(d) + '¢'}`; }).join(', ')})` : '';
+    const text = `Texas ${m.title} on Polymarket right now: ${m.candidates.map(c => `${lastName(c.name)} ${cents(c.price)}¢`).join(', ')}${since}. Prices, not votes. Watch it move, then official results Nov. 3:`;
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + 'markets/?d=' + shareStamp(false) + '#' + m.id)}`;
+  }
+
   function shareMarketsURL() {
     const text = 'What prediction markets are pricing in Texas (Polymarket):\n'
       + mkRaces().map(r => `${r.title}: ${r.candidates.map(c => `${lastName(c.name)} ${cents(c.price)}¢`).join(', ')}`).join('\n')
@@ -1120,7 +1319,7 @@ tbody tr:hover td { background: var(--wash); }
     }
     // Market prices ride the ticker only before polls close; after that the top of the page is official results only.
     if (!races.length && now < closeAt()) for (const r of mkRaces())
-      out.push({ tag: `${r.title} market`, html: r.candidates.map(c => `${esc(lastName(c.name))} <b>${cents(c.price)}¢</b>`).join(' · ') + ' <span class="tk-src">on Polymarket</span>', link: { label: 'See the trend', url: '#markets' } });
+      out.push({ tag: `${r.title} market`, html: r.candidates.map(c => `${esc(lastName(c.name))} <b>${cents(c.price)}¢</b>`).join(' · ') + ' <span class="tk-src">on Polymarket</span>', link: { label: 'See the trend', url: '#race:' + r.id } });
     if (f) {
       const t = state.turnout?.counties?.[f], name = esc(state.byFips[f].name);
       if (!races.length && t && t.total) out.push({ tag: 'Your county', html: `${name} County: <b>${fmt(t.total)}</b> early votes, ${pctLabel(turnoutPct(t))} turnout` });
@@ -1166,7 +1365,7 @@ tbody tr:hover td { background: var(--wash); }
     $('knowActs').innerHTML = `${N.findUrl ? `<a class="btn btn-ink" href="${esc(N.findUrl)}" target="_blank" rel="noopener">${PIN}Find where to vote</a>` : ''}
       ${N.idUrl ? `<a class="btn btn-ghost" href="${esc(N.idUrl)}" target="_blank" rel="noopener">Accepted photo IDs</a>` : ''}`;
   }
-  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintMarkets(); paintTicker(); paintKnow(); }
+  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintMarkets(); paintFaceoff(); paintTicker(); paintKnow(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -1192,8 +1391,17 @@ tbody tr:hover td { background: var(--wash); }
     catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
     await refresh(true);
     await loadMarkets();
-    if ((onMarketsPage || location.hash === '#markets') && !document.documentElement.classList.contains('og') && !$('markets').hidden) $('markets').scrollIntoView({ block: 'start' });
-    $('tkView').addEventListener('click', e => { const a = e.target.closest('a.tk-link'); if (a && a.getAttribute('href') === '#markets') { e.preventDefault(); $('markets').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); } });
+    if (location.hash === '#markets' && !document.documentElement.classList.contains('og') && !$('markets').hidden) $('markets').scrollIntoView({ block: 'start' });
+    // Ticker market items open that race's face-off at the top (or the markets section once the face-off is gone).
+    $('tkView').addEventListener('click', e => {
+      const a = e.target.closest('a.tk-link'), h = a && a.getAttribute('href');
+      if (!h || !h.startsWith('#race:')) return;
+      e.preventDefault();
+      const id = h.slice(6);
+      if (state.raceId !== id) { state.raceId = id; state.sel = null; try { history.replaceState(null, '', '#' + id); } catch (_) {} render(); }
+      const target = !$('faceoff').hidden ? $('faceoff') : $('markets');
+      target.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+    });
     setInterval(() => { if (!document.hidden) loadMarkets(); }, REFRESH_MS);
     if (openPanel) { togglePanel(openPanel, true); $(openPanel === 'methodology' ? 'methodBody' : 'credits').scrollIntoView({ block: 'center' }); }
     setInterval(() => { if (!document.hidden) refresh(false); }, REFRESH_MS);
