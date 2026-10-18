@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1200">
+<meta name="robots" content="noindex, nofollow">
+<title>Texas Decides · social card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700;800&display=swap">
+<!--
+  Social-post creatives for X, rendered at 1200x675 (16:9) and screenshotted at 2x by the scheduled post task.
+  Fixed templates only, filled from the site's own data files. There is deliberately NO free-text parameter,
+  so nobody can use this page to put their own words under the Texas Decides name.
+    card.html?type=turnout
+    card.html?type=market&race=senate|governor|both
+    card.html?type=county&fips=48201
+    card.html?type=countdown
+    card.html?type=date&i=0..3          (index into notices.json dates)
+    card.html?type=question&q=0..5      (index into QUESTIONS below)
+    card.html?type=results&race=senate|governor
+  The page sets <body data-ready="1"> when drawn, or data-ready="error".
+-->
+<style>
+:root {
+  --bg: #FFFFFF; --wash: #F4F6F9; --ink: #0F1B2D; --muted: #5B6676; --line: #E3E7ED; --empty: #E6EAF0; --star: #F0F3F7;
+  --dem: #1B4FA0; --dem-hi: #2D69C8; --rep: #B42318; --rep-hi: #D63A2B; --gold: #F5C542;
+  --d1: #C6D6F0; --d2: #8DAEE0; --d3: #4C7CC6; --d4: #1E4C99; --r1: #F2CBC5; --r2: #E5958A; --r3: #CC5647; --r4: #9E2A1F;
+  --t1: #DDF0E8; --t2: #A9DBC6; --t3: #6CBC9D; --t4: #379473; --t5: #1A6A4F;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Public Sans", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); }
+body { width: 1200px; height: 675px; overflow: hidden; color: var(--ink); font-family: var(--body); position: relative; }
+.star-bg { position: absolute; right: -150px; top: -120px; width: 760px; height: 760px; z-index: 0; }
+.star-bg polygon { fill: var(--star); }
+.card { position: relative; z-index: 1; width: 1200px; height: 675px; padding: 34px 44px 26px; display: flex; flex-direction: column; }
+.top { display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 34px; height: 34px; } .brand svg polygon { fill: var(--ink); }
+.brand b { font-family: var(--display); font-weight: 700; font-size: 38px; letter-spacing: .01em; text-transform: uppercase; line-height: 1; }
+.brand b em { font-style: normal; position: relative; } .brand b em::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 5px; border-radius: 3px; background: var(--gold); z-index: -1; }
+.chip { display: inline-flex; align-items: center; gap: 9px; padding: 9px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 15px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+.main { flex: 1; min-height: 0; display: flex; gap: 36px; align-items: stretch; padding-top: 22px; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 2px solid var(--line); padding-top: 12px; font-size: 15px; color: var(--muted); }
+.foot .url { font-weight: 800; color: var(--ink); letter-spacing: .01em; }
+.k { font-size: 18px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.huge { font-family: var(--display); font-weight: 700; line-height: .86; letter-spacing: -.005em; margin: 4px 0 0; }
+.sub { font-size: 22px; color: var(--muted); margin: 10px 0 0; line-height: 1.3; } .sub b { color: var(--ink); }
+.pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 8px 14px; border-radius: 10px; background: var(--wash); font-size: 19px; font-weight: 700; }
+.col { display: flex; flex-direction: column; min-width: 0; }
+svg.tx { display: block; }
+svg.tx .c { stroke: #fff; stroke-width: .8; }
+svg.tx .o { fill: none; stroke: var(--ink); stroke-width: 1.3; opacity: .35; }
+svg.tx text { font-family: var(--body); font-weight: 800; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 6px; stroke-linejoin: round; }
+.bars { display: flex; align-items: flex-end; gap: 5px; height: 92px; margin-top: auto; }
+.bars i { flex: 1; border-radius: 3px 3px 0 0; background: var(--t4); min-height: 4px; }
+.bars i.e { background: var(--line); }
+.blab { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); margin-top: 6px; }
+.ph { position: relative; overflow: hidden; background: var(--pc); }
+.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 18%; filter: grayscale(1) contrast(1.1) brightness(1.05); }
+.ph::after { content: ""; position: absolute; inset: 0; background: var(--pc); mix-blend-mode: color; opacity: .55; }
+.duel { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; border-radius: 16px; overflow: hidden; background: var(--ink); position: relative; }
+.side { position: relative; overflow: hidden; color: #fff; background: linear-gradient(180deg, var(--pc-hi), var(--pc)); display: flex; flex-direction: column; justify-content: flex-end; padding: 18px 24px; }
+.side .ph { position: absolute; left: 0; right: 0; top: 0; height: 72%; background: transparent; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent); mask-image: linear-gradient(180deg, #000 55%, transparent); }
+.side.r { align-items: flex-end; text-align: right; }
+.side > :not(.ph) { position: relative; z-index: 1; text-shadow: 0 1px 12px rgba(0,0,0,.3); }
+.side .nm { font-size: 30px; font-weight: 800; line-height: 1.05; }
+.side .pt { font-size: 15px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+.side .pr { font-family: var(--display); font-weight: 700; font-size: 120px; line-height: .85; margin-top: 6px; }
+.side .pr small { font-size: 60px; }
+.side .ch { font-size: 19px; font-weight: 700; }
+.vs { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); z-index: 2; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 26px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.race { flex: 1; border: 2px solid var(--line); border-radius: 16px; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; background: var(--bg); }
+.race h2 { margin: 0; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--display); font-weight: 700; font-size: 40px; text-transform: uppercase; line-height: 1; }
+.race h2 small { font-family: var(--body); font-size: 16px; font-weight: 700; color: var(--muted); text-transform: none; }
+.split { display: flex; gap: 4px; height: 16px; border-radius: 8px; overflow: hidden; }
+.row { display: grid; grid-template-columns: 74px 1fr auto; gap: 16px; align-items: center; }
+.row .ph { width: 74px; height: 74px; border-radius: 50%; }
+.row .nm { font-size: 24px; font-weight: 800; line-height: 1.1; } .row .nm small { display: block; font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.row .pr { text-align: right; font-family: var(--display); font-weight: 700; font-size: 70px; line-height: .9; } .row .pr small { font-size: 36px; }
+.row .ch { display: block; font-family: var(--body); font-size: 15px; font-weight: 700; color: var(--muted); }
+.note { font-size: 16px; color: var(--muted); font-weight: 600; margin-top: auto; }
+.qbig { font-family: var(--display); font-weight: 700; text-transform: uppercase; line-height: .92; margin: 0; }
+.gold { background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 92%, transparent 92%); padding: 0 4px; }
+.res { display: grid; grid-template-columns: 1fr auto auto; gap: 18px; align-items: center; padding: 14px 0; border-bottom: 2px solid var(--line); }
+.res .nm { font-size: 30px; font-weight: 800; display: flex; align-items: center; gap: 12px; } .res .nm i { width: 16px; height: 34px; border-radius: 4px; }
+.res .p { font-family: var(--display); font-weight: 700; font-size: 72px; line-height: .9; } .res .v { font-size: 20px; color: var(--muted); font-weight: 700; text-align: right; }
+.prog { height: 14px; border-radius: 7px; background: var(--empty); overflow: hidden; } .prog i { display: block; height: 100%; background: var(--ink); }
+</style>
+</head>
+<body>
+<svg class="star-bg" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>
+<div class="card" id="card"></div>
+<script>
+(async () => {
+  const STAR = '<polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/>';
+  const QUESTIONS = [
+    'Which Texas county will have the highest turnout?',
+    'Have you voted early yet?',
+    'Will Texas beat its 2024 early-vote total?',
+    'Early or Election Day: when do you vote?',
+    'Which county do you follow on election night?',
+    'What time will we know the Senate result?',
+  ];
+  const PARTY = { R: { v: '--rep', hi: '--rep-hi', label: 'Republican' }, D: { v: '--dem', hi: '--dem-hi', label: 'Democrat' } };
+  const q = new URLSearchParams(location.search);
+  const type = q.get('type') || 'turnout';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = n => (n ?? 0).toLocaleString('en-US');
+  const short = v => v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M' : v >= 1e4 ? Math.round(v / 1e3) + 'K' : fmt(v);
+  const pct = (a, b) => b ? (a / b * 100) : 0;
+  const p1 = x => (Math.round(x * 10) / 10).toFixed(1);
+  const cents = p => { const c = p * 100, r = Math.round(c); return Math.abs(c - r) < 0.05 ? String(r) : c.toFixed(1); };
+  const md = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const ctNow = () => new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+  const get = async (u, opt) => { try { const r = await fetch(u + (u.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' }); if (!r.ok) throw 0; return await r.json(); } catch (e) { if (opt) return null; throw e; } };
+  const brand = chip => `<div class="top"><div class="brand"><svg viewBox="0 0 100 100">${STAR}</svg><b>Texas <em>Decides</em></b></div><span class="chip">${esc(chip)}</span></div>`;
+  const foot = src => `<div class="foot"><span>${src}</span><span class="url">elections.singlestopmarketing.com</span></div>`;
+  const CLOSE = Date.parse('2026-11-03T19:00:00-06:00');
+  const daysLeft = () => { const t = ctNow(); t.setHours(0, 0, 0, 0); return Math.round((Date.parse('2026-11-03T00:00:00-06:00') - t.getTime()) / 864e5); };
+  const evDay = asOf => { const d = Math.round((Date.parse(asOf + 'T12:00:00-05:00') - Date.parse('2026-10-19T12:00:00-05:00')) / 864e5) + 1; return d >= 1 && d <= 12 ? d : null; };
+
+  try {
+    const [geo, tur, res, not] = await Promise.all([get('data/tx-geo.json'), get('data/turnout.json', 1), get('data/results.json', 1), get('data/notices.json', 1)]);
+    const byF = Object.fromEntries(geo.counties.map(c => [c.fips, c]));
+    const photo = id => { for (const r of res?.races || []) for (const c of r.candidates) if (c.id === id && c.photo) return c.photo; return null; };
+    const T = tur?.statewide, C = tur?.counties || {};
+    const tp = t => t && t.registered ? t.total / t.registered * 100 : null;
+    const ranked = Object.entries(C).filter(([f]) => byF[f]).sort((a, b) => b[1].total - a[1].total);
+    const srcTurnout = () => `Source: Texas Secretary of State early-voting rosters${tur?.asOf ? ', as of ' + md(tur.asOf) : ''}`;
+    // Turnout-shaded map, optionally with one county highlighted.
+    const mapSVG = (w, hl, fill) => {
+      const ps = Object.values(C).map(tp).filter(x => x != null), max = Math.max(0.0001, ...ps);
+      const step = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10].find(x => x * 5 >= max) || 10;
+      const shade = f => { if (fill) return fill(f); const p = tp(C[f]); if (p == null) return 'var(--empty)'; const i = [1, 2, 3, 4].findIndex(k => p < step * k); return `var(--t${i === -1 ? 5 : i + 1})`; };
+      let h = geo.counties.map(c => `<path class="c" d="${c.d}" fill="${hl ? (c.fips === hl ? 'var(--gold)' : 'var(--empty)') : shade(c.fips)}"${c.fips === hl ? ' stroke="#0F1B2D" stroke-width="3"' : ''}/>`).join('');
+      if (hl) { const c = byF[hl]; h += `<path d="${c.d}" fill="var(--gold)" stroke="#0F1B2D" stroke-width="3"/>`; }
+      h += `<path class="o" d="${geo.outline}"/>`;
+      if (!hl) for (const c of geo.cities.filter(c => ['Houston', 'Dallas', 'San Antonio', 'Austin', 'El Paso'].includes(c.n))) h += `<circle cx="${c.x}" cy="${c.y}" r="5" fill="#0F1B2D"/><text x="${c.x + 9}" y="${c.y - 7}" font-size="24">${c.n}</text>`;
+      return `<svg class="tx" viewBox="0 0 1000 940" width="${w}" height="${w * .94}">${h}</svg>`;
+    };
+    let html = '';
+
+    if (type === 'turnout' || type === 'countdown') {
+      if (!T || !T.total) throw new Error('no turnout');
+      const daily = tur.daily || [], prev = daily.length > 1 ? daily[daily.length - 2].total : null, gain = prev != null ? T.total - prev : null;
+      const day = evDay(tur.asOf), allMail = !T.inPerson;
+      const dates = tur.dates || daily.map(d => d.date), by = new Map(daily.map(d => [d.date, d.total])), mx = Math.max(1, ...daily.map(d => d.total));
+      const bars = dates.map(d => by.has(d) ? `<i style="height:${Math.max(4, by.get(d) / mx * 92).toFixed(0)}px"></i>` : '<i class="e"></i>').join('');
+      if (type === 'turnout') {
+        html = brand(day ? `Early voting · Day ${day}` : 'Early vote count') + `<div class="main">
+          <div class="col" style="flex:1">
+            <p class="k">${allMail ? 'Mail ballots already returned' : 'Texans who have already voted'}</p>
+            <p class="huge" style="font-size:${T.total >= 1e6 ? 168 : 190}px">${fmt(T.total)}</p>
+            <p class="sub"><b>${p1(pct(T.total, T.registered))}%</b> of ${short(T.registered)} registered voters${T.inPerson ? ` · ${fmt(T.inPerson)} in person, ${fmt(T.mail)} by mail` : ''}</p>
+            ${gain && gain >= Math.max(100, prev * 0.005) ? `<span class="pill">▲ ${fmt(gain)} since the previous day</span>` : ''}
+            <div style="margin-top:auto"><div class="bars">${bars}</div><div class="blab"><span>${md(dates[0])}</span><span>Running total by day</span><span>${md(dates[dates.length - 1])}</span></div></div>
+          </div>
+          <div class="col" style="width:470px;justify-content:center">${mapSVG(470)}<p class="note" style="text-align:center;margin-top:6px">Darker green = higher share of registered voters</p></div>
+        </div>` + foot(srcTurnout());
+      } else {
+        const dl = daysLeft(), nx = (not?.dates || []).find(d => Date.parse(d.date + 'T23:59:59-06:00') >= Date.now());
+        html = brand('Countdown') + `<div class="main" style="align-items:center">
+          <div class="col" style="flex:1">
+            <p class="huge" style="font-size:260px">${dl > 0 ? dl : 0}<span style="font-size:120px"> ${dl === 1 ? 'DAY' : 'DAYS'}</span></p>
+            <p class="qbig" style="font-size:64px;margin-top:6px">until <span class="gold">Texas decides</span></p>
+            <p class="sub" style="font-size:24px"><b>${fmt(T.total)}</b> ${allMail ? 'mail ballots already returned' : 'Texans have already voted'}${nx ? ` · Next: <b>${esc(nx.title)}</b>, ${md(nx.date)}` : ''}</p>
+          </div>
+          <div class="col" style="width:380px">${mapSVG(380)}</div>
+        </div>` + foot(srcTurnout() + ' · Polls close 7 p.m. CT, Nov. 3');
+      }
+    }
+
+    else if (type === 'county') {
+      const f = q.get('fips') && byF[q.get('fips')] ? q.get('fips') : ranked[0]?.[0];
+      const t = C[f]; if (!f || !t) throw new Error('no county data');
+      const rank = ranked.findIndex(([x]) => x === f) + 1, byPct = Object.entries(C).filter(([x]) => byF[x]).sort((a, b) => (tp(b[1]) || 0) - (tp(a[1]) || 0)).findIndex(([x]) => x === f) + 1;
+      const name = byF[f].name;
+      html = brand('County spotlight') + `<div class="main">
+        <div class="col" style="flex:1">
+          <p class="qbig" style="font-size:${name.length > 11 ? 96 : 120}px">${esc(name)}<br><span style="font-size:.6em;color:var(--muted)">County</span></p>
+          <p class="huge" style="font-size:120px;margin-top:22px">${fmt(t.total)}</p>
+          <p class="sub" style="margin-top:4px">${t.inPerson ? 'early votes cast' : 'mail ballots returned'} · <b>${p1(tp(t) || 0)}%</b> of ${fmt(t.registered)} registered</p>
+          <div style="display:flex;gap:12px;margin-top:auto">
+            <span class="pill">#${rank} of 254 by votes</span><span class="pill">#${byPct} of 254 by turnout %</span>
+          </div>
+        </div>
+        <div class="col" style="width:470px;justify-content:center">${mapSVG(470, f)}</div>
+      </div>` + foot(srcTurnout());
+    }
+
+    else if (type === 'market') {
+      const m = await get('api/markets');
+      const races = (m.races || []).filter(r => r.enough);
+      const want = q.get('race') || 'both';
+      const chg = c => c.change24h == null ? '' : Math.abs(c.change24h) < 0.005 ? 'No change today' : `${c.change24h > 0 ? '▲' : '▼'} ${cents(Math.abs(c.change24h))}¢ today`;
+      const src = `Polymarket traders' prices for a $1 contract, as of ${new Date(m.fetched).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })} CT · Not votes, not a forecast`;
+      if (want === 'both') {
+        if (!races.length) throw new Error('no markets');
+        const one = r => { const tot = r.candidates.reduce((s, c) => s + c.price, 0) || 1;
+          return `<div class="race"><h2>${esc(r.title)}<small>$${short(r.volume)} traded</small></h2>
+            <div class="split">${r.candidates.map(c => `<i style="flex:${(c.price / tot * 100).toFixed(1)};background:var(${PARTY[c.party]?.v || '--muted'})"></i>`).join('')}</div>
+            ${r.candidates.map(c => `<div class="row"><div class="ph" style="--pc:var(${PARTY[c.party]?.v})">${photo(c.id) ? `<img src="${photo(c.id)}" alt="">` : ''}</div>
+              <div class="nm">${esc(c.name)}<small>${PARTY[c.party]?.label || ''}</small></div>
+              <div class="pr">${cents(c.price)}<small>¢</small><span class="ch">${chg(c)}</span></div></div>`).join('')}
+            ${spark(r)}</div>`; };
+        // 30-day price lines, fixed 0-100¢ scale so moves aren't exaggerated.
+        function spark(r) {
+          const S = r.candidates.filter(c => c.history?.length > 1); if (!S.length) return '';
+          const ts = S.flatMap(c => c.history.map(p => p[0])), t0 = Math.min(...ts), t1 = Math.max(...ts), W = 480, H = 120, R = 40;
+          const x = t => (t - t0) / Math.max(1, t1 - t0) * (W - R), y = p => 6 + (1 - p) * (H - 26);
+          return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;margin-top:auto;display:block">
+            ${[0.25, 0.5, 0.75].map(v => `<line x1="0" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#E3E7ED" stroke-width="1.5" ${v === .5 ? 'stroke-dasharray="4 4"' : ''}/><text x="${W}" y="${y(v) + 5}" text-anchor="end" font-size="14" fill="#5B6676" font-family="Public Sans">${v * 100}¢</text>`).join('')}
+            ${S.map(c => `<path d="${c.history.map((p, i) => `${i ? 'L' : 'M'}${x(p[0]).toFixed(1)},${y(p[1]).toFixed(1)}`).join('')}" fill="none" stroke="var(${PARTY[c.party]?.v})" stroke-width="3" stroke-linejoin="round"/>`).join('')}
+            <text x="0" y="${H - 2}" font-size="14" fill="#5B6676" font-family="Public Sans">Last 30 days</text></svg>`;
+        }
+        html = brand('Prediction markets') + `<div class="main" style="gap:24px">${races.map(one).join('')}</div>` + foot(src);
+      } else {
+        const r = races.find(x => x.id === want); if (!r) throw new Error('no market for race');
+        html = brand(`${r.title} market`) + `<div class="main"><div class="duel">${r.candidates.map((c, i) => `<div class="side${i ? ' r' : ''}" style="--pc:var(${PARTY[c.party]?.v});--pc-hi:var(${PARTY[c.party]?.hi})">
+            <div class="ph" style="--pc:var(${PARTY[c.party]?.v})">${photo(c.id) ? `<img src="${photo(c.id)}" alt=""${c.id === 'hinojosa' ? ' style="object-position:50% 100%"' : ''}>` : ''}</div>
+            <span class="nm">${esc(c.name)}</span><span class="pt">${PARTY[c.party]?.label || ''}</span>
+            <span class="pr">${cents(c.price)}<small>¢</small></span><span class="ch">${chg(c)}</span></div>`).join('')}<span class="vs">VS</span></div></div>` + foot(src);
+      }
+    }
+
+    else if (type === 'date') {
+      const ds = not?.dates || [], i = Math.min(Math.max(0, parseInt(q.get('i') || '0', 10) || 0), ds.length - 1), d = ds[i];
+      if (!d) throw new Error('no date');
+      const day = new Date(d.date + 'T12:00:00'), diff = Math.round((Date.parse(d.date + 'T00:00:00-05:00') - ctNow().setHours(0, 0, 0, 0)) / 864e5);
+      html = brand(diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : diff > 1 ? `In ${diff} days` : 'Key date') + `<div class="main" style="align-items:center">
+        <div class="col" style="width:330px;align-items:center;justify-content:center;background:var(--ink);color:#fff;border-radius:22px;padding:30px 0">
+          <span style="font-family:var(--display);font-weight:700;font-size:56px;text-transform:uppercase;color:var(--gold)">${day.toLocaleDateString('en-US', { month: 'short' })}</span>
+          <span style="font-family:var(--display);font-weight:700;font-size:200px;line-height:.85">${day.getDate()}</span>
+          <span style="font-size:22px;font-weight:700;opacity:.8;margin-top:6px">${day.toLocaleDateString('en-US', { weekday: 'long' })}</span></div>
+        <div class="col" style="flex:1">
+          <p class="qbig" style="font-size:86px">${esc(d.title)}</p>
+          <p class="sub" style="font-size:28px;color:var(--ink)">${esc(d.body)}</p>
+          <p class="sub" style="font-size:22px;margin-top:22px">Find your polling place, accepted photo IDs and live turnout at the link.</p>
+        </div></div>` + foot('Source: Texas Secretary of State · VoteTexas.gov');
+    }
+
+    else if (type === 'question') {
+      const i = Math.min(Math.max(0, parseInt(q.get('q') || '0', 10) || 0), QUESTIONS.length - 1);
+      html = brand('Your turn') + `<div class="main" style="align-items:center">
+        <div class="col" style="flex:1"><p class="qbig" style="font-size:${QUESTIONS[i].length > 40 ? 92 : 108}px">${esc(QUESTIONS[i])}</p>
+          <p class="sub" style="font-size:28px;margin-top:22px">Reply below 👇 ${T && T.total ? `· <b>${fmt(T.total)}</b> ${T.inPerson ? 'Texans have voted early' : 'mail ballots returned'} so far` : ''}</p></div>
+        <div class="col" style="width:400px">${mapSVG(400)}</div></div>` + foot(T ? srcTurnout() : 'Texas Decides · live, nonpartisan election tracker');
+    }
+
+    else if (type === 'results') {
+      const r = (res?.races || []).find(x => !x.demo && x.id === (q.get('race') || 'senate'));
+      if (!r || !(r.statewide?.total > 0)) throw new Error('no results yet');
+      const sw = r.statewide, tot = sw.total, rep = sw.reporting || {}, rp = rep.total ? rep.done / rep.total * 100 : 0;
+      const people = r.candidates.filter(c => c.party === 'R' || c.party === 'D').map(c => ({ ...c, v: sw.votes[c.id] || 0 })).sort((a, b) => b.v - a.v);
+      const lead = cty => { if (!cty || !cty.total) return null; const s = people.map(c => ({ c, v: cty.votes?.[c.id] || 0 })).sort((a, b) => b.v - a.v); return { party: s[0].c.party, m: (s[0].v - (s[1]?.v || 0)) / cty.total * 100 }; };
+      const fill = f => { const l = lead(r.counties?.[f]); if (!l) return 'var(--empty)'; const ramp = l.party === 'R' ? ['--r1', '--r2', '--r3', '--r4'] : ['--d1', '--d2', '--d3', '--d4']; return `var(${ramp[l.m < 10 ? 0 : l.m < 25 ? 1 : l.m < 50 ? 2 : 3]})`; };
+      html = brand(`${r.title} · Unofficial`) + `<div class="main">
+        <div class="col" style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;gap:20px"><p class="k">${Math.round(rp)}% of ${esc(rep.unit || 'polling locations')} reporting</p><p class="k">${fmt(tot)} votes</p></div>
+          <div class="prog" style="margin:10px 0 6px"><i style="width:${rp.toFixed(1)}%"></i></div>
+          ${people.map(c => `<div class="res"><span class="nm"><i style="background:var(${PARTY[c.party].v})"></i>${esc(c.name)}</span><span class="p">${p1(pct(c.v, tot))}%</span><span class="v">${fmt(c.v)}</span></div>`).join('')}
+          <p class="note">Unofficial results. Counties still reporting. No winner is projected here.</p>
+        </div>
+        <div class="col" style="width:440px;justify-content:center">${mapSVG(440, null, fill)}</div></div>` + foot(`Source: Texas Secretary of State unofficial returns · as of ${new Date(res.updated).toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })} CT`);
+    }
+    else throw new Error('unknown type');
+
+    document.getElementById('card').innerHTML = html;
+    await document.fonts.ready;
+    await Promise.all([...document.images].map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; })));
+    document.body.dataset.ready = '1';
+  } catch (e) {
+    document.getElementById('card').innerHTML = `<p style="font:700 28px var(--body);padding:40px">Card unavailable: ${esc(e.message || e)}</p>`;
+    document.body.dataset.ready = 'error';
+  }
+})();
+</script>
+</body>
+</html>

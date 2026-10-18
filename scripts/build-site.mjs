@@ -36,7 +36,7 @@ for (const f of fs.readdirSync(new URL('site/data/', root))) fs.copyFileSync(new
 const resUrl = new URL('data/results.json', dist);
 if (fs.existsSync(resUrl)) { const r = JSON.parse(fs.readFileSync(resUrl, 'utf8')); r.races = r.races.filter(x => !x.demo); fs.writeFileSync(resUrl, JSON.stringify(r)); }
 if (fs.existsSync(new URL('site/img/', root))) fs.cpSync(new URL('site/img/', root), new URL('img/', dist), { recursive: true });
-for (const f of ['election-night.ics', 'early-voting.ics', 'og.png', 'og-markets.png']) if (fs.existsSync(new URL(`site/${f}`, root))) fs.copyFileSync(new URL(`site/${f}`, root), new URL(f, dist));
+for (const f of ['election-night.ics', 'early-voting.ics', 'og.png', 'og-markets.png', 'card.html']) if (fs.existsSync(new URL(`site/${f}`, root))) fs.copyFileSync(new URL(`site/${f}`, root), new URL(f, dist));
 // Short cache on data so the 60-second refresh sees new numbers; Netlify/Cloudflare Pages read _headers.
 fs.writeFileSync(new URL('_headers', dist), '/data/*\n  Cache-Control: public, max-age=30, must-revalidate\n/og.png\n  Cache-Control: public, max-age=120\n/og-markets.png\n  Cache-Control: public, max-age=120\n/*.ics\n  Content-Type: text/calendar; charset=utf-8\n');
 console.log('built dist/');
