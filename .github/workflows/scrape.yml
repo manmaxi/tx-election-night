@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   scrape:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest moved to 26.04 on 10/19/26, which Playwright 1.56 does not support
     timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
