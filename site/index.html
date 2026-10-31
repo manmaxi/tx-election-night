@@ -273,66 +273,87 @@ button.mine:hover { border-color: var(--ink); }
 
 /* Line check: official polling-place wait times + "fastest place to vote" (Election Day) */
 .lc { border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); overflow: hidden; box-shadow: 0 12px 30px -20px rgba(15,27,45,.55); }
-.lc-head { padding: 18px 20px 14px; display: flex; flex-direction: column; gap: 12px; }
-.lc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 20px; flex-wrap: wrap; }
+.lc-head { padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 14px; }
+.lc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 20px; }
 .lc-k { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .lc-k i { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
 .lc.live .lc-k i { background: #1F9D55; animation: pulse 2s infinite; }
 .lc-k .new { padding: 2px 7px; border-radius: 999px; background: var(--gold); color: var(--ink); letter-spacing: .08em; }
 .lc h2 { margin: 4px 0 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 6vw, 42px); text-transform: uppercase; line-height: .95; }
-.lc .what { margin: 6px 0 0; font-size: 14px; color: var(--muted); max-width: 64ch; } .lc .what b { color: var(--ink); }
-.lc-note { margin: 0; padding: 10px 14px; border-radius: 10px; background: var(--warn-bg); color: var(--warn-fg); font-size: 13.5px; font-weight: 600; }
-.lc-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.lc-go { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 10px 22px 10px 16px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 22px -12px rgba(15,27,45,.8); }
-.lc-go:hover { transform: translateY(-1px); } .lc-go:disabled { opacity: .7; cursor: progress; }
-.lc-go .pin { width: 30px; height: 30px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; }
-.lc-go .pin svg { width: 16px; height: 16px; fill: none; stroke: var(--ink); stroke-width: 2.4; }
-.lc-go.busy .pin { animation: pulseGold 1.2s infinite; }
-.lc-or { font-size: 13px; color: var(--muted); }
-.lc-chips { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; }
-.lc-chips button { border: 0; background: transparent; padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 700; color: var(--muted); cursor: pointer; }
+.lc .what { margin: 8px 0 0; font-size: 14px; color: var(--muted); max-width: 60ch; } .lc .what b { color: var(--ink); }
+.lc-top .btn { flex: none; }
+.lc-note { margin: 0; display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn-fg); font-size: 13px; font-weight: 600; line-height: 1.35; }
+.lc-note b { white-space: nowrap; }
+.lc-chips { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); }
+.lc-chips button { border: 0; background: transparent; min-height: 40px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer; }
 .lc-chips button[aria-pressed="true"] { background: var(--ink); color: #fff; }
-.lc-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); border-top: 1px solid var(--line); }
-@media (max-width: 880px) { .lc-body { grid-template-columns: minmax(0, 1fr); } }
-.lc-map { position: relative; background: var(--wash); border-right: 1px solid var(--line); }
-@media (max-width: 880px) { .lc-map { border-right: 0; border-bottom: 1px solid var(--line); } }
+@media (max-width: 560px) { .lc-head { padding: 16px 16px 14px; } }
+/* County pulse: three numbers that answer "how bad are lines?" before anyone shares a location */
+.lc-pulse { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.lc-pulse > div { padding: 11px 14px 12px; min-width: 0; } .lc-pulse > div + div { border-left: 1px solid var(--line); }
+.lc-pulse small { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lc-pulse b { display: block; margin-top: 3px; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .lc-pulse b em { font-style: normal; font-size: .6em; margin-left: 2px; color: var(--muted); }
+@media (max-width: 560px) { .lc-pulse > div { padding: 10px 10px 11px; } .lc-pulse b { font-size: 22px; } .lc-pulse small { font-size: 9.5px; letter-spacing: .08em; } }
+.lc-pulse span { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lc-body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); border-top: 1px solid var(--line); }
+.lc-map { position: relative; background: var(--wash); border-right: 1px solid var(--line); min-width: 0; }
+@media (min-width: 881px) { .lc-map { align-self: start; position: sticky; top: 0; border-bottom: 1px solid var(--line); } }
+@media (max-width: 880px) { .lc-body { grid-template-columns: minmax(0, 1fr); } .lc-map { border-right: 0; border-bottom: 1px solid var(--line); } .lc.lc-me .lc-side { order: -1; border-bottom: 1px solid var(--line); } .lc.lc-me .lc-map { border-bottom: 0; } }
 .lc-map svg { display: block; width: 100%; height: auto; touch-action: manipulation; cursor: crosshair; user-select: none; -webkit-user-select: none; }
-.lc-map .cty { fill: #fff; stroke: #C9D1DC; stroke-width: .25; }
-.lc-map .cty.on { fill: #fff; stroke: var(--ink); stroke-width: .35; }
-.lc-map .cty.off { fill: #F7F8FA; }
-.lc-map .cn { font-family: var(--display); font-weight: 700; letter-spacing: .06em; fill: #9AA5B4; text-transform: uppercase; pointer-events: none; }
-.lc-map .town { font-family: var(--body); font-weight: 700; fill: var(--muted); paint-order: stroke; stroke: rgba(255,255,255,.9); stroke-linejoin: round; pointer-events: none; }
-.lc-map .d { stroke: #fff; transition: r .15s; }
-.lc-map .d.dim { opacity: .28; }
-.lc-map .d.sel { stroke: var(--ink); stroke-width: .35px !important; }
-.lc-map .me circle.h { fill: rgba(11,99,196,.18); animation: lcping 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.lc-map .cty { fill: #EEF1F5; stroke: #D3D9E1; }
+.lc-map .cty.on { fill: #fff; stroke: var(--ink); }
+.lc-map .rd { fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.lc-map .rd.s { stroke: #E3E7ED; } .lc-map .rd.u, .lc-map .rd.i { stroke: #D2D8E0; }
+.lc-map .shield rect { fill: #fff; stroke: #B5BECA; } .lc-map .shield text { font-family: var(--body); font-weight: 800; fill: #66717F; }
+.lc-map .town { font-family: var(--display); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; fill: #A9B3C0; pointer-events: none; }
+.lc-map .d { stroke: #fff; } .lc-map .d.dim { opacity: .35; }
+.lc-map .d.sel { stroke: var(--ink); }
+.lc-map .rank circle { fill: var(--ink); stroke: #fff; } .lc-map .rank text { fill: #fff; font-family: var(--display); font-weight: 700; }
+.lc-map .route { fill: none; stroke: var(--ink); stroke-linecap: round; }
+.lc-map .me circle.h { fill: rgba(11,99,196,.2); animation: lcping 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes lcping { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
 .anim-lc .lc-map .d { animation: lcpop .5s cubic-bezier(.2,1.4,.4,1) both; animation-delay: calc(var(--i) * 2ms); }
 @keyframes lcpop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
 .lc-map .d { transform-box: fill-box; transform-origin: center; }
-.lc-legend { position: absolute; left: 10px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 6px 10px; background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 10px; font-size: 11.5px; color: var(--muted); max-width: calc(100% - 20px); }
+.lc-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 9px 14px; border-top: 1px solid var(--line); background: var(--bg); font-size: 12px; color: var(--muted); }
 .lc-legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .lc-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-@media (max-width: 880px) { .lc-legend { position: static; margin: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; max-width: none; padding: 8px 14px; background: var(--bg); } }
-.lc-hint { position: absolute; right: 10px; top: 10px; font-size: 11.5px; color: var(--muted); background: rgba(255,255,255,.92); border-radius: 8px; padding: 4px 8px; }
-.lc-side { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.lc-side h3 { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
-.lc-side h3 small { font-weight: 600; letter-spacing: 0; text-transform: none; }
-.lc-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 10px 10px 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); cursor: pointer; text-align: left; width: 100%; font: inherit; color: inherit; }
+.lc-side { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lc-side h3 { margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.lc-side h3 small { font-weight: 600; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+.lc-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 9px 10px 9px 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); cursor: pointer; text-align: left; width: 100%; font: inherit; color: inherit; }
 .lc-row:hover, .lc-row.sel { border-color: var(--ink); }
 .lc-row.best { border-color: var(--ink); box-shadow: 0 10px 22px -16px rgba(15,27,45,.7); }
 .lc-badge { width: 58px; height: 52px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; background: var(--bc); color: var(--bf); }
-.lc-badge b { font-family: var(--display); font-weight: 700; font-size: 26px; } .lc-badge small { font-size: 9.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+.lc-badge b { font-family: var(--display); font-weight: 700; font-size: 26px; } .lc-badge b sup { font-size: .55em; vertical-align: .55em; margin-right: 1px; }
+.lc-badge small { font-size: 9px; white-space: nowrap; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
 .lc-badge.na b { font-size: 15px; letter-spacing: .02em; }
-.lc-nm { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.lc-badge.tot { background: var(--bg); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.lc-row.best .lc-badge.tot { background: var(--ink); color: #fff; box-shadow: none; }
+.lc-nm { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .lc-nm b { font-size: 14.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .lc-nm span { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lc-nm .tt { color: var(--ink); font-weight: 700; }
-.lc-dir { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); color: var(--ink); text-decoration: none; flex: none; }
+/* Time-to-vote bar: the drive (hatched) and the line (wait color), side by side */
+.lc-bar { display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--wash); }
+.lc-bar i { display: block; height: 100%; animation: lcgrow .7s cubic-bezier(.2,.8,.2,1) both; transform-origin: left; }
+.lc-bar i.dr { background: repeating-linear-gradient(-45deg, #B9C2CE 0 3px, #DCE1E8 3px 6px); }
+.lc-bar i + i { margin-left: 2px; }
+@keyframes lcgrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.lc-dir { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); color: var(--ink); text-decoration: none; flex: none; }
 .lc-dir:hover { border-color: var(--ink); } .lc-dir svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.lc-total { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 4px; }
-.lc-total b { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: .9; white-space: nowrap; }
-.lc-total span { font-size: 13.5px; color: var(--muted); }
+/* The answer: one big number, the split, and a Go button */
+.lc-ans { display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 12px; border-radius: 14px; background: var(--ink); color: #fff; }
+.lc-ans .k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.lc-ans .big { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.lc-ans .big b { font-family: var(--display); font-weight: 700; font-size: 52px; line-height: .85; }
+.lc-ans .big span { font-size: 15px; font-weight: 700; }
+.lc-ans .where { font-size: 15px; font-weight: 700; line-height: 1.25; } .lc-ans .where span { display: block; font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,.7); margin-top: 2px; }
+.lc-ans .lc-bar { height: 12px; background: rgba(255,255,255,.12); } .lc-ans .lc-bar i.dr { background: repeating-linear-gradient(-45deg, rgba(255,255,255,.55) 0 3px, rgba(255,255,255,.25) 3px 6px); }
+.lc-ans .split { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: rgba(255,255,255,.8); } .lc-ans .split b { color: #fff; }
+.lc-ans .go { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 999px; background: var(--gold); color: var(--ink); font-weight: 800; font-size: 15px; text-decoration: none; }
+.lc-ans .go svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.lc-tip { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--wash); font-size: 13.5px; line-height: 1.4; color: var(--ink); }
+.lc-tip b { font-weight: 800; }
 .lc-msg { margin: 0; font-size: 13.5px; color: var(--muted); }
 .lc-msg b { color: var(--ink); }
 .lc-more { align-self: flex-start; }
@@ -343,6 +364,28 @@ button.mine:hover { border-color: var(--ink); }
 .lc-teaser .pin svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 2.2; }
 .lc-teaser b { display: block; font-size: 15px; } .lc-teaser span { font-size: 13px; color: rgba(255,255,255,.75); }
 .lc-teaser em { font-style: normal; font-weight: 800; font-size: 13px; color: var(--gold); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .lc-bar i { animation: none; } }
+/* Line check page (/lines/): just the tool, no results page around it */
+:root.lcp .wrap > :not(header):not(#lines):not(.site-foot):not(.bbwrap) { display: none !important; }
+:root.lcp .tagline { display: none; }
+.lc-foot.lc-home { border-top: 0; padding-bottom: 0; } .lc-foot.lc-home a { text-decoration: none; }
+.lc-find { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; }
+.lc-zip { flex: 1 1 300px; max-width: 440px; display: flex; align-items: center; gap: 4px; min-height: 58px; padding: 6px 6px 6px 10px; border-radius: 999px; background: var(--bg); box-shadow: inset 0 0 0 2px var(--ink), 0 10px 22px -16px rgba(15,27,45,.7); }
+.lc-zip:focus-within { box-shadow: inset 0 0 0 2px var(--ink), 0 0 0 4px rgba(245,197,66,.55); }
+.lc-zip .pin { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; flex: none; }
+.lc-zip .pin svg { width: 17px; height: 17px; fill: none; stroke: var(--ink); stroke-width: 2.4; }
+.lc-zip input { flex: 1 1 0; width: 0; min-width: 0; border: 0; outline: 0; background: transparent; padding: 0 8px; font: 800 20px/1 var(--body); letter-spacing: .06em; color: var(--ink); }
+.lc-zip input::placeholder { font-weight: 600; letter-spacing: 0; color: var(--muted); font-size: 17px; }
+.lc-zip button { flex: none; min-height: 46px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+.lc-loc { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 0; background: transparent; color: var(--ink); font-size: 14.5px; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); }
+.lc-loc svg { width: 18px; height: 18px; fill: none; stroke: #0B63C4; stroke-width: 2; flex: none; }
+.lc-loc.busy svg { animation: pulseGold 1.2s infinite; border-radius: 50%; }
+.lc-err { margin: -4px 0 0; font-size: 13.5px; font-weight: 600; color: var(--warn-fg); } .lc-err a { color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.lc-map .lc-chips { position: absolute; left: 10px; top: 10px; box-shadow: 0 6px 16px -10px rgba(15,27,45,.6); }
+.lc-map .lc-chips button { min-height: 34px; padding: 0 13px; font-size: 13px; }
+@media (max-width: 560px) { .lc-find { flex-direction: column; align-items: stretch; } .lc-zip { max-width: none; flex: none; width: 100%; box-sizing: border-box; min-width: 0; } .lc-loc { justify-content: center; } }
+
 :root.og #lines, :root.og #lcTeaser { display: none !important; }
 
 /* Market face-off: the top-of-page head-to-head until polls close (then the results cards take this spot) */
@@ -894,30 +937,48 @@ tbody tr:hover td { background: var(--wash); }
   // ---------- Line check: official wait times + fastest place to vote (Dallas & Tarrant) ----------
   // Waits come only from the counties (via /api/waits). Drive time is a rough estimate from distance and is labeled as such.
   // The visitor's location never leaves the phone: it is only used here to sort vote centers.
-  const lc = { data: null, county: null, me: null, meSrc: null, sel: null, showAll: false, first: true, busy: false, err: '' };
+  // Dallas reports waits as buckets its own map reads "less than n min" (lt: true); we say "under n", never "n".
+  const lc = { data: null, county: null, me: null, meSrc: null, sel: null, showAll: false, first: true, busy: false, err: '', roads: null, shapes: {}, zips: null };
+  // Line check lives on its own page (/lines/); the home page only carries a one-line teaser that links there.
+  const LCP = /^\/lines\/?/.test(location.pathname) || document.documentElement.classList.contains('lcp');
+  const lcStore = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (_) { return null; } };
   const LC_COUNTIES = { '48113': 'Dallas', '48439': 'Tarrant' };
-  const LC_FIT = { s: 4942.524996991513, tx: 503.6835586224785, ty: 3058.546177708588 };   // matches the site's county map projection
-  const LC_MI = 3958.8 / LC_FIT.s;   // miles per map unit
-  const lcProj = (lon, lat) => { const R = Math.PI / 180, p0 = 27.5 * R, p1 = 35 * R, n = (Math.sin(p0) + Math.sin(p1)) / 2, c = 1 + Math.sin(p0) * (2 * n - Math.sin(p0)), r0 = Math.sqrt(c) / n;
-    const l = (lon + 100) * R * n, r = Math.sqrt(c - 2 * n * Math.sin(lat * R)) / n; return [LC_FIT.s * r * Math.sin(l) + LC_FIT.tx, -LC_FIT.s * (r0 - r * Math.cos(l)) + LC_FIT.ty]; };
-  const LC_TOWNS = [['Dallas', -96.797, 32.7767], ['Fort Worth', -97.3308, 32.7555], ['Arlington', -97.1081, 32.7357], ['Irving', -96.9489, 32.814], ['Garland', -96.6389, 32.9126], ['Mesquite', -96.5992, 32.7668], ['Grand Prairie', -96.9978, 32.7459], ['Grapevine', -97.0781, 32.9343], ['Mansfield', -97.1417, 32.5632], ['Richardson', -96.7299, 32.9483], ['Keller', -97.2517, 32.9346], ['DeSoto', -96.857, 32.5899], ['Lake Worth', -97.4436, 32.8049]];
-  const LC_BANDS = [[15, '#1A6A4F', '#fff', 'Under 15 min'], [30, '#6CBC9D', '#0F1B2D', '15–29 min'], [60, '#F5C542', '#0F1B2D', '30–59 min'], [120, '#E8743B', '#fff', '60–119 min'], [Infinity, '#8A2C0D', '#fff', '2 hrs +']];
+  const LC_FIT = { s: 4942.524996991513, tx: 503.6835586224785, ty: 3058.546177708588 };   // the site's statewide county map projection
+  const LC_AEA = (() => { const R = Math.PI / 180, p0 = 27.5 * R, p1 = 35 * R, n = (Math.sin(p0) + Math.sin(p1)) / 2, c = 1 + Math.sin(p0) * (2 * n - Math.sin(p0)); return { R, n, c, r0: Math.sqrt(c) / n }; })();
+  const lcProj = (lon, lat) => { const { R, n, c, r0 } = LC_AEA, l = (lon + 100) * R * n, r = Math.sqrt(c - 2 * n * Math.sin(lat * R)) / n; return [LC_FIT.s * r * Math.sin(l) + LC_FIT.tx, -LC_FIT.s * (r0 - r * Math.cos(l)) + LC_FIT.ty]; };
+  const lcUnproj = (x, y) => { const { R, n, c, r0 } = LC_AEA, X = (x - LC_FIT.tx) / LC_FIT.s, Y = r0 + (y - LC_FIT.ty) / LC_FIT.s, r = Math.hypot(X, Y);
+    return [Math.atan2(X, Y) / n / R - 100, Math.asin((c - r * r * n * n) / (2 * n)) / R]; };
+  // Line check draws its own north-up local map (the statewide projection turns DFW about 2° off north).
+  const LC_LAT0 = 32.77, LC_K = 100, LC_KX = LC_K * Math.cos(LC_LAT0 * Math.PI / 180);
+  const lcXY = (lon, lat) => [(lon + 97) * LC_KX, (LC_LAT0 - lat) * LC_K];
+  const lcLL = (x, y) => [x / LC_KX - 97, LC_LAT0 - y / LC_K];
+  const LC_TOWNS = {
+    '48113': [['Dallas', -96.80, 32.78], ['Irving', -96.95, 32.85], ['Garland', -96.64, 32.91], ['Mesquite', -96.60, 32.77], ['Grand Prairie', -96.995, 32.655], ['Richardson', -96.73, 32.96], ['Carrollton', -96.89, 32.985], ['DeSoto', -96.86, 32.59], ['Lancaster', -96.76, 32.60], ['Cedar Hill', -96.96, 32.60], ['Rowlett', -96.56, 32.905], ['Coppell', -97.01, 32.96], ['Seagoville', -96.54, 32.64]],
+    '48439': [['Fort Worth', -97.33, 32.75], ['Arlington', -97.11, 32.70], ['Mansfield', -97.14, 32.57], ['Grapevine', -97.08, 32.94], ['Keller', -97.25, 32.94], ['Southlake', -97.15, 32.96], ['Hurst', -97.17, 32.82], ['Euless', -97.08, 32.85], ['Azle', -97.54, 32.90], ['Benbrook', -97.46, 32.67], ['Crowley', -97.36, 32.58], ['Saginaw', -97.36, 32.865]],
+  };
+  const LC_BANDS = [[15, '#1A6A4F', '#fff', 'Under 15 min'], [30, '#6CBC9D', '#0F1B2D', '15–29 min'], [60, '#F5C542', '#0F1B2D', '30–59 min'], [120, '#E8743B', '#fff', '1–2 hrs'], [Infinity, '#8A2C0D', '#fff', '2 hrs +']];
   const LC_STALE_MIN = 75;
   const lcLive = () => lc.data?.phase === 'live';
   const lcFresh = l => l.wait != null && l.updated && (!lcLive() || (Date.now() - Date.parse(l.updated)) / 6e4 <= LC_STALE_MIN) && !(l.wait === 0 && l.votesToday === 0);
-  const lcBand = l => lcFresh(l) ? LC_BANDS.find(b => l.wait < b[0]) : null;
+  const lcEff = l => l.lt ? l.wait - .5 : l.wait;   // "under 15" sorts and colors as just below 15
+  const lcBand = l => lcFresh(l) ? LC_BANDS.find(b => lcEff(l) < b[0]) : null;
+  const lcWait = (l, unit = ' min') => l.wait >= 120 && !l.lt ? '2 hrs+' : (l.lt ? 'under ' : '') + l.wait + unit;
   const lcHav = (a, b) => { const R = Math.PI / 180, dLa = (b[1] - a[1]) * R, dLo = (b[0] - a[0]) * R, h = Math.sin(dLa / 2) ** 2 + Math.cos(a[1] * R) * Math.cos(b[1] * R) * Math.sin(dLo / 2) ** 2; return 7917.6 * Math.asin(Math.sqrt(h)); };
   const lcDrive = mi => Math.round(mi * 1.3 / 28 * 60 + 3);   // road factor, ~28 mph city average, +3 min to park
   const lcLocs = () => (lc.data?.locations || []).filter(l => l.county === lc.county);
   const lcHM = iso => iso ? new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) : '';
   const lcDir = l => `https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lon}`;
   const DIR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M9 13v-2h5V8.5L17 12l-3 3.5V13"/></svg>';
+  const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length ? (s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2) : null; };
   async function loadWaits() {
     try { const r = await fetch('api/waits', { cache: 'no-store' }); if (!r.ok) throw 0; const d = await r.json(); if (d.locations?.length) lc.data = d; lc.err = ''; }
     catch (_) { lc.err = lc.data ? '' : 'down'; }
+    if (lc.data && !lc.roads) try { lc.roads = await (await fetch('data/lc-roads.json')).json(); } catch (_) { lc.roads = []; }
     paintLines(); paintTicker();
+    // Line check page: reuse a ZIP from the link (?zip=) or from this visitor's last visit.
+    if (LCP && lc.data && !lc.me && !lc.autoZip) { lc.autoZip = true; const z = new URLSearchParams(location.search).get('zip') || lcStore('lcZip'); if (z) lcZipGo(z, true); }
   }
-  // Which county a map point falls in (the site's county shapes, same projection).
+  // Which county a point falls in (the site's county shapes).
   function lcCountyAt(x, y) {
     for (const c of state.geo.counties) {
       const pts = c.d.replace(/[MZ]/g, ' ').split('L').map(s => s.trim().split(',').map(Number)).filter(p => p.length === 2);
@@ -927,15 +988,35 @@ tbody tr:hover td { background: var(--wash); }
     }
     return null;
   }
-  function lcSetMe(lonlat, src) {
-    const [x, y] = lcProj(...lonlat), f = lcCountyAt(x, y);
-    lc.me = { lonlat, x, y, fips: f }; lc.meSrc = src; lc.showAll = false; lc.sel = null;
+  // County outline redrawn north-up: statewide map units -> lon/lat -> local map units.
+  function lcShape(f) {
+    if (lc.shapes[f]) return lc.shapes[f];
+    const c = state.byFips[f], pts = [];
+    const d = c.d.replace(/([ML])\s*([-\d.]+)[ ,]([-\d.]+)/g, (m, cmd, x, y) => { const p = lcXY(...lcUnproj(+x, +y)); pts.push(p); return `${cmd}${p[0].toFixed(2)},${p[1].toFixed(2)}`; });
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    return (lc.shapes[f] = { d, box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
+  }
+  function lcSetMe(lonlat, src, extra = {}) {
+    const f = extra.fips || lcCountyAt(...lcProj(...lonlat));
+    lc.me = { lonlat, xy: lcXY(...lonlat), fips: f, ...extra }; lc.meSrc = src; lc.showAll = false; lc.sel = null; lc.err = '';
     if (f && LC_COUNTIES[f]) lc.county = f;
     paintLines();
+    if (f && LC_COUNTIES[f] && document.documentElement.clientWidth <= 880 && !extra.quiet) setTimeout(() => $('lcSide')?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }), 60);
+  }
+  // ZIP code -> the ZIP's center (Census ZCTA). ZIPs that cross a county line use the Dallas/Tarrant part.
+  async function lcZipGo(z, quiet) {
+    z = String(z || '').replace(/\D/g, '').slice(0, 5);
+    if (z.length !== 5) { lc.err = 'zipfmt'; paintLines(); return; }
+    if (!lc.zips) try { lc.zips = await (await fetch('data/lc-zips.json')).json(); } catch (_) { lc.err = 'zipload'; paintLines(); return; }
+    const e = lc.zips[z];
+    if (!e) { lc.err = 'zipout'; lc.errZip = z; lc.me = null; paintLines(); return; }
+    const fs = e.slice(2).map(f => '48' + f), cov = fs.find(f => LC_COUNTIES[f]);
+    lcStore('lcZip', z);
+    lcSetMe([e[1], e[0]], 'zip', { fips: cov, zip: z, split: fs[0] !== cov ? fs[0] : null, quiet });
   }
   function lcFindMe() {
     if (!navigator.geolocation) { lc.err = 'nogeo'; paintLines(); return; }
-    lc.busy = true; paintLines();
+    lc.busy = true; lc.err = ''; paintLines();
     navigator.geolocation.getCurrentPosition(p => { lc.busy = false; lcSetMe([p.coords.longitude, p.coords.latitude], 'gps'); },
       () => { lc.busy = false; lc.err = 'denied'; paintLines(); }, { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 });
   }
@@ -945,36 +1026,82 @@ tbody tr:hover td { background: var(--wash); }
       return locs.map(l => { const mi = lcHav(lc.me.lonlat, [l.lon, l.lat]), dr = lcDrive(mi), f = lcFresh(l); return { l, mi, dr, total: f ? dr + l.wait : null }; })
         .sort((a, b) => (a.total ?? 1e9) - (b.total ?? 1e9) || a.mi - b.mi);
     }
-    return locs.map(l => ({ l })).sort((a, b) => (lcFresh(a.l) ? a.l.wait : 1e9) - (lcFresh(b.l) ? b.l.wait : 1e9) || a.l.name.localeCompare(b.l.name));
+    return locs.map(l => ({ l })).sort((a, b) => (lcFresh(a.l) ? lcEff(a.l) : 1e9) - (lcFresh(b.l) ? lcEff(b.l) : 1e9) || a.l.name.localeCompare(b.l.name));
   }
   function lcBadge(l) {
     const b = lcBand(l);
     if (!b) return `<span class="lc-badge na" style="--bc:var(--empty);--bf:var(--muted)"><b>—</b><small>no report</small></span>`;
-    return `<span class="lc-badge" style="--bc:${b[1]};--bf:${b[2]}"><b>${l.wait >= 120 ? '2h+' : l.wait}</b><small>${l.wait >= 120 ? 'wait' : 'min wait'}</small></span>`;
+    if (l.wait >= 120 && !l.lt) return `<span class="lc-badge" style="--bc:${b[1]};--bf:${b[2]}"><b>2h+</b><small>wait</small></span>`;
+    return `<span class="lc-badge" style="--bc:${b[1]};--bf:${b[2]}"><b>${l.lt ? '<sup>&lt;</sup>' : ''}${l.wait}</b><small>min wait</small></span>`;
   }
-  function lcRow(x, i, mode) {
-    const l = x.l, sub = mode === 'me'
-      ? `<span class="tt">${x.total != null ? `≈ ${x.total} min total` : 'Wait not reported'}</span><span>${x.mi.toFixed(1)} mi · ~${x.dr} min drive${l.city ? ' · ' + esc(l.city) : ''}</span>`
-      : `<span>${esc(l.address)}</span>`;
-    return `<div class="lc-row${lc.sel === l.id ? ' sel' : ''}${mode === 'me' && i === 0 && x.total != null ? ' best' : ''}" data-id="${esc(l.id)}" role="button" tabindex="0">${lcBadge(l)}
-      <span class="lc-nm"><b>${esc(l.name)}</b>${sub}</span>
+  const lcBar = (dr, w, b, max) => `<span class="lc-bar" aria-hidden="true"><i class="dr" style="width:${(dr / max * 100).toFixed(1)}%"></i>${w > 0 ? `<i style="width:${(w / max * 100).toFixed(1)}%;background:${b[1]};animation-delay:.25s"></i>` : ''}</span>`;
+  function lcRow(x, i, mode, max) {
+    const l = x.l, sel = lc.sel === l.id ? ' sel' : '';
+    if (mode === 'me') {
+      const b = lcBand(l), tot = x.total != null;
+      const badge = tot ? `<span class="lc-badge tot"><b>${l.lt ? '<sup>&lt;</sup>' : ''}${x.total}</b><small>min total</small></span>` : lcBadge(l);
+      return `<div class="lc-row${sel}${i === 0 && tot ? ' best' : ''}" data-id="${esc(l.id)}" role="button" tabindex="0">${badge}
+        <span class="lc-nm"><b>${esc(l.name)}</b>${tot ? lcBar(x.dr, l.wait, b, max) : ''}<span>~${x.dr} min drive${tot ? ` + ${lcWait(l)} line` : ' · wait not reported'} · ${x.mi.toFixed(1)} mi</span></span>
+        <a class="lc-dir" href="${lcDir(l)}" target="_blank" rel="noopener" aria-label="Directions to ${esc(l.name)}">${DIR_ICON}</a></div>`;
+    }
+    return `<div class="lc-row${sel}" data-id="${esc(l.id)}" role="button" tabindex="0">${lcBadge(l)}
+      <span class="lc-nm"><b>${esc(l.name)}</b><span>${esc(l.address)}</span></span>
       <a class="lc-dir" href="${lcDir(l)}" target="_blank" rel="noopener" aria-label="Directions to ${esc(l.name)}">${DIR_ICON}</a></div>`;
   }
-  function lcMap() {
-    const g = state.geo, cs = ['48113', '48439'].map(f => state.byFips[f]).filter(Boolean);
+  function lcMap(ranked, mine) {
     const narrow = document.documentElement.clientWidth <= 880;   // phones: zoom to the selected county
-    const xs = [], ys = []; for (const c of cs.filter(c => !narrow || c.fips === lc.county)) c.d.replace(/[MZ]/g, ' ').split('L').forEach(p => { const [x, y] = p.trim().split(',').map(Number); if (isFinite(x)) { xs.push(x); ys.push(y); } });
-    const pad = 1.6, x0 = Math.min(...xs) - pad, y0 = Math.min(...ys) - pad - 2, W = Math.max(...xs) - Math.min(...xs) + pad * 2, H = Math.max(...ys) - Math.min(...ys) + pad * 2 + 2;
-    const px = Math.min(document.documentElement.clientWidth - (narrow ? 2 : 32), 1240) * (narrow ? 1 : .56), k = Math.max(1, px / W);
-    const R0 = Math.max(.42, 3.6 / k), FT = 10.5 / k, FC = 13 / k;
-    const shapes = cs.map(c => `<path class="cty ${c.fips === lc.county ? 'on' : 'off'}" d="${c.d}"/><text class="cn" style="font-size:${FC.toFixed(2)}px" x="${(c.c[0]).toFixed(1)}" y="${(y0 + 1.2 + FC).toFixed(2)}" text-anchor="middle">${esc(c.name)} County</text>`).join('');
-    const towns = LC_TOWNS.map(([n, lo, la]) => { const [x, y] = lcProj(lo, la); return `<text class="town" style="font-size:${FT.toFixed(2)}px;stroke-width:${(3 / k).toFixed(2)}px" x="${x.toFixed(2)}" y="${(y - R0 * 1.6).toFixed(2)}" text-anchor="middle">${n}</text>`; }).join('');
-    const all = (lc.data?.locations || []);
-    const dots = all.map((l, i) => { const [x, y] = lcProj(l.lon, l.lat), b = lcBand(l); l._x = x; l._y = y;
-      return `<circle class="d${l.county !== lc.county ? ' dim' : ''}${lc.sel === l.id ? ' sel' : ''}" style="--i:${i % 400}" data-id="${esc(l.id)}" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(lc.sel === l.id ? 1.6 : 1) * R0}" stroke-width="${(1 / k).toFixed(3)}" fill="${b ? b[1] : '#C9D1DC'}"/>`; }).join('');
-    const me = lc.me && lc.me.x > x0 && lc.me.x < x0 + W && lc.me.y > y0 && lc.me.y < y0 + H ? `<g class="me"><circle class="h" cx="${lc.me.x.toFixed(2)}" cy="${lc.me.y.toFixed(2)}" r="${(R0 * 5).toFixed(2)}"/><circle cx="${lc.me.x.toFixed(2)}" cy="${lc.me.y.toFixed(2)}" r="${(R0 * 1.7).toFixed(2)}" fill="#0B63C4" stroke="#fff" stroke-width="${(2 / k).toFixed(2)}"/></g>` : '';
+    const fs = ['48113', '48439'].filter(f => state.byFips[f]), show = narrow ? [lc.county] : fs;
+    const bx = show.map(f => lcShape(f).box), pad = 1.2;
+    const x0 = Math.min(...bx.map(b => b[0])) - pad, y0 = Math.min(...bx.map(b => b[1])) - pad, W = Math.max(...bx.map(b => b[2])) + pad - x0, H = Math.max(...bx.map(b => b[3])) + pad - y0;
+    const px = narrow ? Math.min(document.documentElement.clientWidth, 880) : Math.min(document.documentElement.clientWidth - 32, 1240) * .54;
+    const k = px / W, u = v => (v / k).toFixed(3);   // u(n): n screen pixels in map units
+    const R0 = 4.6 / k;
+    const shapes = fs.map(f => `<path class="cty${f === lc.county ? ' on' : ''}" d="${lcShape(f).d}" stroke-width="${u(f === lc.county ? 1.6 : 1)}"/>`).join('');
+    const clip = `<clipPath id="lcClip">${show.map(f => `<path d="${lcShape(f).d}"/>`).join('')}</clipPath>`;
+    let roads = '', shields = '';
+    for (const r of lc.roads || []) {
+      const segs = r.p.map(s => s.map(p => lcXY(p[0], p[1])));
+      roads += `<path class="rd ${r.t}" stroke-width="${u(r.t === 's' ? 1.2 : 2.4)}" d="${segs.map(s => 'M' + s.map(p => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join('L')).join('')}"/>`;
+      if (r.n && r.n !== 'I-345') {   // one small route marker per highway, inside the selected county, away from the middle
+        const sh = lcShape(lc.county).box, cx = (sh[0] + sh[2]) / 2, cy = (sh[1] + sh[3]) / 2;
+        const inside = segs.flat().filter(p => p[0] > sh[0] + 1 && p[0] < sh[2] - 1 && p[1] > sh[1] + 1 && p[1] < sh[3] - 1 && lcCountyAt(...lcProj(...lcLL(...p))) === lc.county)
+          .sort((a, b) => Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy));
+        const p = inside[Math.floor(inside.length * .7)];
+        if (p) { const t = r.n.replace(/^I-|^US /, ''), w = (t.length * 6.4 + 8) / k, h = 14 / k;
+          shields += `<g class="shield"><rect x="${(p[0] - w / 2).toFixed(2)}" y="${(p[1] - h / 2).toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" rx="${u(4)}" stroke-width="${u(1)}"/><text x="${p[0].toFixed(2)}" y="${(p[1] + 3.8 / k).toFixed(2)}" text-anchor="middle" style="font-size:${u(10.5)}px">${t}</text></g>`; }
+      }
+    }
+    const towns = show.flatMap(f => LC_TOWNS[f]).map(([n, lo, la]) => { const [x, y] = lcXY(lo, la); return `<text class="town" x="${x.toFixed(2)}" y="${(y + 4 / k).toFixed(2)}" text-anchor="middle" style="font-size:${u(n === 'Dallas' || n === 'Fort Worth' ? 15 : 11.5)}px">${n}</text>`; }).join('');
+    const top = mine ? ranked.filter(x => x.total != null).slice(0, 3) : [], topIds = top.map(x => x.l.id);
+    const dots = (lc.data?.locations || []).map((l, i) => { const [x, y] = lcXY(l.lon, l.lat), b = lcBand(l); l._x = x; l._y = y;
+      if (topIds.includes(l.id)) return '';
+      const s = lc.sel === l.id;
+      return `<circle class="d${l.county !== lc.county || (mine && top.length) ? ' dim' : ''}${s ? ' sel' : ''}" style="--i:${i % 400}" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(R0 * (s ? 1.6 : 1)).toFixed(3)}" stroke-width="${u(s ? 2.5 : 1.2)}" fill="${b ? b[1] : '#C9D1DC'}"/>`; }).join('');
+    let me = '', route = '', ranks = '';
+    if (lc.me) {
+      const [mx, my] = lc.me.xy;
+      if (top[0]) route = `<path class="route" d="M${mx.toFixed(2)},${my.toFixed(2)}L${top[0].l._x.toFixed(2)},${top[0].l._y.toFixed(2)}" stroke-width="${u(2)}" stroke-dasharray="${u(1)} ${u(5)}"/>`;
+      me = `<g class="me"><circle class="h" cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="${u(26)}"/><circle cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="${u(8)}" fill="#0B63C4" stroke="#fff" stroke-width="${u(2.5)}"/></g>`;
+      ranks = top.map((x, i) => { const b = lcBand(x.l), r = (i ? 9 : 12) / k; return `<g class="rank"><circle cx="${x.l._x.toFixed(2)}" cy="${x.l._y.toFixed(2)}" r="${r.toFixed(3)}" stroke-width="${u(2.5)}" style="${i ? `fill:${b[1]}` : ''}"/><text x="${x.l._x.toFixed(2)}" y="${(x.l._y + r * .36).toFixed(2)}" text-anchor="middle" style="font-size:${(r * 1.05).toFixed(3)}px;${i && b[2] !== '#fff' ? 'fill:#0F1B2D' : ''}">${i + 1}</text></g>`; }).reverse().join('');
+    }
     lc.vb = [x0, y0, W, H];
-    return `<svg id="lcSvg" viewBox="${x0.toFixed(2)} ${y0.toFixed(2)} ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Map of vote centers in Dallas and Tarrant counties, colored by reported wait">${shapes}${towns}${dots}${me}</svg>`;
+    return `<svg id="lcSvg" viewBox="${x0.toFixed(2)} ${y0.toFixed(2)} ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Map of vote centers in ${show.map(f => LC_COUNTIES[f]).join(' and ')} ${show.length > 1 ? 'counties' : 'County'}, colored by reported wait"><defs>${clip}</defs>${shapes}<g clip-path="url(#lcClip)">${roads}</g>${towns}${shields}${dots}${route}${ranks}${me}</svg>`;
+  }
+  // Three numbers for the selected county: the answer to "how bad are lines?" before anyone shares a location.
+  function lcPulse(live, cty) {
+    const locs = lcLocs(), fresh = locs.filter(lcFresh), best = [...fresh].sort((a, b) => lcEff(a) - lcEff(b))[0];
+    const name = LC_COUNTIES[lc.county], edN = lc.data.edCount?.[lc.county];
+    const cell = (k, v, s) => `<div><small>${k}</small><b>${v}</b><span>${s}</span></div>`;
+    const mins = (n, lt) => `${lt ? '&lt;' : ''}${n}<em>min</em>`;
+    if (live) {
+      const med = median(fresh.map(lcEff)), lt = fresh.some(l => l.lt);
+      return cell('Shortest line', best ? (best.wait >= 120 && !best.lt ? '2h+' : mins(best.wait, best.lt)) : '—', best ? esc(best.name) : 'No reports yet')
+        + cell('Typical line', med == null ? '—' : lt ? mins(Math.ceil(med), true) : mins(Math.round(med)), 'median of reports')
+        + cell('Reporting', `${fresh.length}/${locs.length}`, `updated ${lcHM(cty.updated) || '—'}`);
+    }
+    return cell('Tue. sites', edN ? fmt(edN) : 'TBA', edN ? 'vote at any' : 'posted by Tue.')
+      + cell('Polls open', '7–7', 'Tue., Nov. 3')
+      + cell('Last early day', best ? mins(best.wait, best.lt) : '—', 'shortest line');
   }
   function paintLines() {
     const el = $('lines'), tz = $('lcTeaser');
@@ -982,59 +1109,89 @@ tbody tr:hover td { background: var(--wash); }
     if (og || !d || d.phase === 'off' || lc.err === 'down') { el.hidden = true; tz.hidden = true; return; }
     const live = lcLive();
     if (!lc.county) { const f = myCounty(); lc.county = f && LC_COUNTIES[f] ? f : '48113'; }
-    // Election Day: the tool takes the top of the page. Before that it sits below the scoreboard, with a teaser up top.
-    const anchor = live ? $('tabs') : $('markets');
-    if (el.nextElementSibling !== anchor) anchor.parentNode.insertBefore(el, anchor);
-    tz.hidden = live;
-    if (!live) tz.innerHTML = `<span class="pin">${PIN}</span><span><b>New: Line check</b><span>Tuesday, find your fastest place to vote in Dallas and Tarrant counties.</span></span><em>Try it →</em>`;
+    // Home page: one line that links to the Line check page. The full tool only renders on /lines/.
+    if (!LCP) {
+      el.hidden = true; tz.hidden = false; tz.href = 'lines/';
+      const top = live ? (d.locations || []).filter(lcFresh).sort((a, b) => lcEff(a) - lcEff(b))[0] : null;
+      tz.innerHTML = live ? `<span class="pin">${PIN}</span><span><b>Voting today in Dallas or Tarrant County?</b><span>${top ? `Shortest line now: ${lcWait(top)} at ${esc(top.name)}.` : 'Find the shortest line near you.'}</span></span><em>Find yours →</em>`
+        : `<span class="pin">${PIN}</span><span><b>New: Line check</b><span>Enter your ZIP, get your fastest place to vote on Tuesday. Dallas &amp; Tarrant counties.</span></span><em>Try it →</em>`;
+      return;
+    }
+    tz.hidden = true;
+    const zipIn = $('lcZip'), keepZip = zipIn && zipIn.value, hadFocus = zipIn && document.activeElement === zipIn;
     const cty = (d.counties || []).find(c => c.fips === lc.county) || {}, name = LC_COUNTIES[lc.county];
-    const ranked = lcRank(), mine = lc.me && lc.me.fips === lc.county;
+    const ranked = lcRank(), mine = !!(lc.me && lc.me.fips === lc.county);
     const outside = lc.me && !LC_COUNTIES[lc.me.fips];
     const fresh = lcLocs().filter(lcFresh).length;
-    const edN = d.edCount?.[lc.county];
     let side = '';
-    if (lc.err === 'denied' || lc.err === 'nogeo') side += `<p class="lc-msg">${lc.err === 'denied' ? 'Location is off for this site.' : 'This browser can’t share location.'} <b>Tap the map where you are</b> instead.</p>`;
+    const err = { denied: 'Location is off for this site. Enter your ZIP code instead, or tap the map where you are.', nogeo: 'This browser can’t share location. Enter your ZIP code instead.',
+      zipfmt: 'Enter a 5-digit ZIP code.', zipload: 'Couldn’t load ZIP codes. Try again, or use your location.',
+      zipout: `ZIP ${esc(lc.errZip || '')} isn’t in Dallas or Tarrant County. Line check covers those two counties for now.${state.notices?.findUrl ? ` <a href="${esc(state.notices.findUrl)}" target="_blank" rel="noopener">Find your polling place</a> on the state’s site.` : ''}` }[lc.err] || '';
     if (outside) {
       const cn = lc.me.fips && state.byFips[lc.me.fips]?.name;
-      side += `<p class="lc-msg">${cn ? `You look to be in <b>${esc(cn)} County</b>.` : 'That spot is outside Texas.'} Line check covers Dallas and Tarrant counties, where you can vote at any vote center in your county. ${state.notices?.findUrl ? `<a href="${esc(state.notices.findUrl)}" target="_blank" rel="noopener">Find your polling place</a> on the state’s site.` : ''}</p>`;
+      side += `<p class="lc-tip">${cn ? `You look to be in <b>${esc(cn)} County</b>.` : 'That spot is outside Texas.'} Line check covers Dallas and Tarrant counties. ${state.notices?.findUrl ? `<a href="${esc(state.notices.findUrl)}" target="_blank" rel="noopener">Find your polling place</a> on the state’s site.` : ''}</p>`;
     }
     if (mine) {
-      const best = ranked[0];
-      side += `<h3>Your fastest options<small>${lc.meSrc === 'gps' ? 'from your location' : 'from the spot you tapped'}</small></h3>`;
-      if (best && best.total != null) side += `<div class="lc-total"><b>≈ ${best.total} min</b><span>to vote at ${esc(best.l.name)}: ~${best.dr} min drive + ${best.l.wait} min line</span></div>`;
-      else side += `<p class="lc-msg">No ${live ? 'recent' : ''} wait reports near you yet. Showing the closest vote centers.</p>`;
-      side += ranked.slice(0, lc.showAll ? 12 : 3).map((x, i) => lcRow(x, i, 'me')).join('');
+      const shown = ranked.slice(0, lc.showAll ? 12 : 3), best = ranked[0];
+      const max = Math.max(...shown.filter(x => x.total != null).map(x => x.dr + Math.max(0, x.l.wait)), 1);
+      if (best && best.total != null) {
+        const b = lcBand(best.l);
+        side += `<div class="lc-ans"><span class="k">${live ? 'Your fastest place to vote' : 'Fastest on the last early-vote day'}</span>
+          <div class="big"><b>${best.l.lt ? 'Under ' : '≈ '}${best.total} min</b><span>start to finish</span></div>
+          <div class="where">${esc(best.l.name)}<span>${esc(best.l.address)}</span></div>
+          ${lcBar(best.dr, best.l.wait, b, best.total)}
+          <div class="split"><span>~<b>${best.dr} min</b> drive</span><span><b>${lcWait(best.l)}</b> line</span></div>
+          <a class="go" href="${lcDir(best.l)}" target="_blank" rel="noopener">${DIR_ICON}Directions</a></div>`;
+        // The insight people share: the closest vote center often isn't the fastest one.
+        const near = [...ranked].sort((a, b) => a.mi - b.mi)[0];
+        if (near && near.l.id !== best.l.id && near.total != null && near.total - best.total >= 5)
+          side += `<p class="lc-tip"><b>Closest isn’t fastest.</b> ${esc(near.l.name)} is nearer (~${near.dr} min drive), but its line is ${lcWait(near.l)}. This saves you about <b>${near.total - best.total} min</b>.</p>`;
+        else if (near && near.l.id === best.l.id) side += `<p class="lc-tip"><b>Good news:</b> your closest vote center is also your fastest right now.</p>`;
+      } else side += `<p class="lc-msg">No ${live ? 'recent ' : ''}wait reports near you yet. Here are the closest vote centers.</p>`;
+      if (lc.me.split) side += `<p class="lc-tip">Part of ZIP ${esc(lc.me.zip)} is in ${esc(state.byFips[lc.me.split]?.name || 'another')} County. These are ${esc(name)} County vote centers; vote in the county where you’re registered.</p>`;
+      side += `<h3>${ranked.length > 1 ? 'Your other options' : 'Option'}<small>${lc.meSrc === 'gps' ? 'from your location' : lc.meSrc === 'zip' ? `from the middle of ZIP ${esc(lc.me.zip)}` : 'from the spot you tapped'}</small></h3>`;
+      side += (best && best.total != null ? shown.slice(1) : shown).map((x, i) => lcRow(x, i + (best && best.total != null ? 1 : 0), 'me', max)).join('');
     } else {
-      side += `<h3>${fresh ? 'Shortest lines' : 'Vote centers'} in ${name} County<small>${fresh} of ${lcLocs().length} reporting</small></h3>`;
+      side += `<h3>${fresh ? 'Shortest lines' : 'Vote centers'} · ${name} County<small>${fresh} of ${lcLocs().length} reporting</small></h3>`;
       side += ranked.slice(0, lc.showAll ? 25 : 5).map((x, i) => lcRow(x, i, 'list')).join('');
     }
     side += `<button type="button" class="more lc-more" id="lcMore">${lc.showAll ? 'Show fewer' : 'Show more'}</button>`;
-    const note = live ? '' : `<p class="lc-note">Live on Election Day, Tue., Nov. 3, 7 a.m.–7 p.m. Until then this shows the <b>final early-voting reports</b> from ${lcHM(cty.updated) ? `${new Date(cty.updated).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' })}` : 'the last day of early voting'}${edN ? `; ${fmt(edN)} Election Day vote centers are set in ${name} County` : ''}.</p>`;
-    el.className = 'lc' + (live ? ' live' : '');
+    const evDay = cty.updated ? new Date(cty.updated).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) : 'the last day of early voting';
+    const note = live ? '' : `<p class="lc-note"><b>Live Tuesday 7 a.m.</b><span>Until then you’re seeing the final early-voting reports (${evDay}), so you can try it now.</span></p>`;
+    el.className = 'lc' + (live ? ' live' : '') + (mine ? ' lc-me' : '');
     el.innerHTML = `<div class="lc-head">
         <div class="lc-top">
           <div><p class="lc-k"><i></i>Line check${live ? ' · Live' : ' <span class="new">New</span>'}</p><h2 id="lcTitle">Where’s the shortest line?</h2>
-            <p class="what">Official wait times from county election offices, plus drive time, so you can pick the <b>fastest place to vote</b>. In Dallas and Tarrant counties you can vote at <b>any vote center in your county</b>.</p></div>
-          <a class="btn btn-ghost" id="lcShare" href="#" target="_blank" rel="noopener">${SHARE}Share</a>
+            <p class="what">In Dallas and Tarrant counties you can vote at <b>any vote center in your county</b>. We add the county’s official wait to your drive and find the <b>fastest one</b>.</p></div>
+          <a class="btn btn-ghost" id="lcShare" href="#" target="_blank" rel="noopener" aria-label="Share Line check on X">${SHARE}<span class="hide-sm">Share</span></a>
         </div>
         ${note}
-        <div class="lc-cta">
-          <button type="button" class="lc-go${lc.busy ? ' busy' : ''}" id="lcGo"${lc.busy ? ' disabled' : ''}><span class="pin">${PIN}</span>${lc.busy ? 'Finding you…' : mine ? 'Update my location' : 'Find my fastest place to vote'}</button>
-          <span class="lc-or">or tap the map where you are</span>
-          <div class="lc-chips" role="group" aria-label="County">${Object.entries(LC_COUNTIES).map(([f, n]) => `<button type="button" data-f="${f}" aria-pressed="${f === lc.county}">${n}</button>`).join('')}</div>
-        </div>
+        <form class="lc-find" id="lcFind" novalidate>
+          <label class="lc-zip"><span class="pin">${PIN}</span><span class="sr">Your ZIP code</span><input id="lcZip" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]*" maxlength="5" placeholder="Your ZIP code" value="${esc(lc.me?.zip || '')}"><button type="submit">Find</button></label>
+          <button type="button" class="lc-loc${lc.busy ? ' busy' : ''}" id="lcGo"${lc.busy ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></svg>${lc.busy ? 'Finding you…' : 'Use my location'}</button>
+        </form>
+        ${err ? `<p class="lc-err" role="alert">${err}</p>` : ''}
       </div>
+      <div class="lc-pulse">${lcPulse(live, cty)}</div>
       <div class="lc-body">
-        <div class="lc-map">${lcMap()}
+        <div class="lc-map">${lcMap(ranked, mine)}
+          <div class="lc-chips" role="group" aria-label="County">${Object.entries(LC_COUNTIES).map(([f, n]) => `<button type="button" data-f="${f}" aria-pressed="${f === lc.county}">${n}</button>`).join('')}</div>
           <div class="lc-legend">${LC_BANDS.map(b => `<span><i style="background:${b[1]}"></i>${b[3]}</span>`).join('')}<span><i style="background:#C9D1DC"></i>No recent report</span></div>
         </div>
         <div class="lc-side" id="lcSide">${side}</div>
       </div>
-      <div class="lc-foot"><span>Wait times as reported by ${(d.counties || []).filter(c => c.ok).map(c => `<a href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.source)}</a>${c.updated ? ` (updated ${lcHM(c.updated)} CT)` : ''}`).join(' and ')}. Drive times are rough estimates from distance.</span><span>Your location stays on your device.</span></div>`;
+      <div class="lc-foot lc-home"><a href="./">← Texas Decides: live Senate &amp; Governor results</a></div>
+      <div class="lc-foot"><span>Wait times as reported by ${(d.counties || []).filter(c => c.ok).map(c => `<a href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.source)}</a>${c.updated ? ` (updated ${lcHM(c.updated)} CT)` : ''}`).join(' and ')}. Dallas reports waits in 15-minute ranges. Drive times are rough estimates from distance; roads: TxDOT.</span><span>Your location stays on your device.</span></div>`;
     el.hidden = false;
     if (lc.first && !reduceMotion()) { el.classList.add('anim-lc'); setTimeout(() => el.classList.remove('anim-lc'), 1800); }
     lc.first = false;
     $('lcGo').onclick = lcFindMe;
+    const zi = $('lcZip');
+    if (keepZip && !lc.me?.zip && lc.err !== 'zipout') zi.value = keepZip;
+    if (hadFocus) { zi.focus(); zi.setSelectionRange(zi.value.length, zi.value.length); }
+    $('lcFind').onsubmit = e => { e.preventDefault(); zi.blur(); lcZipGo(zi.value); };
+    zi.oninput = () => { zi.value = zi.value.replace(/\D/g, '').slice(0, 5); if (zi.value.length === 5 && zi.value !== lc.me?.zip) { zi.blur(); lcZipGo(zi.value); } };
+    $('shareTop').href = shareLinesURL();
     $('lcMore').onclick = () => { lc.showAll = !lc.showAll; paintLines(); };
     $('lcShare').href = shareLinesURL();
     el.querySelectorAll('.lc-chips button').forEach(b => b.onclick = () => { lc.county = b.dataset.f; lc.sel = null; lc.showAll = false; paintLines(); });
@@ -1044,12 +1201,10 @@ tbody tr:hover td { background: var(--wash); }
     $('lcSvg').addEventListener('click', e => {
       const svg = e.currentTarget, b = svg.getBoundingClientRect(), [x0, y0, W, H] = lc.vb;
       const x = x0 + (e.clientX - b.left) / b.width * W, y = y0 + (e.clientY - b.top) / b.height * H;
-      let near = null, nd = 16 * W / b.width;   // 16px finger radius
+      let near = null, nd = 14 * W / b.width;   // 14px finger radius
       for (const l of lc.data.locations) { const dd = Math.hypot(l._x - x, l._y - y); if (dd < nd) { nd = dd; near = l; } }
-      if (near) { lc.sel = near.id; if (near.county !== lc.county) lc.county = near.county; paintLines(); return; }
-      // Inverse of the map point: solve by nudging a lon/lat guess (tiny area, converges in a few steps).
-      let lo = -97, la = 32.8; for (let k = 0; k < 6; k++) { const [px, py] = lcProj(lo, la), [qx] = lcProj(lo + .01, la), [, qy] = lcProj(lo, la + .01); lo += (x - px) / ((qx - px) / .01); la += (y - py) / ((qy - py) / .01); }
-      lcSetMe([lo, la], 'tap');
+      if (near && !lc.me) { lc.sel = near.id; if (near.county !== lc.county) lc.county = near.county; paintLines(); return; }
+      lcSetMe(lcLL(x, y), 'tap');
     });
   }
   function shareLinesURL() {
@@ -1564,8 +1719,8 @@ tbody tr:hover td { background: var(--wash); }
       if (top && state.byFips[top[0]]) out.push({ tag: 'Turnout', html: `${esc(state.byFips[top[0]].name)} County leads early voting with <b>${fmt(top[1].total)}</b> ballots` });
     }
     if (lc.data && lc.data.phase !== 'off') {
-      const top = lcLive() ? (lc.data.locations || []).filter(lcFresh).sort((a, b) => a.wait - b.wait)[0] : null;
-      out.unshift(top ? { tag: 'Line check', html: `Shortest line now: <b>${top.wait} min</b> at ${esc(top.name)}, ${esc(LC_COUNTIES[top.county])} County`, link: { label: 'Find yours', url: '#lines' } }
+      const top = lcLive() ? (lc.data.locations || []).filter(lcFresh).sort((a, b) => lcEff(a) - lcEff(b))[0] : null;
+      out.unshift(top ? { tag: 'Line check', html: `Shortest line now: <b>${lcWait(top)}</b> at ${esc(top.name)}, ${esc(LC_COUNTIES[top.county])} County`, link: { label: 'Find yours', url: '#lines' } }
         : { tag: 'New · Line check', html: 'Find your <b>fastest place to vote</b> on Tuesday in Dallas and Tarrant counties', link: { label: 'Try it', url: '#lines' } });
     }
     // Market prices ride the ticker only before polls close; after that the top of the page is official results only.
@@ -1616,7 +1771,7 @@ tbody tr:hover td { background: var(--wash); }
     $('knowActs').innerHTML = `${N.findUrl ? `<a class="btn btn-ink" href="${esc(N.findUrl)}" target="_blank" rel="noopener">${PIN}Find where to vote</a>` : ''}
       ${N.idUrl ? `<a class="btn btn-ghost" href="${esc(N.idUrl)}" target="_blank" rel="noopener">Accepted photo IDs</a>` : ''}`;
   }
-  function render() { $('shareTop').href = shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintMarkets(); paintFaceoff(); paintTicker(); paintKnow(); }
+  function render() { $('shareTop').href = LCP ? shareLinesURL() : shareURL(); paintTabs(); paintStatus(); paintBoard(); paintMode(); paintMap(); paintDetail(); paintChart(); paintList(); paintMarkets(); paintFaceoff(); paintTicker(); paintKnow(); }
 
   // ---------- controls ----------
   $('mapMode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.mode = b.dataset.mode; render(); });
@@ -1638,19 +1793,19 @@ tbody tr:hover td { background: var(--wash); }
     } catch (e) { if (first) $('statusText').textContent = 'Could not load results. Retrying in a minute.'; }
   }
   (async () => {
+    if (location.hash === '#lines' && !LCP) { location.replace('lines/'); return; }   // old share links
     try { state.geo = await getJSON('data/tx-geo.json'); buildMap(); }
     catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
     await refresh(true);
     await loadMarkets();
     await loadWaits();
-    if ((location.hash === '#lines' || /^\/lines\/?/.test(location.pathname)) && !$('lines').hidden) $('lines').scrollIntoView({ block: 'start' });
-    $('lcTeaser').addEventListener('click', e => { e.preventDefault(); $('lines').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
+    if (LCP) document.querySelector('.brand').href = './';
     setInterval(() => { if (!document.hidden) loadWaits(); }, 90000);
     if (location.hash === '#markets' && !document.documentElement.classList.contains('og') && !$('markets').hidden) $('markets').scrollIntoView({ block: 'start' });
     // Ticker market items open that race's face-off at the top (or the markets section once the face-off is gone).
     $('tkView').addEventListener('click', e => {
       const a = e.target.closest('a.tk-link'), h = a && a.getAttribute('href');
-      if (h === '#lines') { e.preventDefault(); $('lines').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); return; }
+      if (h === '#lines') { e.preventDefault(); location.href = 'lines/'; return; }
       if (!h || !h.startsWith('#race:')) return;
       e.preventDefault();
       const id = h.slice(6);

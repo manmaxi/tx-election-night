@@ -30,7 +30,7 @@ const markets = page
   .replace(/og\.png\?v=[0-9a-f]+"/g, `og-markets.png?v=${ver('og-markets.png')}"`);
 fs.mkdirSync(new URL('markets/', dist), { recursive: true });
 fs.writeFileSync(new URL('markets/index.html', dist), wrap(markets, '<base href="/">'));
-// /lines/: same page, opened at the Line check tool, with its own X card.
+// /lines/: the Line check page. Same app, but the class "lcp" hides everything except the tool (set before first paint).
 const lTitle = 'Texas Decides · Line check: find your fastest place to vote';
 const lDesc = 'Official polling-place wait times from Dallas and Tarrant counties, plus drive time. Vote at any vote center in your county.';
 const lines = page
@@ -40,7 +40,7 @@ const lines = page
   .replace(/(property="og:url" content=")[^"]*/, `$1${SITE}lines/`)
   .replace(/og\.png\?v=[0-9a-f]+"/g, `og-lines.png?v=${ver('og-lines.png')}"`);
 fs.mkdirSync(new URL('lines/', dist), { recursive: true });
-fs.writeFileSync(new URL('lines/index.html', dist), wrap(lines, '<base href="/">'));
+fs.writeFileSync(new URL('lines/index.html', dist), wrap(lines, '<base href="/"><script>document.documentElement.classList.add("lcp")</script>'));
 
 for (const f of fs.readdirSync(new URL('site/data/', root))) fs.copyFileSync(new URL(`site/data/${f}`, root), new URL(`data/${f}`, dist));
 // The public site never shows the 2024 replay tab; it exists only for previewing the design.

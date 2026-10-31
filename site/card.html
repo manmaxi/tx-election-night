@@ -266,7 +266,7 @@ svg.tx text { font-family: var(--body); font-weight: 800; fill: var(--ink); pain
       const xs = [], ys = []; for (const c of cs) c.d.replace(/[MZ]/g, ' ').split('L').forEach(p => { const [x, y] = p.trim().split(',').map(Number); if (isFinite(x)) { xs.push(x); ys.push(y); } });
       const x0 = Math.min(...xs) - 1, y0 = Math.min(...ys) - 1, W = Math.max(...xs) - x0 + 1, H = Math.max(...ys) - y0 + 1;
       const k = 520 / W, R0 = 4.2 / k;
-      const dots = w.locations.filter(l => show.includes(l.county)).map(l => { const [x, y] = proj(l.lon, l.lat), b = live && fresh(l) ? BANDS.find(z => l.wait < z[0]) : null;
+      const dots = w.locations.filter(l => show.includes(l.county)).map(l => { const [x, y] = proj(l.lon, l.lat), b = live && fresh(l) ? BANDS.find(z => (l.lt ? l.wait - .5 : l.wait) < z[0]) : null;
         return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${R0.toFixed(2)}" fill="${b ? b[1] : live ? '#C9D1DC' : '#0F1B2D'}" stroke="#fff" stroke-width="${(1.2 / k).toFixed(2)}"/>`; }).join('');
       const towns = [['Dallas', -96.797, 32.7767], ['Fort Worth', -97.3308, 32.7555], ['Arlington', -97.1081, 32.7357], ['Irving', -96.9489, 32.814], ['Garland', -96.6389, 32.9126], ['Mesquite', -96.5992, 32.7668]].filter(([, lo, la]) => { const [x, y] = proj(lo, la); return x > x0 && x < x0 + W && y > y0 && y < y0 + H; })
         .map(([n, lo, la]) => { const [x, y] = proj(lo, la); return `<text x="${x.toFixed(2)}" y="${(y - R0 * 2).toFixed(2)}" text-anchor="middle" font-size="${(15 / k).toFixed(2)}" style="stroke-width:${(5 / k).toFixed(2)}px">${n}</text>`; }).join('');
@@ -283,11 +283,11 @@ svg.tx text { font-family: var(--body); font-weight: 800; fill: var(--ink); pain
           </div>
           <div class="col" style="width:520px;align-items:center">${map}<p class="note" style="margin-top:8px;text-align:center">Every dot is an early-voting site that reported a line wait</p></div></div>` + foot('Wait times: Dallas County Elections and Tarrant County Elections · Drive times are estimates');
       } else {
-        const pool = w.locations.filter(l => show.includes(l.county) && fresh(l)).sort((a, b) => a.wait - b.wait || a.name.localeCompare(b.name));
+        const pool = w.locations.filter(l => show.includes(l.county) && fresh(l)).sort((a, b) => (a.lt ? a.wait - .5 : a.wait) - (b.lt ? b.wait - .5 : b.wait) || a.name.localeCompare(b.name));
         if (!pool.length) throw new Error('no fresh wait reports yet');
         const label = cf ? `${byF[cf].name} County` : 'Dallas & Tarrant';
-        const rows = pool.slice(0, 5).map(l => { const b = BANDS.find(z => l.wait < z[0]); return `<div style="display:grid;grid-template-columns:86px 1fr;gap:16px;align-items:center;padding:9px 0;border-bottom:2px solid var(--line)">
-          <span style="height:62px;border-radius:12px;background:${b[1]};color:${b[2]};display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1"><b style="font-family:var(--display);font-size:34px">${l.wait >= 120 ? '2h+' : l.wait}</b><small style="font-size:11px;font-weight:800;letter-spacing:.08em">MIN WAIT</small></span>
+        const rows = pool.slice(0, 5).map(l => { const b = BANDS.find(z => (l.lt ? l.wait - .5 : l.wait) < z[0]); return `<div style="display:grid;grid-template-columns:86px 1fr;gap:16px;align-items:center;padding:9px 0;border-bottom:2px solid var(--line)">
+          <span style="height:62px;border-radius:12px;background:${b[1]};color:${b[2]};display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1"><b style="font-family:var(--display);font-size:34px">${l.wait >= 120 && !l.lt ? '2h+' : (l.lt ? '&lt;' : '') + l.wait}</b><small style="font-size:11px;font-weight:800;letter-spacing:.08em">MIN WAIT</small></span>
           <span style="min-width:0"><b style="display:block;font-size:24px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.name)}</b><span style="font-size:17px;color:var(--muted)">${esc(l.city || '')}${cf ? '' : ' · ' + esc(byF[l.county].name) + ' County'}</span></span></div>`; }).join('');
         html = brand('Line check · Live') + `<div class="main">
           <div class="col" style="flex:1"><p class="k">Shortest lines right now · ${esc(label)}</p>${rows}
