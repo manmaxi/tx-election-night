@@ -915,7 +915,7 @@ tbody tr:hover td { background: var(--wash); }
   async function loadWaits() {
     try { const r = await fetch('api/waits', { cache: 'no-store' }); if (!r.ok) throw 0; const d = await r.json(); if (d.locations?.length) lc.data = d; lc.err = ''; }
     catch (_) { lc.err = lc.data ? '' : 'down'; }
-    paintLines();
+    paintLines(); paintTicker();
   }
   // Which county a map point falls in (the site's county shapes, same projection).
   function lcCountyAt(x, y) {
