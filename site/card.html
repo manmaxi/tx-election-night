@@ -19,6 +19,7 @@
     card.html?type=date&i=0..3          (index into notices.json dates)
     card.html?type=question&q=0..5      (index into QUESTIONS below)
     card.html?type=results&race=senate|governor
+    card.html?type=lines&county=48113|48439   (Line check: before Election Day a promo, on Election Day the shortest lines)
   The page sets <body data-ready="1"> when drawn, or data-ready="error".
 -->
 <style>
@@ -248,6 +249,51 @@ svg.tx text { font-family: var(--body); font-weight: 800; fill: var(--ink); pain
         <div class="col" style="flex:1"><p class="qbig" style="font-size:${QUESTIONS[i].length > 40 ? 92 : 108}px">${esc(QUESTIONS[i])}</p>
           <p class="sub" style="font-size:28px;margin-top:22px">Reply below 👇 ${T && T.total ? `· <b>${fmt(T.total)}</b> ${T.inPerson ? 'Texans have voted early' : 'mail ballots returned'} so far` : ''}</p></div>
         <div class="col" style="width:400px">${mapSVG(400)}</div></div>` + foot(T ? srcTurnout() : 'Texas Decides · live, nonpartisan election tracker');
+    }
+
+    else if (type === 'lines') {
+      const w = await get('api/waits');
+      if (!w.locations?.length) throw new Error('no wait data');
+      const fit = { s: 4942.524996991513, tx: 503.6835586224785, ty: 3058.546177708588 };
+      const proj = (lon, lat) => { const R = Math.PI / 180, p0 = 27.5 * R, p1 = 35 * R, n = (Math.sin(p0) + Math.sin(p1)) / 2, c = 1 + Math.sin(p0) * (2 * n - Math.sin(p0)), r0 = Math.sqrt(c) / n;
+        const l = (lon + 100) * R * n, r = Math.sqrt(c - 2 * n * Math.sin(lat * R)) / n; return [fit.s * r * Math.sin(l) + fit.tx, -fit.s * (r0 - r * Math.cos(l)) + fit.ty]; };
+      const BANDS = [[15, '#1A6A4F', '#fff'], [30, '#6CBC9D', '#0F1B2D'], [60, '#F5C542', '#0F1B2D'], [120, '#E8743B', '#fff'], [Infinity, '#8A2C0D', '#fff']];
+      const live = w.phase === 'live';
+      const fresh = l => l.wait != null && l.updated && (!live || (Date.now() - Date.parse(l.updated)) / 6e4 <= 75) && !(l.wait === 0 && l.votesToday === 0);
+      const cf = ['48113', '48439'].includes(q.get('county')) ? q.get('county') : null;
+      const show = live && cf ? [cf] : ['48113', '48439'];
+      const cs = show.map(f => byF[f]);
+      const xs = [], ys = []; for (const c of cs) c.d.replace(/[MZ]/g, ' ').split('L').forEach(p => { const [x, y] = p.trim().split(',').map(Number); if (isFinite(x)) { xs.push(x); ys.push(y); } });
+      const x0 = Math.min(...xs) - 1, y0 = Math.min(...ys) - 1, W = Math.max(...xs) - x0 + 1, H = Math.max(...ys) - y0 + 1;
+      const k = 520 / W, R0 = 4.2 / k;
+      const dots = w.locations.filter(l => show.includes(l.county)).map(l => { const [x, y] = proj(l.lon, l.lat), b = live && fresh(l) ? BANDS.find(z => l.wait < z[0]) : null;
+        return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${R0.toFixed(2)}" fill="${b ? b[1] : live ? '#C9D1DC' : '#0F1B2D'}" stroke="#fff" stroke-width="${(1.2 / k).toFixed(2)}"/>`; }).join('');
+      const towns = [['Dallas', -96.797, 32.7767], ['Fort Worth', -97.3308, 32.7555], ['Arlington', -97.1081, 32.7357], ['Irving', -96.9489, 32.814], ['Garland', -96.6389, 32.9126], ['Mesquite', -96.5992, 32.7668]].filter(([, lo, la]) => { const [x, y] = proj(lo, la); return x > x0 && x < x0 + W && y > y0 && y < y0 + H; })
+        .map(([n, lo, la]) => { const [x, y] = proj(lo, la); return `<text x="${x.toFixed(2)}" y="${(y - R0 * 2).toFixed(2)}" text-anchor="middle" font-size="${(15 / k).toFixed(2)}" style="stroke-width:${(5 / k).toFixed(2)}px">${n}</text>`; }).join('');
+      const map = `<svg class="tx" viewBox="${x0} ${y0} ${W} ${H}" width="520" height="${(520 * H / W).toFixed(0)}">${cs.map(c => `<path d="${c.d}" fill="#F4F6F9" stroke="#0F1B2D" stroke-width="${(2 / k).toFixed(2)}"/>`).join('')}${dots}${towns}</svg>`;
+      const updated = (w.counties || []).filter(c => c.ok).map(c => `${c.source}${c.updated ? ' (' + new Date(c.updated).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT)' : ''}`).join(' and ');
+      if (!live) {
+        const n = w.edCount || {};
+        html = brand('New · Line check') + `<div class="main" style="align-items:center">
+          <div class="col" style="flex:1">
+            <p class="qbig" style="font-size:84px">Find your <span class="gold">fastest</span> place to vote</p>
+            <p class="sub" style="font-size:25px;color:var(--ink);margin-top:18px">Official wait times from Dallas and Tarrant county election offices, plus drive time. One tap.</p>
+            <p class="sub" style="font-size:21px">In these counties you can vote at <b>any vote center in your county</b>${n['48113'] ? ` · ${fmt(n['48113'])} vote centers in Dallas County on Election Day` : ''}.</p>
+            <span class="pill" style="margin-top:20px;background:var(--ink);color:#fff">Live Tuesday, Nov. 3 · 7 a.m.–7 p.m.</span>
+          </div>
+          <div class="col" style="width:520px;align-items:center">${map}<p class="note" style="margin-top:8px;text-align:center">Every dot is an early-voting site that reported a line wait</p></div></div>` + foot('Wait times: Dallas County Elections and Tarrant County Elections · Drive times are estimates');
+      } else {
+        const pool = w.locations.filter(l => show.includes(l.county) && fresh(l)).sort((a, b) => a.wait - b.wait || a.name.localeCompare(b.name));
+        if (!pool.length) throw new Error('no fresh wait reports yet');
+        const label = cf ? `${byF[cf].name} County` : 'Dallas & Tarrant';
+        const rows = pool.slice(0, 5).map(l => { const b = BANDS.find(z => l.wait < z[0]); return `<div style="display:grid;grid-template-columns:86px 1fr;gap:16px;align-items:center;padding:9px 0;border-bottom:2px solid var(--line)">
+          <span style="height:62px;border-radius:12px;background:${b[1]};color:${b[2]};display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1"><b style="font-family:var(--display);font-size:34px">${l.wait >= 120 ? '2h+' : l.wait}</b><small style="font-size:11px;font-weight:800;letter-spacing:.08em">MIN WAIT</small></span>
+          <span style="min-width:0"><b style="display:block;font-size:24px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.name)}</b><span style="font-size:17px;color:var(--muted)">${esc(l.city || '')}${cf ? '' : ' · ' + esc(byF[l.county].name) + ' County'}</span></span></div>`; }).join('');
+        html = brand('Line check · Live') + `<div class="main">
+          <div class="col" style="flex:1"><p class="k">Shortest lines right now · ${esc(label)}</p>${rows}
+            <p class="note" style="margin-top:12px">${fmt(pool.length)} vote centers reporting. Vote at any vote center in your county.</p></div>
+          <div class="col" style="width:520px;justify-content:center">${map}</div></div>` + foot(`Official wait times: ${updated}`);
+      }
     }
 
     else if (type === 'results') {

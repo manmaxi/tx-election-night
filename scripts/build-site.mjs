@@ -30,13 +30,24 @@ const markets = page
   .replace(/og\.png\?v=[0-9a-f]+"/g, `og-markets.png?v=${ver('og-markets.png')}"`);
 fs.mkdirSync(new URL('markets/', dist), { recursive: true });
 fs.writeFileSync(new URL('markets/index.html', dist), wrap(markets, '<base href="/">'));
+// /lines/: same page, opened at the Line check tool, with its own X card.
+const lTitle = 'Texas Decides · Line check: find your fastest place to vote';
+const lDesc = 'Official polling-place wait times from Dallas and Tarrant counties, plus drive time. Vote at any vote center in your county.';
+const lines = page
+  .replace(/<title>[^<]*<\/title>/, `<title>${lTitle}</title>`)
+  .replace(/(property="og:title" content=")[^"]*/, `$1${lTitle}`).replace(/(name="twitter:title" content=")[^"]*/, `$1${lTitle}`)
+  .replace(/(property="og:description" content=")[^"]*/, `$1${lDesc}`).replace(/(name="twitter:description" content=")[^"]*/, `$1${lDesc}`)
+  .replace(/(property="og:url" content=")[^"]*/, `$1${SITE}lines/`)
+  .replace(/og\.png\?v=[0-9a-f]+"/g, `og-lines.png?v=${ver('og-lines.png')}"`);
+fs.mkdirSync(new URL('lines/', dist), { recursive: true });
+fs.writeFileSync(new URL('lines/index.html', dist), wrap(lines, '<base href="/">'));
 
 for (const f of fs.readdirSync(new URL('site/data/', root))) fs.copyFileSync(new URL(`site/data/${f}`, root), new URL(`data/${f}`, dist));
 // The public site never shows the 2024 replay tab; it exists only for previewing the design.
 const resUrl = new URL('data/results.json', dist);
 if (fs.existsSync(resUrl)) { const r = JSON.parse(fs.readFileSync(resUrl, 'utf8')); r.races = r.races.filter(x => !x.demo); fs.writeFileSync(resUrl, JSON.stringify(r)); }
 if (fs.existsSync(new URL('site/img/', root))) fs.cpSync(new URL('site/img/', root), new URL('img/', dist), { recursive: true });
-for (const f of ['election-night.ics', 'early-voting.ics', 'og.png', 'og-markets.png', 'card.html']) if (fs.existsSync(new URL(`site/${f}`, root))) fs.copyFileSync(new URL(`site/${f}`, root), new URL(f, dist));
+for (const f of ['election-night.ics', 'early-voting.ics', 'og.png', 'og-markets.png', 'og-lines.png', 'card.html']) if (fs.existsSync(new URL(`site/${f}`, root))) fs.copyFileSync(new URL(`site/${f}`, root), new URL(f, dist));
 // Short cache on data so the 60-second refresh sees new numbers; Netlify/Cloudflare Pages read _headers.
-fs.writeFileSync(new URL('_headers', dist), '/data/*\n  Cache-Control: public, max-age=30, must-revalidate\n/og.png\n  Cache-Control: public, max-age=120\n/og-markets.png\n  Cache-Control: public, max-age=120\n/*.ics\n  Content-Type: text/calendar; charset=utf-8\n');
+fs.writeFileSync(new URL('_headers', dist), '/data/*\n  Cache-Control: public, max-age=30, must-revalidate\n/og.png\n  Cache-Control: public, max-age=120\n/og-markets.png\n  Cache-Control: public, max-age=120\n/og-lines.png\n  Cache-Control: public, max-age=300\n/*.ics\n  Content-Type: text/calendar; charset=utf-8\n');
 console.log('built dist/');

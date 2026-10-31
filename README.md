@@ -24,6 +24,13 @@ A live, county-by-county results page for the Texas U.S. Senate and Governor rac
 - Card image URLs carry a content hash, and share links carry the date, so each day's post on X shows that day's card.
 - Kalshi is not shown: its Developer Agreement limits API data to a member's own trading and forbids sharing it without written permission. Robinhood's election contracts mostly come from Kalshi and it has no public feed.
 
+## Line check (Election Day wait times)
+
+- `functions/api/waits.js` (with `lib/waits.mjs`) serves official polling-place wait times from Dallas County (ArcGIS Vote Center Finder layer) and Tarrant County (its Voting Wait Times service; State Plane coordinates are converted to lat/lon). Cached 90 seconds at the edge; the last good copy is served for up to 6 hours if a county is down.
+- Before Election Day it serves the final early-voting readings (labeled on the page); on Nov. 3, 6 a.m.–10 p.m. CT, only Election Day vote centers; after that the tool hides itself.
+- The page's "Find my fastest place to vote" ranks vote centers in the visitor's county by an estimated drive time plus the county's reported wait. Location stays in the browser. Reports older than 75 minutes on Election Day show as "no recent report."
+- `/lines/` opens the page at the tool with its own X card (`site/og-lines.png`); `card.html?type=lines` renders post images.
+
 ## Set up (about 20 minutes)
 
 1. **Put this folder in a new GitHub repo.** A public repo gets free Actions minutes.
