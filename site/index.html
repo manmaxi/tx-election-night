@@ -953,8 +953,8 @@ tbody tr:hover td { background: var(--wash); }
   const lcXY = (lon, lat) => [(lon + 97) * LC_KX, (LC_LAT0 - lat) * LC_K];
   const lcLL = (x, y) => [x / LC_KX - 97, LC_LAT0 - y / LC_K];
   const LC_TOWNS = {
-    '48113': [['Dallas', -96.80, 32.78], ['Irving', -96.95, 32.85], ['Garland', -96.64, 32.91], ['Mesquite', -96.60, 32.77], ['Grand Prairie', -96.995, 32.655], ['Richardson', -96.73, 32.96], ['Carrollton', -96.89, 32.985], ['DeSoto', -96.86, 32.59], ['Lancaster', -96.76, 32.60], ['Cedar Hill', -96.96, 32.60], ['Rowlett', -96.56, 32.905], ['Coppell', -97.01, 32.96], ['Seagoville', -96.54, 32.64]],
-    '48439': [['Fort Worth', -97.33, 32.75], ['Arlington', -97.11, 32.70], ['Mansfield', -97.14, 32.57], ['Grapevine', -97.08, 32.94], ['Keller', -97.25, 32.94], ['Southlake', -97.15, 32.96], ['Hurst', -97.17, 32.82], ['Euless', -97.08, 32.85], ['Azle', -97.54, 32.90], ['Benbrook', -97.46, 32.67], ['Crowley', -97.36, 32.58], ['Saginaw', -97.36, 32.865]],
+    '48113': [['Dallas', -96.80, 32.78], ['Irving', -96.95, 32.85], ['Garland', -96.64, 32.91], ['Mesquite', -96.60, 32.77], ['Grand Prairie', -96.965, 32.655], ['Richardson', -96.73, 32.96], ['DeSoto', -96.86, 32.59], ['Lancaster', -96.76, 32.60], ['Cedar Hill', -96.96, 32.60], ['Rowlett', -96.575, 32.905], ['Coppell', -97.01, 32.96]],
+    '48439': [['Fort Worth', -97.33, 32.75], ['Arlington', -97.11, 32.70], ['Mansfield', -97.14, 32.57], ['Grapevine', -97.08, 32.94], ['Keller', -97.25, 32.94], ['Southlake', -97.15, 32.96], ['Hurst', -97.17, 32.82], ['Euless', -97.08, 32.85], ['Benbrook', -97.46, 32.67], ['Crowley', -97.36, 32.58], ['Saginaw', -97.36, 32.865]],
   };
   const LC_BANDS = [[15, '#1A6A4F', '#fff', 'Under 15 min'], [30, '#6CBC9D', '#0F1B2D', '15–29 min'], [60, '#F5C542', '#0F1B2D', '30–59 min'], [120, '#E8743B', '#fff', '1–2 hrs'], [Infinity, '#8A2C0D', '#fff', '2 hrs +']];
   const LC_STALE_MIN = 75;
@@ -994,7 +994,12 @@ tbody tr:hover td { background: var(--wash); }
     const c = state.byFips[f], pts = [];
     const d = c.d.replace(/([ML])\s*([-\d.]+)[ ,]([-\d.]+)/g, (m, cmd, x, y) => { const p = lcXY(...lcUnproj(+x, +y)); pts.push(p); return `${cmd}${p[0].toFixed(2)},${p[1].toFixed(2)}`; });
     const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-    return (lc.shapes[f] = { d, box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
+    // Texas county lines here run about 1° off true north. Measure that (length-weighted, from the long edges)
+    // so the map can turn by the same amount and the county frame sits square on screen.
+    let sw = 0, sa = 0;
+    for (let i = 0; i < pts.length; i++) { const [ax, ay] = pts[i], [bx, by] = pts[(i + 1) % pts.length], L = Math.hypot(bx - ax, by - ay);
+      const dev = ((Math.atan2(by - ay, bx - ax) * 180 / Math.PI) % 90 + 135) % 90 - 45; if (Math.abs(dev) < 4) { sw += L; sa += dev * L; } }
+    return (lc.shapes[f] = { d, pts, rot: sw ? sa / sw : 0, box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
   }
   function lcSetMe(lonlat, src, extra = {}) {
     const f = extra.fips || lcCountyAt(...lcProj(...lonlat));
@@ -1051,7 +1056,13 @@ tbody tr:hover td { background: var(--wash); }
   function lcMap(ranked, mine) {
     const narrow = document.documentElement.clientWidth <= 880;   // phones: zoom to the selected county
     const fs = ['48113', '48439'].filter(f => state.byFips[f]), show = narrow ? [lc.county] : fs;
-    const bx = show.map(f => lcShape(f).box), pad = 1.2;
+    // Turn the map so the county frame is square on screen (rotation about the view's center).
+    const rot = -show.reduce((a, f) => a + lcShape(f).rot, 0) / show.length;
+    const allP = show.flatMap(f => lcShape(f).pts), ccx = (Math.min(...allP.map(p => p[0])) + Math.max(...allP.map(p => p[0]))) / 2, ccy = (Math.min(...allP.map(p => p[1])) + Math.max(...allP.map(p => p[1]))) / 2;
+    const ca = Math.cos(rot * Math.PI / 180), sa = Math.sin(rot * Math.PI / 180);
+    const turn = ([x, y]) => [ccx + (x - ccx) * ca - (y - ccy) * sa, ccy + (x - ccx) * sa + (y - ccy) * ca];
+    lc.unturn = ([x, y]) => [ccx + (x - ccx) * ca + (y - ccy) * sa, ccy - (x - ccx) * sa + (y - ccy) * ca];
+    const bx = show.map(f => { const t = lcShape(f).pts.map(turn); return [Math.min(...t.map(p => p[0])), Math.min(...t.map(p => p[1])), Math.max(...t.map(p => p[0])), Math.max(...t.map(p => p[1]))]; }), pad = 1.2;
     const x0 = Math.min(...bx.map(b => b[0])) - pad, y0 = Math.min(...bx.map(b => b[1])) - pad, W = Math.max(...bx.map(b => b[2])) + pad - x0, H = Math.max(...bx.map(b => b[3])) + pad - y0;
     const px = narrow ? Math.min(document.documentElement.clientWidth, 880) : Math.min(document.documentElement.clientWidth - 32, 1240) * .54;
     const k = px / W, u = v => (v / k).toFixed(3);   // u(n): n screen pixels in map units
@@ -1085,7 +1096,7 @@ tbody tr:hover td { background: var(--wash); }
       ranks = top.map((x, i) => { const b = lcBand(x.l), r = (i ? 9 : 12) / k; return `<g class="rank"><circle cx="${x.l._x.toFixed(2)}" cy="${x.l._y.toFixed(2)}" r="${r.toFixed(3)}" stroke-width="${u(2.5)}" style="${i ? `fill:${b[1]}` : ''}"/><text x="${x.l._x.toFixed(2)}" y="${(x.l._y + r * .36).toFixed(2)}" text-anchor="middle" style="font-size:${(r * 1.05).toFixed(3)}px;${i && b[2] !== '#fff' ? 'fill:#0F1B2D' : ''}">${i + 1}</text></g>`; }).reverse().join('');
     }
     lc.vb = [x0, y0, W, H];
-    return `<svg id="lcSvg" viewBox="${x0.toFixed(2)} ${y0.toFixed(2)} ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Map of vote centers in ${show.map(f => LC_COUNTIES[f]).join(' and ')} ${show.length > 1 ? 'counties' : 'County'}, colored by reported wait"><defs>${clip}</defs>${shapes}<g clip-path="url(#lcClip)">${roads}</g>${towns}${shields}${dots}${route}${ranks}${me}</svg>`;
+    return `<svg id="lcSvg" viewBox="${x0.toFixed(2)} ${y0.toFixed(2)} ${W.toFixed(2)} ${H.toFixed(2)}" role="img" aria-label="Map of vote centers in ${show.map(f => LC_COUNTIES[f]).join(' and ')} ${show.length > 1 ? 'counties' : 'County'}, colored by reported wait"><defs>${clip}</defs><g transform="rotate(${rot.toFixed(3)} ${ccx.toFixed(2)} ${ccy.toFixed(2)})">${shapes}<g clip-path="url(#lcClip)">${roads}</g>${towns}${shields}${dots}${route}${ranks}${me}</g></svg>`;
   }
   // Three numbers for the selected county: the answer to "how bad are lines?" before anyone shares a location.
   function lcPulse(live, cty) {
@@ -1200,7 +1211,7 @@ tbody tr:hover td { background: var(--wash); }
     // Map: tap a dot to see it; tap anywhere else to say "I'm here".
     $('lcSvg').addEventListener('click', e => {
       const svg = e.currentTarget, b = svg.getBoundingClientRect(), [x0, y0, W, H] = lc.vb;
-      const x = x0 + (e.clientX - b.left) / b.width * W, y = y0 + (e.clientY - b.top) / b.height * H;
+      const [x, y] = lc.unturn([x0 + (e.clientX - b.left) / b.width * W, y0 + (e.clientY - b.top) / b.height * H]);
       let near = null, nd = 14 * W / b.width;   // 14px finger radius
       for (const l of lc.data.locations) { const dd = Math.hypot(l._x - x, l._y - y); if (dd < nd) { nd = dd; near = l; } }
       if (near && !lc.me) { lc.sel = near.id; if (near.county !== lc.county) lc.county = near.county; paintLines(); return; }
