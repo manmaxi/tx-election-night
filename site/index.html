@@ -962,11 +962,15 @@ tbody tr:hover td { background: var(--wash); }
   const lcFresh = l => l.wait != null && l.updated && (!lcLive() || (Date.now() - Date.parse(l.updated)) / 6e4 <= LC_STALE_MIN) && !(l.wait === 0 && l.votesToday === 0);
   const lcEff = l => l.lt ? l.wait - .5 : l.wait;   // "under 15" sorts and colors as just below 15
   const lcBand = l => lcFresh(l) ? LC_BANDS.find(b => lcEff(l) < b[0]) : null;
-  const lcWait = (l, unit = ' min') => l.wait >= 120 && !l.lt ? '2 hrs+' : (l.lt ? 'under ' : '') + l.wait + unit;
+  const lcWait = (l, unit = ' min') => l.wait === 0 && !l.lt ? 'no wait' : l.wait >= 120 && !l.lt ? '2 hrs+' : (l.lt ? 'under ' : '') + l.wait + unit;
+  const lcLine = l => l.wait === 0 && !l.lt ? 'no line' : lcWait(l) + ' line';
   const lcHav = (a, b) => { const R = Math.PI / 180, dLa = (b[1] - a[1]) * R, dLo = (b[0] - a[0]) * R, h = Math.sin(dLa / 2) ** 2 + Math.cos(a[1] * R) * Math.cos(b[1] * R) * Math.sin(dLo / 2) ** 2; return 7917.6 * Math.asin(Math.sqrt(h)); };
   const lcDrive = mi => Math.round(mi * 1.3 / 28 * 60 + 3);   // road factor, ~28 mph city average, +3 min to park
   const lcLocs = () => (lc.data?.locations || []).filter(l => l.county === lc.county);
   const lcHM = iso => iso ? new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) : '';
+  const lcDay = t => new Date(t).toLocaleDateString('en-US', { timeZone: 'America/Chicago' });
+  // "7:37 PM" for a report made today; "Nov 2, 7:37 PM" for an older one, so yesterday's edit never reads as fresh.
+  const lcWhen = iso => !iso ? '' : lcDay(iso) === lcDay(Date.now()) ? lcHM(iso) : new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + ', ' + lcHM(iso);
   const lcDir = l => `https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lon}`;
   const DIR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M9 13v-2h5V8.5L17 12l-3 3.5V13"/></svg>';
   const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length ? (s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2) : null; };
@@ -1046,7 +1050,7 @@ tbody tr:hover td { background: var(--wash); }
       const b = lcBand(l), tot = x.total != null;
       const badge = tot ? `<span class="lc-badge tot"><b>${l.lt ? '<sup>&lt;</sup>' : ''}${x.total}</b><small>min total</small></span>` : lcBadge(l);
       return `<div class="lc-row${sel}${i === 0 && tot ? ' best' : ''}" data-id="${esc(l.id)}" role="button" tabindex="0">${badge}
-        <span class="lc-nm"><b>${esc(l.name)}</b>${tot ? lcBar(x.dr, l.wait, b, max) : ''}<span>~${x.dr} min drive${tot ? ` + ${lcWait(l)} line` : ' · wait not reported'} · ${x.mi.toFixed(1)} mi</span></span>
+        <span class="lc-nm"><b>${esc(l.name)}</b>${tot ? lcBar(x.dr, l.wait, b, max) : ''}<span>~${x.dr} min drive${tot ? ` + ${lcLine(l)}` : ' · wait not reported'} · ${x.mi.toFixed(1)} mi</span></span>
         <a class="lc-dir" href="${lcDir(l)}" target="_blank" rel="noopener" aria-label="Directions to ${esc(l.name)}">${DIR_ICON}</a></div>`;
     }
     return `<div class="lc-row${sel}" data-id="${esc(l.id)}" role="button" tabindex="0">${lcBadge(l)}
@@ -1108,11 +1112,11 @@ tbody tr:hover td { background: var(--wash); }
       const med = median(fresh.map(lcEff)), lt = fresh.some(l => l.lt);
       return cell('Shortest line', best ? (best.wait >= 120 && !best.lt ? '2h+' : mins(best.wait, best.lt)) : '—', best ? esc(best.name) : 'No reports yet')
         + cell('Typical line', med == null ? '—' : lt ? mins(Math.ceil(med), true) : mins(Math.round(med)), 'median of reports')
-        + cell('Reporting', `${fresh.length}/${locs.length}`, `updated ${lcHM(cty.updated) || '—'}`);
+        + cell('Reporting', `${fresh.length}/${locs.length}`, fresh.length && cty.updated ? `updated ${lcWhen(cty.updated)}` : 'from 7 a.m.');
     }
     return cell('Tue. sites', edN ? fmt(edN) : 'TBA', edN ? 'vote at any' : 'posted by Tue.')
       + cell('Polls open', '7–7', 'Tue., Nov. 3')
-      + cell('Last early day', best ? mins(best.wait, best.lt) : '—', 'shortest line');
+      + (best ? cell('Last early day', mins(best.wait, best.lt), 'shortest line') : cell('Wait reports', '7 a.m.', 'when polls open'));
   }
   function paintLines() {
     const el = $('lines'), tz = $('lcTeaser');
@@ -1122,7 +1126,10 @@ tbody tr:hover td { background: var(--wash); }
     if (!lc.county) { const f = myCounty(); lc.county = f && LC_COUNTIES[f] ? f : '48113'; }
     // Home page: one line that links to the Line check page. The full tool only renders on /lines/.
     if (!LCP) {
-      el.hidden = true; tz.hidden = false; tz.href = 'lines/';
+      el.hidden = true; tz.href = 'lines/';
+      if (Date.now() >= closeAt()) { tz.hidden = true; return; }   // polls closed: the page is about results now
+      tz.hidden = false;
+      const fo = $('faceoff'); if (live ? tz.nextElementSibling !== fo : fo.nextElementSibling !== tz) live ? fo.before(tz) : fo.after(tz);
       const top = live ? (d.locations || []).filter(lcFresh).sort((a, b) => lcEff(a) - lcEff(b))[0] : null;
       tz.innerHTML = live ? `<span class="pin">${PIN}</span><span><b>Voting today in Dallas or Tarrant County?</b><span>${top ? `Shortest line now: ${lcWait(top)} at ${esc(top.name)}.` : 'Find the shortest line near you.'}</span></span><em>Find yours →</em>`
         : `<span class="pin">${PIN}</span><span><b>New: Line check</b><span>Enter your ZIP, get your fastest place to vote on Tuesday. Dallas &amp; Tarrant counties.</span></span><em>Try it →</em>`;
@@ -1151,7 +1158,7 @@ tbody tr:hover td { background: var(--wash); }
           <div class="big"><b>${best.l.lt ? 'Under ' : '≈ '}${best.total} min</b><span>start to finish</span></div>
           <div class="where">${esc(best.l.name)}<span>${esc(best.l.address)}</span></div>
           ${lcBar(best.dr, best.l.wait, b, best.total)}
-          <div class="split"><span>~<b>${best.dr} min</b> drive</span><span><b>${lcWait(best.l)}</b> line</span></div>
+          <div class="split"><span>~<b>${best.dr} min</b> drive</span><span><b>${lcLine(best.l)}</b></span></div>
           <a class="go" href="${lcDir(best.l)}" target="_blank" rel="noopener">${DIR_ICON}Directions</a></div>`;
         // The insight people share: the closest vote center often isn't the fastest one.
         const near = [...ranked].sort((a, b) => a.mi - b.mi)[0];
@@ -1160,15 +1167,19 @@ tbody tr:hover td { background: var(--wash); }
         else if (near && near.l.id === best.l.id) side += `<p class="lc-tip"><b>Good news:</b> your closest vote center is also your fastest right now.</p>`;
       } else side += `<p class="lc-msg">No ${live ? 'recent ' : ''}wait reports near you yet. Here are the closest vote centers.</p>`;
       if (lc.me.split) side += `<p class="lc-tip">Part of ZIP ${esc(lc.me.zip)} is in ${esc(state.byFips[lc.me.split]?.name || 'another')} County. These are ${esc(name)} County vote centers; vote in the county where you’re registered.</p>`;
-      side += `<h3>${ranked.length > 1 ? 'Your other options' : 'Option'}<small>${lc.meSrc === 'gps' ? 'from your location' : lc.meSrc === 'zip' ? `from the middle of ZIP ${esc(lc.me.zip)}` : 'from the spot you tapped'}</small></h3>`;
+      side += `<h3>${!(best && best.total != null) ? 'Closest vote centers' : ranked.length > 1 ? 'Your other options' : 'Option'}<small>${lc.meSrc === 'gps' ? 'from your location' : lc.meSrc === 'zip' ? `from the middle of ZIP ${esc(lc.me.zip)}` : 'from the spot you tapped'}</small></h3>`;
       side += (best && best.total != null ? shown.slice(1) : shown).map((x, i) => lcRow(x, i + (best && best.total != null ? 1 : 0), 'me', max)).join('');
     } else {
       side += `<h3>${fresh ? 'Shortest lines' : 'Vote centers'} · ${name} County<small>${fresh} of ${lcLocs().length} reporting</small></h3>`;
       side += ranked.slice(0, lc.showAll ? 25 : 5).map((x, i) => lcRow(x, i, 'list')).join('');
     }
     side += `<button type="button" class="more lc-more" id="lcMore">${lc.showAll ? 'Show fewer' : 'Show more'}</button>`;
-    const evDay = cty.updated ? new Date(cty.updated).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) : 'the last day of early voting';
-    const note = live ? '' : `<p class="lc-note"><b>Live Tuesday 7 a.m.</b><span>Until then you’re seeing the final early-voting reports (${evDay}), so you can try it now.</span></p>`;
+    const evDay = 'Fri., Oct. 30';   // last day of early voting (the counties' layer edit dates move after that)
+    const closed = Date.now() >= closeAt(), anyFresh = (d.locations || []).some(lcFresh);
+    const edOnly = !lcLocs().some(l => l.kind === 'EV');
+    const note = closed ? `<p class="lc-note"><b>Polls closed at 7 p.m.</b><span>In line by 7 p.m.? Stay in line: you can still vote. <a href="./">Follow the results →</a></span></p>`
+      : live ? (anyFresh ? '' : `<p class="lc-note"><b>Polls open 7 a.m.–7 p.m.</b><span>Wait times appear here as vote centers start reporting. Until then you’ll see the closest vote centers.</span></p>`)
+      : `<p class="lc-note"><b>Live Tuesday 7 a.m.</b><span>${edOnly ? `These are ${name} County’s ${fmt(lcLocs().length)} Election Day vote centers. Wait times show up here when polls open.` : `Until then you’re seeing the final early-voting reports (${evDay}), so you can try it now.`}</span></p>`;
     el.className = 'lc' + (live ? ' live' : '') + (mine ? ' lc-me' : '');
     el.innerHTML = `<div class="lc-head">
         <div class="lc-top">
@@ -1192,7 +1203,7 @@ tbody tr:hover td { background: var(--wash); }
         <div class="lc-side" id="lcSide">${side}</div>
       </div>
       <div class="lc-foot lc-home"><a href="./">← Texas Decides: live Senate &amp; Governor results</a></div>
-      <div class="lc-foot"><span>Wait times as reported by ${(d.counties || []).filter(c => c.ok).map(c => `<a href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.source)}</a>${c.updated ? ` (updated ${lcHM(c.updated)} CT)` : ''}`).join(' and ')}. Dallas reports waits in 15-minute ranges. Drive times are rough estimates from distance; roads: TxDOT.</span><span>Your location stays on your device.</span></div>`;
+      <div class="lc-foot"><span>Wait times as reported by ${(d.counties || []).filter(c => c.ok).map(c => `<a href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.source)}</a>${c.updated ? ` (updated ${lcWhen(c.updated)} CT)` : ''}`).join(' and ')}. Dallas reports waits in 15-minute ranges. Drive times are rough estimates from distance; roads: TxDOT.</span><span>Your location stays on your device.</span></div>`;
     el.hidden = false;
     if (lc.first && !reduceMotion()) { el.classList.add('anim-lc'); setTimeout(() => el.classList.remove('anim-lc'), 1800); }
     lc.first = false;
@@ -1729,7 +1740,7 @@ tbody tr:hover td { background: var(--wash); }
       const top = Object.entries(state.turnout.counties || {}).sort((a, b) => b[1].total - a[1].total)[0];
       if (top && state.byFips[top[0]]) out.push({ tag: 'Turnout', html: `${esc(state.byFips[top[0]].name)} County leads early voting with <b>${fmt(top[1].total)}</b> ballots` });
     }
-    if (lc.data && lc.data.phase !== 'off') {
+    if (lc.data && lc.data.phase !== 'off' && now < closeAt()) {
       const top = lcLive() ? (lc.data.locations || []).filter(lcFresh).sort((a, b) => lcEff(a) - lcEff(b))[0] : null;
       out.unshift(top ? { tag: 'Line check', html: `Shortest line now: <b>${lcWait(top)}</b> at ${esc(top.name)}, ${esc(LC_COUNTIES[top.county])} County`, link: { label: 'Find yours', url: '#lines' } }
         : { tag: 'New · Line check', html: 'Find your <b>fastest place to vote</b> on Tuesday in Dallas and Tarrant counties', link: { label: 'Try it', url: '#lines' } });

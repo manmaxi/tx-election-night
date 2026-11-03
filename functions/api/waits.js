@@ -19,12 +19,14 @@ export async function onRequestGet({ request, waitUntil }) {
     const now = Date.now(), phase = now < LIVE_FROM ? 'preview' : now <= LIVE_TO ? 'live' : 'off';
     const d = await fetchWaits(fetch, now);
     if (!d.locations.length) throw new Error('no locations');
-    const today = new Date(now).toLocaleDateString('en-US', { timeZone: 'America/Chicago' });
-    const sameDay = iso => iso && new Date(iso).toLocaleDateString('en-US', { timeZone: 'America/Chicago' }) === today;
     const edCount = {}; for (const l of d.locations) if (l.kind === 'ED') edCount[l.county] = (edCount[l.county] || 0) + 1;
     d.phase = phase;
     d.edCount = edCount;   // Election Day vote centers already published, per county
-    d.locations = phase === 'live' ? d.locations.filter(l => l.kind === 'ED' || sameDay(l.updated)) : d.locations.filter(l => l.kind === 'EV');
+    // Live: Election Day vote centers only (Dallas's layer has one shared edit time, so a "reported today" test
+    // would wrongly bring back its closed early-voting rows). Preview: the final early-voting readings, or a
+    // county's Election Day vote centers when its feed has already switched over (Tarrant does after early voting).
+    const hasEV = new Set(d.locations.filter(l => l.kind === 'EV').map(l => l.county));
+    d.locations = phase === 'live' ? d.locations.filter(l => l.kind === 'ED') : d.locations.filter(l => l.kind === 'EV' || !hasEV.has(l.county));
     const body = JSON.stringify(d);
     waitUntil(Promise.all([
       cache.put(freshKey, new Response(body, { headers })),
