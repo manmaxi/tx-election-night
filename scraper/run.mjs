@@ -45,7 +45,8 @@ async function scrapeResults(prev) {
   }
   const sources = [{ id: 'state', races: parsed.races }];
   // The big counties' own results feeds (they post hours before the state's feed on election night).
-  if (!args.from) { const { fetchCountyFeeds } = await import('./county-feeds.mjs'); sources.push(...await fetchCountyFeeds(RACES, log)); }
+  const feeds = {};
+  if (!args.from) { const { fetchCountyFeeds } = await import('./county-feeds.mjs'); sources.push(...await fetchCountyFeeds(RACES, log, feeds)); }
 
   // Optional county sites (generic browser capture).
   for (const src of COUNTY_SOURCES) {
@@ -77,9 +78,8 @@ async function scrapeResults(prev) {
         // Only a source correcting its own number counts (never a county feed failing back to the state's lower count).
         if (o.drop === n.total && n.total > 0 && n.src === (o.src || 'state')) { log(`  ${cfg.id} ${fips}: ${n.src} corrected ${o.total} -> ${n.total}`); continue; }
         counties[fips] = { ...o, drop: n.total };
-      } else if (!n) counties[fips] = o;
+      } else if (!n) { const { drop, ...rest } = o; counties[fips] = rest; }
     }
-    for (const c of Object.values(counties)) if (c.drop !== undefined && c.total >= c.drop / 0.98) delete c.drop;
     for (const [f, c] of Object.entries(counties)) if (!c.total) delete counties[f];   // keep the file small before results
 
     const votes = Object.fromEntries(cfg.candidates.map(c => [c.id, 0]));
@@ -113,7 +113,7 @@ async function scrapeResults(prev) {
 
   const live = races.some(r => r.statewide.total > 0);
   const demo = live ? [] : (prev?.races || []).filter(r => r.demo);   // the 2024 replay tab leaves once real votes arrive
-  writeJSON('results.json', { updated: now, stateUpdated: parsed.status?.lastUpdated || null, election: ELECTION, races: [...races, ...demo] });
+  writeJSON('results.json', { updated: now, stateUpdated: parsed.status?.lastUpdated || null, election: ELECTION, ...(Object.keys(feeds).length ? { feeds } : {}), races: [...races, ...demo] });
   for (const r of races) log(`results ${r.id}: ${r.statewide.total.toLocaleString()} votes, ${r.statewide.reporting.done}/${r.statewide.reporting.total} ${r.statewide.reporting.unit}`);
 }
 

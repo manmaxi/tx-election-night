@@ -58,15 +58,15 @@ async function clarity(feed, races) {
 }
 
 // -> [{ id, races: { [raceId]: { counties: { [fips]: { votes, reporting } } } } }]; a county that fails is skipped and logged.
-export async function fetchCountyFeeds(races, log = () => {}) {
+export async function fetchCountyFeeds(races, log = () => {}, status = {}) {
   const got = [];
   for (const feed of COUNTY_FEEDS) {
     try {
       const r = await (feed.kind === 'harris' ? harris : clarity)(feed, races);
       const n = Object.values(r.races).map(x => Object.values(x.counties[feed.fips].votes).reduce((a, b) => a + b, 0));
       log(`  ${feed.name} County site: ${n.map(v => v.toLocaleString()).join(' / ')} votes`);
-      got.push({ id: feed.id, races: r.races });
-    } catch (e) { log(`  ${feed.name} County site failed: ${String(e.message || e).slice(0, 140)}`); }
+      got.push({ id: feed.id, races: r.races }); status[feed.id] = 'ok ' + n.join('/');
+    } catch (e) { const m = String(e.message || e).slice(0, 140); log(`  ${feed.name} County site failed: ${m}`); status[feed.id] = 'failed: ' + m.slice(0, 80); }
   }
   if (browser) { await browser.close().catch(() => {}); browser = null; page = null; }
   return got;
