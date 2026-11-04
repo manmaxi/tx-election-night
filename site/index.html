@@ -110,6 +110,7 @@ main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); ga
 .progress .in { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1; }
 .progress .in small { font-family: var(--body); font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 4px; }
 .progress .sub { font-size: 12.5px; color: var(--muted); }
+.progress .ctx { font-size: 13px; line-height: 1.4; color: var(--muted); padding-top: 8px; border-top: 1px solid var(--line); } .progress .ctx b { color: var(--ink); }
 .ptrack { height: 8px; border-radius: 4px; background: var(--empty); overflow: hidden; }
 .ptrack i { display: block; height: 100%; background: var(--ink); border-radius: 4px; transition: width .6s ease; }
 
@@ -1512,6 +1513,20 @@ tbody tr:hover td { background: var(--wash); }
       render();
     });
   }
+  // Which counties the count so far comes from. Early returns often come from smaller counties first,
+  // so a lead at 1% can mean little; this line says so with facts, no projection.
+  function whoIsIn(r) {
+    const has = f => Object.values(r.counties?.[f]?.votes || {}).some(v => v > 0);
+    const inN = Object.keys(r.counties || {}).filter(has).length;
+    const T = state.turnout?.counties || {};
+    const big = Object.entries(T).sort((a, b) => b[1].total - a[1].total).slice(0, 10).map(([f]) => f);
+    if (big.length < 10) return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>.</div>`;
+    const bigIn = big.filter(has), names = big.filter(f => !has(f)).slice(0, 3).map(f => esc(state.byFips[f]?.name || '')).join(', ');
+    const tail = bigIn.length === 0 ? `<b>None of the 10 largest counties</b> (${names}…) has reported yet.`
+      : bigIn.length === 10 ? 'All 10 of the largest counties have reported.'
+      : `<b>${bigIn.length} of the 10 largest counties</b> have reported; still out: ${names}${big.length - bigIn.length > 3 ? '…' : ''}.`;
+    return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>. ${tail}</div>`;
+  }
   function paintBoard() {
     const r = race(), sw = r.statewide || {}, live = hasResults(r);
     const rep = sw.reporting || {}, rp = reportingPct(rep);
@@ -1522,7 +1537,7 @@ tbody tr:hover td { background: var(--wash); }
 
     $('progress').innerHTML = `<div class="row"><p class="label">${live ? 'Latest results' : 'Waiting for results'}</p><span class="in num">${Math.round(rp)}%<small>in</small></span></div>
       <div class="ptrack"><i style="width:${rp}%"></i></div>
-      <div class="sub num">${fmt(rep.done)} of ${fmt(rep.total)} ${esc(rep.unit || 'counties')} reporting</div>`;
+      <div class="sub num">${fmt(rep.done)} of ${fmt(rep.total)} ${esc(rep.unit || 'counties')} reporting</div>${live && rp < 90 ? whoIsIn(r) : ''}`;
 
     const all = ranked(r, sw.votes);
     const people = all.filter(c => c.id !== 'other' && c.party !== 'O');
