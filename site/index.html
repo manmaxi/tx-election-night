@@ -1524,7 +1524,7 @@ tbody tr:hover td { background: var(--wash); }
     const bigIn = big.filter(has), names = big.filter(f => !has(f)).slice(0, 3).map(f => esc(state.byFips[f]?.name || '')).join(', ');
     const tail = bigIn.length === 0 ? `<b>None of the 10 largest counties</b> (${names}…) has reported yet.`
       : bigIn.length === 10 ? 'All 10 of the largest counties have reported.'
-      : `<b>${bigIn.length} of the 10 largest counties</b> have reported; still out: ${names}${big.length - bigIn.length > 3 ? '…' : ''}.`;
+      : `<b>${bigIn.length} of the 10 largest counties</b> have reported; still out: ${names}${big.length - bigIn.length > 3 ? ' and others' : ''}.`;
     return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>. ${tail}${siteNote(r)}</div>`;
   }
   // Counties whose numbers come from their own results sites (they post ahead of the state's feed).
