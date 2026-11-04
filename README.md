@@ -44,7 +44,8 @@ A live, county-by-county results page for the Texas U.S. Senate and Governor rac
 4. **Start it once by hand.** Go to Actions → Update results → Run workflow. That starts the self-renewing chain.
    - The Nov. 3 election is already staged in the state's system with all candidates at zero.
    - Early-voting turnout has been posting since Oct. 14, so the first run should fill the turnout map.
-5. **Optional: add the big counties' own results pages** in `scraper/config.mjs` (`COUNTY_SOURCES`). Harris, Dallas, Tarrant, Bexar, Travis, and Collin often post before the state feed. For each county, the scraper keeps whichever source has counted more ballots.
+5. **Big counties' own results feeds** are in `scraper/county-feeds.mjs` (Harris's results app JSON; Dallas and Tarrant on Clarity). On election night 2026 the state's feed ran hours behind them. For each county the scraper keeps whichever source has counted more ballots, and the page says which counties come from their own sites.
+6. **Optional: add more county pages** in `scraper/config.mjs` (`COUNTY_SOURCES`). Harris, Dallas, Tarrant, Bexar, Travis, and Collin often post before the state feed. For each county, the scraper keeps whichever source has counted more ballots.
 
 ## Commands
 

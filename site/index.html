@@ -1520,12 +1520,19 @@ tbody tr:hover td { background: var(--wash); }
     const inN = Object.keys(r.counties || {}).filter(has).length;
     const T = state.turnout?.counties || {};
     const big = Object.entries(T).sort((a, b) => b[1].total - a[1].total).slice(0, 10).map(([f]) => f);
-    if (big.length < 10) return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>.</div>`;
+    if (big.length < 10) return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>.${siteNote(r)}</div>`;
     const bigIn = big.filter(has), names = big.filter(f => !has(f)).slice(0, 3).map(f => esc(state.byFips[f]?.name || '')).join(', ');
     const tail = bigIn.length === 0 ? `<b>None of the 10 largest counties</b> (${names}…) has reported yet.`
       : bigIn.length === 10 ? 'All 10 of the largest counties have reported.'
       : `<b>${bigIn.length} of the 10 largest counties</b> have reported; still out: ${names}${big.length - bigIn.length > 3 ? '…' : ''}.`;
-    return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>. ${tail}</div>`;
+    return `<div class="ctx">Votes so far come from <b>${fmt(inN)} of 254 counties</b>. ${tail}${siteNote(r)}</div>`;
+  }
+  // Counties whose numbers come from their own results sites (they post ahead of the state's feed).
+  function siteNote(r) {
+    const N = { harris: 'Harris', dallas: 'Dallas', tarrant: 'Tarrant' }, ids = (r.statewide?.countySites || []).filter(x => N[x]);
+    if (!ids.length) return '';
+    const list = ids.map(x => N[x]); const names = list.length > 1 ? list.slice(0, -1).join(', ') + ' and ' + list.at(-1) : list[0];
+    return ` ${names} ${list.length > 1 ? 'counties' : 'County'}: from the county’s own results site, which is posting ahead of the state.`;
   }
   function paintBoard() {
     const r = race(), sw = r.statewide || {}, live = hasResults(r);

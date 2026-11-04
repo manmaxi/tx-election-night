@@ -44,6 +44,8 @@ async function scrapeResults(prev) {
     log(`  state feed: election ${id}, ${Object.keys(parsed.registered).length} counties` + (parsed.status?.lastUpdated ? `, state updated ${parsed.status.lastUpdated}` : ''));
   }
   const sources = [{ id: 'state', races: parsed.races }];
+  // The big counties' own results feeds (they post hours before the state's feed on election night).
+  if (!args.from) { const { fetchCountyFeeds } = await import('./county-feeds.mjs'); sources.push(...await fetchCountyFeeds(RACES, log)); }
 
   // Optional county sites (generic browser capture).
   for (const src of COUNTY_SOURCES) {
@@ -67,22 +69,38 @@ async function scrapeResults(prev) {
       }
     }
     // A county never goes backwards because one read came back short; keep the better number.
-    for (const [fips, o] of Object.entries(old?.counties || {})) if (!counties[fips] || counties[fips].total < o.total * 0.98) counties[fips] = o;
+    // But the state does correct counties downward (e.g. a duplicated upload): when the same lower number
+    // comes back on two passes in a row, it is a correction, not a short read, so take it.
+    for (const [fips, o] of Object.entries(old?.counties || {})) {
+      const n = counties[fips];
+      if (n && n.total < o.total * 0.98) {
+        // Only a source correcting its own number counts (never a county feed failing back to the state's lower count).
+        if (o.drop === n.total && n.total > 0 && n.src === (o.src || 'state')) { log(`  ${cfg.id} ${fips}: ${n.src} corrected ${o.total} -> ${n.total}`); continue; }
+        counties[fips] = { ...o, drop: n.total };
+      } else if (!n) counties[fips] = o;
+    }
+    for (const c of Object.values(counties)) if (c.drop !== undefined && c.total >= c.drop / 0.98) delete c.drop;
     for (const [f, c] of Object.entries(counties)) if (!c.total) delete counties[f];   // keep the file small before results
 
     const votes = Object.fromEntries(cfg.candidates.map(c => [c.id, 0]));
     for (const c of Object.values(counties)) for (const [k, v] of Object.entries(c.votes)) votes[k] = (votes[k] || 0) + v;
     const total = sum(votes);
-    const reporting = parsed.status?.polling?.total
+    let reporting = parsed.status?.polling?.total
       ? { done: parsed.status.polling.done, total: parsed.status.polling.total, unit: 'polling locations' }
       : { done: Object.keys(counties).length, total: 254, unit: 'counties' };
+    // Where a county's numbers come from its own site, use that site's count of locations reporting.
+    if (reporting.unit === 'polling locations') for (const [f, c] of Object.entries(counties)) {
+      const sr = parsed.races[cfg.id]?.counties?.[f]?.reporting;
+      if (c.src !== 'state' && c.reporting?.total && sr?.total) reporting = { ...reporting, done: Math.max(0, reporting.done - (sr.done || 0) + Math.min(c.reporting.done, sr.total)) };
+    }
+    const fromCounties = [...new Set(Object.values(counties).map(c => c.src).filter(x => x && x !== 'state'))];
     const history = [...(old?.history || [])];
     if (total > 0 && history.at(-1)?.total !== total) {
       history.push({ t: now, total, pctIn: Math.round(reporting.done / reporting.total * 1000) / 10,
         pct: Object.fromEntries(Object.entries(votes).map(([k, v]) => [k, Math.round(v / total * 1000) / 10])) });
     }
     return { id: cfg.id, title: cfg.title, candidates: cfg.candidates.map(withPhoto),
-      statewide: { votes, total, reporting }, counties, history };
+      statewide: { votes, total, reporting, ...(fromCounties.length ? { countySites: fromCounties } : {}) }, counties, history };
   });
 
   const problems = [];
