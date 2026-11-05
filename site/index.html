@@ -1,16 +1,16 @@
-<title>Texas Decides 2026</title>
+<title>Texas Decides · 2026 Texas Senate &amp; Governor results by county</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Texas Decides: live, unofficial results for U.S. Senate and Governor from all 254 Texas counties, plus early-vote turnout.">
-<meta property="og:title" content="Texas Decides 2026 · Live results from all 254 counties">
-<meta property="og:description" content="Watch Texas decide the U.S. Senate and Governor races, county by county. Official state data, updated live.">
+<meta name="description" content="Final unofficial 2026 results for the Texas U.S. Senate and Governor races in all 254 counties, from the Texas Secretary of State, plus early-vote turnout.">
+<meta property="og:title" content="Texas Decides · 2026 Texas Senate &amp; Governor results by county">
+<meta property="og:description" content="Final unofficial results for the 2026 U.S. Senate and Governor races in all 254 Texas counties, from official state data.">
 <meta property="og:url" content="https://elections.singlestopmarketing.com/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://elections.singlestopmarketing.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Texas Decides 2026 · Live results from all 254 counties">
-<meta name="twitter:description" content="Watch Texas decide the U.S. Senate and Governor races, county by county. Official state data, updated live.">
+<meta name="twitter:title" content="Texas Decides · 2026 Texas Senate &amp; Governor results by county">
+<meta name="twitter:description" content="Final unofficial results for the 2026 U.S. Senate and Governor races in all 254 Texas counties, from official state data.">
 <meta name="twitter:image" content="https://elections.singlestopmarketing.com/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,6 +96,9 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 .tabs button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; color: var(--muted); }
 .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
 .tabs button.demo { font-weight: 500; }
+.arch { display: flex; gap: 10px; align-items: baseline; padding: 11px 14px; border-radius: var(--r); background: var(--wash); border: 1px solid var(--line); font-size: 13.5px; line-height: 1.45; color: var(--muted); } .arch b { color: var(--ink); } .arch .tag { flex: none; padding: 2px 8px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; } .arch a { color: var(--ink); font-weight: 600; }
+:root.lcp #archive, :root.og #archive { display: none !important; }
+.bb-cta { display: block; margin: 10px 0 0; text-align: center; font-size: 13.5px; color: var(--muted); } .bb-cta a { color: var(--ink); font-weight: 700; }
 .note { background: var(--warn-bg); color: var(--warn-fg); border-radius: var(--r); padding: 10px 14px; font-size: 13.5px; }
 
 main { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 24px; align-items: start; }
@@ -585,13 +588,14 @@ tbody tr:hover td { background: var(--wash); }
       <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,2 61.8,36.3 98,36.3 68.7,57.7 79.9,92 50,70.8 20.1,92 31.3,57.7 2,36.3 38.2,36.3"/></svg>
       <div>
         <h1>Texas <em>Decides</em></h1>
-        <p class="tagline">Live results from all 254 counties · Senate &amp; Governor</p>
+        <p class="tagline">2026 results from all 254 counties · Senate &amp; Governor</p>
         <p class="status" id="status"><span class="dot"></span><span id="statusText">Loading results…</span></p>
       </div>
     </a>
     <a class="btn btn-ghost share-top" id="shareTop" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="txt">Share</span></a>
   </header>
 
+  <div class="arch" id="archive" hidden></div>
   <section class="ticker" id="ticker" hidden aria-roledescription="carousel" aria-label="Election updates">
     <div class="tk-view" id="tkView" aria-live="off"></div>
     <div class="tk-ctrl"><button type="button" id="tkPrev" aria-label="Previous update">‹</button><span id="tkCount"></span><button type="button" id="tkNext" aria-label="Next update">›</button></div>
@@ -678,6 +682,7 @@ tbody tr:hover td { background: var(--wash); }
       <span class="arr" aria-hidden="true">→</span>
     </a>
   </div>
+  <p class="bb-cta">Need a live tool for your business? <a href="https://www.singlestopmarketing.com/case-studies/texas-election-dashboard?utm_source=elections&amp;utm_medium=referral&amp;utm_campaign=archive" target="_blank" rel="noopener">See how we built this →</a></p>
 </div>
 
 <script>
@@ -850,6 +855,9 @@ tbody tr:hover td { background: var(--wash); }
 
   // ---------- scoreboard ----------
   const SITE = 'https://elections.singlestopmarketing.com/';
+  // Archive mode (switched on Nov. 4, 2026, after every county reported): the page shows the final unofficial
+  // election-night count, stops refreshing, and drops the live-only parts (ticker, markets, key dates, Line check).
+  const ARCHIVE = { asOf: 'Nov. 4, 2026' };
   const closeAt = () => new Date(state.results?.election?.pollsCloseCT || '2026-11-03T19:00:00-06:00').getTime();
   const short = v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'K' : String(v);
   const md = iso => new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -874,6 +882,7 @@ tbody tr:hover td { background: var(--wash); }
   function shareURL() {
     const live = state.results.races.some(x => !x.demo && hasResults(x)), T = state.turnout?.statewide, f = myCounty();
     const mt = f && state.turnout?.counties?.[f], cn = f && state.byFips[f].name;
+    if (ARCHIVE) return `https://x.com/intent/tweet?text=${encodeURIComponent(`2026 Texas election results, county by county: the final unofficial count for U.S. Senate and Governor in all 254 counties${cn ? `, including ${cn} County` : ''}:`)}&url=${encodeURIComponent(SITE)}`;
     const text = live
       ? `Texas is deciding right now. Live U.S. Senate and Governor results from all 254 counties${cn ? `, including ${cn} County` : ''}:`
       : T && T.total
@@ -1286,6 +1295,7 @@ tbody tr:hover td { background: var(--wash); }
   }
   function paintFaceoff() {
     const el = $('faceoff');
+    if (ARCHIVE) { el.hidden = true; $('cands').hidden = false; return; }
     // Until the first price request settles, hold the cards back so they don't flash and get swapped out.
     if (!mk.loaded && !document.documentElement.classList.contains('og') && Date.now() < closeAt() && !hasResults(race()) && !race().demo) { $('cands').hidden = true; return; }
     if (!foActive()) { if (!el.hidden) { cancelAnimationFrame(fo.raf); fo.playing = false; el.hidden = true; el.innerHTML = ''; fo.skey = ''; } $('cands').hidden = false; return; }
@@ -1409,6 +1419,7 @@ tbody tr:hover td { background: var(--wash); }
     return `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE + 'markets/?d=' + shareStamp(false))}`;
   }
   function paintMarkets() {
+    if (ARCHIVE) { $('markets').hidden = true; return; }
     const el = $('markets'), rs = mkRaces();
     if (!rs.length) { el.hidden = true; return; }
     const after = Date.now() >= closeAt(), og = document.documentElement.classList.contains('og');
@@ -1563,7 +1574,7 @@ tbody tr:hover td { background: var(--wash); }
     $('progress').hidden = pre;
     paintHero(pre);
 
-    $('progress').innerHTML = `<div class="row"><p class="label">${live ? 'Latest results' : 'Waiting for results'}</p><span class="in num">${Math.round(rp)}%<small>in</small></span></div>
+    $('progress').innerHTML = `<div class="row"><p class="label">${ARCHIVE && live ? 'Final unofficial count' : live ? 'Latest results' : 'Waiting for results'}</p><span class="in num">${Math.round(rp)}%<small>in</small></span></div>
       <div class="ptrack"><i style="width:${rp}%"></i></div>
       <div class="sub num">${fmt(rep.done)} of ${fmt(rep.total)} ${esc(rep.unit || 'counties')} reporting</div>${live && rp < 90 ? whoIsIn(r) : ''}`;
 
@@ -1573,7 +1584,7 @@ tbody tr:hover td { background: var(--wash); }
     $('cands').innerHTML = people.map((c, i) => {
       const P = PARTY[c.party] || PARTY.O;
       const leading = live && i === 0 && c.v > (people[1]?.v || 0);
-      const chip = leading ? `<span class="chip">${r.demo ? 'Won' : 'Leading'}</span>` : '';
+      const chip = leading ? `<span class="chip">${r.demo ? 'Won' : ARCHIVE ? 'Most votes' : 'Leading'}</span>` : '';
       const photo = c.photo ? `<img src="${esc(c.photo)}" alt="" style="object-position:${esc(c.photoPos || 'center top')}" onerror="this.remove()">` : '';
       return `<article class="cc" style="--pc:${cssVar(P.v)};--pc-hi:${cssVar(P.hi)}">
         <div class="ph"><span class="ini">${esc(initials(c.name))}</span>${photo}${live ? `<span class="rank">${ordinal(i + 1).toUpperCase()}</span>` : ''}</div>
@@ -1676,6 +1687,11 @@ tbody tr:hover td { background: var(--wash); }
   function paintMode() {
     $('mapMode').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)));
   }
+  function paintArchive() {
+    const el = $('archive'), src = state.results.election || {};
+    el.innerHTML = `<span class="tag">Archive</span><span><b>2026 Texas general election.</b> Final unofficial election-night count from the Texas Secretary of State, all 254 counties reporting (${ARCHIVE.asOf}). Counties certify the official results${src.sourceUrl ? `; see the <a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">Texas Secretary of State</a> for official totals` : ''}.</span>`;
+    el.hidden = false;
+  }
   function paintStatus() {
     const u = state.results.updated ? new Date(state.results.updated) : null;
     const st = $('status'), txt = $('statusText');
@@ -1684,6 +1700,7 @@ tbody tr:hover td { background: var(--wash); }
     st.className = 'status' + (live ? (ageMin > 15 ? ' stale' : ' live') : '');
     st.hidden = !live;
     const t = u ? u.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT' : '';
+    if (ARCHIVE && live) { st.className = 'status'; txt.textContent = `Archived ${ARCHIVE.asOf}`; paintFooter(live); paintArchive(); return; }
     txt.textContent = live ? (ageMin > 15 ? `Last update ${t} · checking for new results` : `Live · updated ${t}`) : 'Unofficial results · polls close 7 p.m. local time Nov. 3';
     paintFooter(live);
   }
@@ -1697,7 +1714,7 @@ tbody tr:hover td { background: var(--wash); }
     if (src.sourceUrl) $('source').innerHTML = `<a href="${esc(src.sourceUrl)}" target="_blank" rel="noopener">Texas Secretary of State</a> unofficial returns. Results are unofficial until canvassed. No winner projections.`;
     const d = lastChanged(live), st = $('updated');
     st.hidden = !d;
-    if (d) st.innerHTML = `<span class="fd" aria-hidden="true"></span>${live ? 'Results last updated' : 'Early votes last updated'}: <strong style="white-space:nowrap">${ctTime(d)}</strong>`;
+    if (d) st.innerHTML = `<span class="fd" aria-hidden="true"></span>${ARCHIVE && live ? 'Final unofficial count captured' : live ? 'Results last updated' : 'Early votes last updated'}: <strong style="white-space:nowrap">${ctTime(d)}</strong>`;
     if (!$('methodBody').hidden) paintMethod();
     if (!$('credits').hidden) paintCredits();
   }
@@ -1809,6 +1826,7 @@ tbody tr:hover td { background: var(--wash); }
   }
   function stepTick(d, manual) { if (!tk.items.length) return; tk.i = (tk.i + d + tk.items.length) % tk.items.length; showTick(true, manual); }
   function paintTicker() {
+    if (ARCHIVE) { $('ticker').hidden = true; return; }
     const items = tickerItems(), key = JSON.stringify(items.map(x => x.html));
     if (key === tk.key) return;
     const keepTag = tk.items[tk.i]?.tag;
@@ -1824,6 +1842,7 @@ tbody tr:hover td { background: var(--wash); }
     t.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; t.classList.add('paused'); }, { passive: true });
     t.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - (x0 ?? 0); if (Math.abs(dx) > 40) stepTick(dx < 0 ? 1 : -1, true); x0 = null; setTimeout(() => t.classList.remove('paused'), 2500); }); }
   function paintKnow() {
+    if (ARCHIVE) { $('know').hidden = true; return; }
     const N = state.notices || {}, dates = N.dates || [];
     const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })); today.setHours(0, 0, 0, 0);
     const nextI = dates.findIndex(d => new Date(d.date + 'T00:00:00') >= today);
@@ -1862,6 +1881,11 @@ tbody tr:hover td { background: var(--wash); }
     try { state.geo = await getJSON('data/tx-geo.json'); buildMap(); }
     catch (e) { $('statusText').textContent = 'Could not load the county map.'; return; }
     await refresh(true);
+    if (ARCHIVE) {   // a snapshot: no polling, no market or wait-time requests
+      if (LCP) { document.querySelector('.brand').href = './'; paintLines(); }
+      if (openPanel) { togglePanel(openPanel, true); $(openPanel === 'methodology' ? 'methodBody' : 'credits').scrollIntoView({ block: 'center' }); }
+      return;
+    }
     await loadMarkets();
     await loadWaits();
     if (LCP) document.querySelector('.brand').href = './';

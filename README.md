@@ -1,5 +1,7 @@
 # Texas Decides 2026
 
+> **Archived Nov. 4, 2026.** Every county had reported, and the page now shows the final unofficial election-night count from the Texas Secretary of State (it matched the state's feed in all 254 counties). Archive mode (`ARCHIVE` in `site/index.html`) stops all refreshing and hides the ticker, prediction markets, key dates and Line check (whose page, `/lines/`, shows an Election Day recap). `/markets/` redirects to the results. The update workflow's schedules are removed and the workflow is disabled in GitHub. County feeds are parked in `COUNTY_FEEDS_2026`. To reuse this for 2028, switch `ARCHIVE` off, update `scraper/config.mjs` and re-enable the workflow.
+
 A live, county-by-county results page for the Texas U.S. Senate and Governor races. It is built to share on X and to read well on phones.
 
 - `site/` is the page. It re-reads `site/data/results.json` and `site/data/turnout.json` every 60 seconds.

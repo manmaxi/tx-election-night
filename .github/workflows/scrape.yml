@@ -4,11 +4,10 @@ name: Update results
 # so each run keeps checking on its own for about 5.5 hours (every 30 minutes now, every
 # 2 minutes on election night), then starts its own replacement. The schedules below only
 # restart that chain if it ever breaks. The chain stops on its own after Nov. 7, 2026.
+# ARCHIVED Nov. 4, 2026: the site is a static archive of the final unofficial count. The schedules are
+# removed and the workflow is disabled in GitHub; run it by hand (Actions > Update results > Run workflow,
+# loop_minutes 0) only if you ever need one more pass.
 on:
-  schedule:
-    - cron: "17 */3 * * *"
-    # Extra restart points around election night (00:30 and 01:30 UTC Nov 4 = 7:30 and 8:30 p.m. CT Nov 3).
-    - cron: "30 0,1 4 11 *"
   workflow_dispatch:
     inputs:
       loop_minutes:

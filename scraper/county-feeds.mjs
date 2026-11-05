@@ -4,11 +4,14 @@
 //   Harris:  app.harrisvotes.com results app -> appfiles.harrisvotes.com/.../Data/{code}/resultsbyballot.json
 //   Clarity: results.enr.clarityelections.com/{path}/current_ver.txt -> /{ver}/json/en/summary.json (Dallas, Tarrant)
 const UA = { 'user-agent': 'Mozilla/5.0 (compatible; TexasDecides/1.0; +https://elections.singlestopmarketing.com)', accept: 'application/json,text/plain,*/*' };
-export const COUNTY_FEEDS = [
+// Archived Nov. 4, 2026: the state's feed had caught up with every county, so no county feeds are used now.
+// Kept for reference (and 2028): move these back into COUNTY_FEEDS to use them again.
+export const COUNTY_FEEDS_2026 = [
   { id: 'harris', fips: '48201', name: 'Harris', kind: 'harris', url: 'https://appfiles.harrisvotes.com/harrisvotes/prd/Data/1126/resultsbyballot.json' },
   { id: 'dallas', fips: '48113', name: 'Dallas', kind: 'clarity', path: 'TX/Dallas/126485' },
   { id: 'tarrant', fips: '48439', name: 'Tarrant', kind: 'clarity', path: 'TX/Tarrant/127297' },
 ];
+export const COUNTY_FEEDS = [];
 // Contest titles differ by county ("United States Senator", "U. S. Senator (Vote for 1)").
 const TITLE = { senate: /^(U\.?\s?S\.?|UNITED STATES)\s+SENATOR\b/i, governor: /^GOVERNOR\b/i };
 const clean = t => String(t || '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();

@@ -28,8 +28,9 @@ const markets = page
   .replace(/(property="og:description" content=")[^"]*/, `$1${mDesc}`).replace(/(name="twitter:description" content=")[^"]*/, `$1${mDesc}`)
   .replace(/(property="og:url" content=")[^"]*/, `$1${SITE}markets/`)
   .replace(/og\.png\?v=[0-9a-f]+"/g, `og-markets.png?v=${ver('og-markets.png')}"`);
-fs.mkdirSync(new URL('markets/', dist), { recursive: true });
-fs.writeFileSync(new URL('markets/index.html', dist), wrap(markets, '<base href="/">'));
+// Archived after the election (Nov. 4, 2026): the markets page is gone; old /markets/ links go to the results.
+void markets;
+fs.writeFileSync(new URL('_redirects', dist), '/markets / 301\n/markets/ / 301\n');
 // /lines/: the Line check page. Same app, but the class "lcp" hides everything except the tool (set before first paint).
 const lTitle = 'Texas Decides · Line check: find your fastest place to vote';
 const lDesc = 'Official polling-place wait times from Dallas and Tarrant counties, plus drive time. Vote at any vote center in your county.';
