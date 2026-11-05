@@ -1119,9 +1119,30 @@ tbody tr:hover td { background: var(--wash); }
       + cell('Polls open', '7–7', 'Tue., Nov. 3')
       + (best ? cell('Last early day', mins(best.wait, best.lt), 'shortest line') : cell('Wait reports', '7 a.m.', 'when polls open'));
   }
+  function paintLinesRecap(el) {
+    el.className = 'lc';
+    el.innerHTML = `<div class="lc-head">
+        <div class="lc-top"><div><p class="lc-k"><i></i>Line check · Election Day recap</p><h2 id="lcTitle">Line check was live on Election Day</h2>
+          <p class="what">On Tuesday, Nov. 3, 2026, Line check used <b>official wait times from Dallas and Tarrant counties</b> plus drive time to find each voter's <b>fastest place to vote</b>, from a ZIP code or their location. Polls are closed, so the tool is off.</p></div></div>
+        <div class="lc-pulse" style="border-top:0;margin:0 -20px">
+          <div><small>Vote centers</small><b>668</b><span>Dallas + Tarrant</span></div>
+          <div><small>ZIP codes</small><b>166</b><span>in the lookup</span></div>
+          <div><small>Hours live</small><b>7–7</b><span>Tue., Nov. 3</span></div>
+        </div>
+        <p class="lc-tip"><b>What it showed:</b> the closest vote center often wasn’t the fastest. In one Arlington example, driving 2 minutes farther skipped a 30-minute line and saved about 28 minutes.</p>
+        <div class="lc-find" style="gap:10px 16px">
+          <a class="btn btn-ink" href="./">See the 2026 results →</a>
+          <a class="lc-loc" href="https://www.singlestopmarketing.com/case-studies/texas-election-dashboard" target="_blank" rel="noopener">How we built it</a>
+        </div>
+      </div>
+      <div class="lc-foot"><span>Wait times came from Dallas County Elections and Tarrant County Elections. Drive times were estimates.</span><span>Built by SingleStop Marketing.</span></div>`;
+    el.hidden = false;
+  }
   function paintLines() {
     const el = $('lines'), tz = $('lcTeaser');
     const og = document.documentElement.classList.contains('og'), d = lc.data;
+    // After Election Day the tool is off. Its own page (/lines/) keeps a short recap instead of going blank.
+    if (!og && LCP && Date.now() > Date.parse('2026-11-03T22:00:00-06:00')) { tz.hidden = true; paintLinesRecap(el); return; }
     if (og || !d || d.phase === 'off' || lc.err === 'down') { el.hidden = true; tz.hidden = true; return; }
     const live = lcLive();
     if (!lc.county) { const f = myCounty(); lc.county = f && LC_COUNTIES[f] ? f : '48113'; }
